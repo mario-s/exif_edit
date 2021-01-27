@@ -1,5 +1,6 @@
 from exif import Image
 
+
 class Reader:
   def __init__(self, img_path):
       with open(img_path, 'rb') as f:
