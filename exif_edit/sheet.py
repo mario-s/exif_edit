@@ -60,7 +60,7 @@ class App(tk.Tk):
 
     def read_exif(self, img_path):
         self.reader = Reader(img_path)
-        self.sheet.set_sheet_data(list(map(list, self.reader.dict().items())))
+        self.sheet.set_sheet_data(self.reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
         self.__add_image__(img_path)
 
@@ -69,6 +69,10 @@ class App(tk.Tk):
         self.label = tk.Label(self.frame, image=render)
         self.label.image = render
         self.label.grid(row = 0, column = 1, sticky = "nswe")
+
+    def save_exif(self):
+        data = self.sheet.get_sheet_data()
+        print(data)
 
     def single_select(self, event):
         print(event)
@@ -120,4 +124,5 @@ def img_path():
 
 app = App()
 app.read_exif(img_path())
+app.save_exif()
 app.mainloop()
