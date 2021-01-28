@@ -2,14 +2,14 @@ import unittest
 import os
 from exif_edit.access import Reader, Writer
 
-class TestReader(unittest.TestCase):
+class TestAcess(unittest.TestCase):
 
-    def path(self, name):
+    def __path(self, name):
         img = 'test/resources/' + name
         return os.path.realpath(img)
 
     def setUp(self):
-        p = self.path('lookup.jpg')
+        p = self.__path('lookup.jpg')
         self.reader = Reader(p)
         self.writer = Writer(self.reader.binary())
 
@@ -31,7 +31,7 @@ class TestReader(unittest.TestCase):
 
     def test_save_dict(self):
         dict = {"model": "bar"}
-        p = self.path('modified.jpg')
+        p = self.__path('modified.jpg')
         self.writer.save(dict, p)
 
         keys = Reader(p).keys()
@@ -40,7 +40,7 @@ class TestReader(unittest.TestCase):
 
     def test_save_list(self):
         list = [["model", "bar"]]
-        p = self.path('modified.jpg')
+        p = self.__path('modified.jpg')
         self.writer.save(list, p)
 
         keys = Reader(p).keys()

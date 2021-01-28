@@ -18,16 +18,16 @@ class App(tk.Tk):
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
         
-        self.__add_sheet__()
+        self.__add_sheet()
 
-    def __add_sheet__(self):
+    def __add_sheet(self):
         self.sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 500, width = 600)
         self.sheet.grid(row = 0, column = 0, sticky = "nswe")
-        self.__add_bindings__()
+        self.__add_bindings()
 
-    def __add_bindings__(self):
+    def __add_bindings(self):
         self.sheet.enable_bindings(("single_select", 
                                          "drag_select",   
                                          "row_select",
@@ -62,9 +62,9 @@ class App(tk.Tk):
         self.reader = Reader(img_path)
         self.sheet.set_sheet_data(self.reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
-        self.__add_image__(img_path)
+        self.__add_image(img_path)
 
-    def __add_image__(self, img_path):
+    def __add_image(self, img_path):
         render = ImageTk.PhotoImage(Image.open(img_path))
         self.label = tk.Label(self.frame, image=render)
         self.label.image = render

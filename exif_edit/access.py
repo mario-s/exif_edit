@@ -32,16 +32,16 @@ class Writer:
 
     def save(self, collection, img_path):
         if type(collection) is dict:
-            self.__set_values__(collection)
+            self.__set_values(collection)
         elif type(collection) is list:
-            d = self.__list_to_dict__(collection)
-            self.__set_values__(d)
+            d = self.__list_to_dict(collection)
+            self.__set_values(d)
         else:
             raise ValueError("Expect either dict or list[list]!")
 
-        self.__save__(img_path)
+        self.__save(img_path)
 
-    def __list_to_dict__(self, list) -> dict:
+    def __list_to_dict(self, list) -> dict:
         dict = {}
         for l in list:
             if len(l) < 2:
@@ -49,11 +49,11 @@ class Writer:
             dict[l[0]] = l[1]
         return dict
 
-    def __set_values__(self, dict):
+    def __set_values(self, dict):
         self.image.delete_all()
         for k,v in dict.items():
             self.image.set(k, v)
     
-    def __save__(self, img_path):
+    def __save(self, img_path):
         with open(img_path, 'wb') as f:
             f.write(self.image.get_file())
