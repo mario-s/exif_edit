@@ -1,4 +1,4 @@
-from access import Reader
+from image_io import ExifReader, ImageReader
 from tksheet import Sheet
 from PIL import Image, ImageTk
 
@@ -33,7 +33,6 @@ class App(tk.Tk):
                                          "row_select",
                                          "row_height_resize",
                                          "double_click_row_resize",
-                                         "right_click_popup_menu",
                                          "rc_select",
                                          "rc_insert_column",
                                          "rc_delete_column",
@@ -59,13 +58,14 @@ class App(tk.Tk):
         
 
     def read_exif(self, img_path):
-        self.reader = Reader(img_path)
+        self.reader = ExifReader(img_path)
         self.sheet.set_sheet_data(self.reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
         self.__add_image(img_path)
 
     def __add_image(self, img_path):
-        render = ImageTk.PhotoImage(Image.open(img_path))
+        img_reader = ImageReader()
+        render = ImageTk.PhotoImage(img_reader.read(img_path))
         self.label = tk.Label(self.frame, image=render)
         self.label.image = render
         self.label.grid(row = 0, column = 1, sticky = "nswe")

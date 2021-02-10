@@ -1,8 +1,8 @@
 import unittest
 import os
-from exif_edit.access import Reader, Writer
+from exif_edit.image_io import ExifReader, ExifWriter, ImageReader
 
-class TestAcess(unittest.TestCase):
+class TestIO(unittest.TestCase):
 
     def __path(self, name):
         img = 'test/resources/' + name
@@ -10,8 +10,8 @@ class TestAcess(unittest.TestCase):
 
     def setUp(self):
         p = self.__path('lookup.jpg')
-        self.reader = Reader(p)
-        self.writer = Writer(self.reader.binary())
+        self.reader = ExifReader(p)
+        self.writer = ExifWriter(self.reader.binary())
 
     def test_keys(self):
         self.assertFalse(len(self.reader.keys()) == 0)
@@ -34,7 +34,7 @@ class TestAcess(unittest.TestCase):
         p = self.__path('modified.jpg')
         self.writer.save(dict, p)
 
-        keys = Reader(p).keys()
+        keys = ExifReader(p).keys()
         first_key = next(iter(dict))
         self.assertTrue(first_key in keys)
 
@@ -43,8 +43,14 @@ class TestAcess(unittest.TestCase):
         p = self.__path('modified.jpg')
         self.writer.save(list, p)
 
-        keys = Reader(p).keys()
+        keys = ExifReader(p).keys()
         self.assertTrue("model" in keys)
+
+    def test_read_image(self):
+        r = ImageReader()
+        i = r.read(self.__path('lookup.jpg'))
+        w, h = i.size
+        self.assertEqual(400, w)
 
 if __name__ == '__main__':
     unittest.main()
