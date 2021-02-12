@@ -49,7 +49,7 @@ class TestIO(unittest.TestCase):
     def test_read_image(self):
         r = ImageReader()
         i = r.read(self.__path('lookup.jpg'))
-        w, h = i.size
+        w, _ = i.size
         self.assertEqual(400, w)
 
 if __name__ == '__main__':

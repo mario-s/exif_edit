@@ -67,7 +67,5 @@ class ImageReader:
 
     def read(self, img_path):
         img = Image.open(img_path)
-        width, height = img.size
-        w_percent = (self.base_width / float(width))
-        new_height = int((float(height) * float(w_percent)))
-        return img.resize((self.base_width, new_height), Image.ANTIALIAS)
+        img.thumbnail((self.base_width, self.base_width))
+        return img
