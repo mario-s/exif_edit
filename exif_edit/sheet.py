@@ -50,9 +50,7 @@ class App(tk.Tk):
         self.sheet.extra_bindings([("cell_select", self.cell_select),
                                    ("begin_edit_cell", self.begin_edit_cell),
                                    ("end_edit_cell", self.end_edit_cell),
-                                    ("shift_cell_select", self.shift_select_cells),
                                     ("row_select", self.row_select),
-                                    ("shift_column_select", self.shift_select_columns),
                                     ("deselect", self.deselect)
                                     ])
         
@@ -106,9 +104,6 @@ class App(tk.Tk):
     def cell_select(self, event):
         self.__change_button_state(event)
 
-    def shift_select_cells(self, event):
-        print (event)
-
     def row_select(self, event):
         self.__change_button_state(event)
 
@@ -121,7 +116,6 @@ class App(tk.Tk):
             self.btn_rm.config(state=tk.NORMAL)
         elif name == "deselect_all" or name == "select_cell":
             self.btn_rm.config(state=tk.DISABLED)
-
 
 
 def img_path():
