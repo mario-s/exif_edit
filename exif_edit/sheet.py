@@ -1,3 +1,4 @@
+from math import e
 from image_io import ExifReader, ImageReader
 from tksheet import Sheet
 from PIL import Image, ImageTk
@@ -26,6 +27,7 @@ class App(tk.Tk):
             height = 500, width = 600)
         self.sheet.grid(row = 0, column = 0, sticky = "nswe")
         self.__add_bindings()
+        self.__add_commands()
 
     def __add_bindings(self):
         self.sheet.enable_bindings(("single_select", 
@@ -50,12 +52,18 @@ class App(tk.Tk):
                                    ("end_edit_cell", self.end_edit_cell),
                                     ("shift_cell_select", self.shift_select_cells),
                                     ("row_select", self.row_select),
-                                    ("shift_row_select", self.shift_select_rows),
                                     ("shift_column_select", self.shift_select_columns),
-                                    ("drag_select_columns", self.drag_select_columns),
                                     ("deselect", self.deselect)
                                     ])
         
+    def __add_commands(self):
+        self.cmd_frame = tk.Frame(self.frame, borderwidth=2)
+        self.cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
+
+        self.btn_add = tk.Button(self.cmd_frame, text="+")
+        self.btn_add.pack(padx=5, pady=10, side=tk.LEFT)
+        self.btn_rm = tk.Button(self.cmd_frame, text="-", state=tk.DISABLED)
+        self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
 
     def read_exif(self, img_path):
         self.reader = ExifReader(img_path)
@@ -90,28 +98,30 @@ class App(tk.Tk):
         print (region, row, column)
 
     def deselect(self, event):
-        print (event, self.sheet.get_selected_cells())
+        self.__change_button_state(event)
 
     def rc(self, event):
         print (event)
         
-    def cell_select(self, response):
-        print (response)
+    def cell_select(self, event):
+        self.__change_button_state(event)
 
-    def shift_select_cells(self, response):
-        print (response)
+    def shift_select_cells(self, event):
+        print (event)
 
-    def row_select(self, response):
-        print (response)
+    def row_select(self, event):
+        self.__change_button_state(event)
 
-    def shift_select_rows(self, response):
-        print (response)
+    def shift_select_columns(self, event):
+        print (event)
 
-    def shift_select_columns(self, response):
-        print (response)
+    def __change_button_state(self, event):
+        name = event[0]
+        if name == "select_row":
+            self.btn_rm.config(state=tk.NORMAL)
+        elif name == "deselect_all" or name == "select_cell":
+            self.btn_rm.config(state=tk.DISABLED)
 
-    def drag_select_columns(self, response):
-        pass
 
 
 def img_path():
