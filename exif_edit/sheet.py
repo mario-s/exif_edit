@@ -24,7 +24,7 @@ class App(tk.Tk):
     def __add_sheet(self):
         self.sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
-            height = 500, width = 600)
+            height = 600, width = 600)
         self.sheet.grid(row = 0, column = 0, sticky = "nswe")
         self.__add_bindings()
         self.__add_commands()
@@ -60,12 +60,25 @@ class App(tk.Tk):
 
         self.btn_add = tk.Button(self.cmd_frame, text="+", command=self.__add_row)
         self.btn_add.pack(padx=5, pady=10, side=tk.LEFT)
-        self.btn_rm = tk.Button(self.cmd_frame, text="-", state=tk.DISABLED)
+        self.btn_rm = tk.Button(self.cmd_frame, text="-", command=self.__remove_row, 
+            state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
 
     def __add_row(self):
         self.sheet.insert_row()
-        self.sheet.redraw()
+        self.sheet.refresh()
+
+    def __remove_row(self):
+        index = 0
+        selected_rows = self.sheet.get_selected_rows()
+        for next in selected_rows:
+            total_rows = len(self.sheet.get_column_data(0))
+            row = next - index
+            if row < total_rows:
+                self.sheet.delete_row(row)
+                index+=1
+
+        self.sheet.refresh()
 
     def read_exif(self, img_path):
         self.reader = ExifReader(img_path)
