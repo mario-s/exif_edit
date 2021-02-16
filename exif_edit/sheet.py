@@ -58,10 +58,14 @@ class App(tk.Tk):
         self.cmd_frame = tk.Frame(self.frame, borderwidth=2)
         self.cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
 
-        self.btn_add = tk.Button(self.cmd_frame, text="+")
+        self.btn_add = tk.Button(self.cmd_frame, text="+", command=self.__add_row)
         self.btn_add.pack(padx=5, pady=10, side=tk.LEFT)
         self.btn_rm = tk.Button(self.cmd_frame, text="-", state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
+
+    def __add_row(self):
+        self.sheet.insert_row()
+        self.sheet.redraw()
 
     def read_exif(self, img_path):
         self.reader = ExifReader(img_path)
