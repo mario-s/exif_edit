@@ -1,11 +1,13 @@
 import unittest
 import os
-from exif_edit.image_io import ExifReader, ExifWriter, ImageReader
+from unittest.mock import Mock
+
+from ..image_io import ExifReader, ExifWriter, ImageReader, Mediator
 
 class TestIO(unittest.TestCase):
 
     def __path(self, name):
-        img = 'test/resources/' + name
+        img = 'exif_edit/test/resources/' + name
         return os.path.realpath(img)
 
     def setUp(self):
@@ -51,6 +53,12 @@ class TestIO(unittest.TestCase):
         i = r.read(self.__path('lookup.jpg'))
         w, _ = i.size
         self.assertEqual(400, w)
+
+    def test_add_row(self):
+        mock = Mock()
+        mediator = Mediator(mock)
+        mediator.add_row()
+        mock.insert_row.assert_called()
 
 if __name__ == '__main__':
     unittest.main()

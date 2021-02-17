@@ -1,5 +1,5 @@
 from exif import Image as Exif
-from PIL import Image
+from PIL import Image, ImageTk
 
 
 class ExifReader:
@@ -69,3 +69,33 @@ class ImageReader:
         img = Image.open(img_path)
         img.thumbnail((self.base_width, self.base_width))
         return img
+
+
+class Mediator:
+    def __init__(self, sheet):
+        self.sheet = sheet
+
+    def read_exif(self, img_path):
+        reader = ExifReader(img_path)
+        self.sheet.set_sheet_data(reader.list_of_lists())
+        self.sheet.set_all_column_widths(250)
+
+    def read_image(self, img_path):
+        img_reader = ImageReader()
+        return ImageTk.PhotoImage(img_reader.read(img_path))
+
+    def add_row(self):
+        self.sheet.insert_row()
+        self.sheet.refresh()
+
+    def remove_row(self):
+        index = 0
+        selected_rows = self.sheet.get_selected_rows()
+        for next in selected_rows:
+            total_rows = len(self.sheet.get_column_data(0))
+            row = next - index
+            if row < total_rows:
+                self.sheet.delete_row(row)
+                index+=1
+
+        self.sheet.refresh()

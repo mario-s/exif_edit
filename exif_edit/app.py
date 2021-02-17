@@ -1,12 +1,8 @@
 from math import e
-from image_io import ExifReader, ImageReader
+from image_io import Mediator
 from tksheet import Sheet
-from PIL import Image, ImageTk
 
 import tkinter as tk
-import os
-import sys
-
 
 class App(tk.Tk):
     def __init__(self):
@@ -22,10 +18,12 @@ class App(tk.Tk):
         self.__add_sheet()
 
     def __add_sheet(self):
-        self.sheet = Sheet(self.frame, page_up_down_select_row = True,
+        sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 600, width = 600)
-        self.sheet.grid(row = 0, column = 0, sticky = "nswe")
+        sheet.grid(row = 0, column = 0, sticky = "nswe")
+        self.mediator = Mediator(sheet) 
+        self.sheet = sheet
         self.__add_bindings()
         self.__add_commands()
 
@@ -55,43 +53,24 @@ class App(tk.Tk):
                                     ])
         
     def __add_commands(self):
-        self.cmd_frame = tk.Frame(self.frame, borderwidth=2)
-        self.cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
+        cmd_frame = tk.Frame(self.frame, borderwidth=2)
+        cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
 
-        self.btn_add = tk.Button(self.cmd_frame, text="+", command=self.__add_row)
+        self.btn_add = tk.Button(cmd_frame, text="+", command=self.mediator.add_row)
         self.btn_add.pack(padx=5, pady=10, side=tk.LEFT)
-        self.btn_rm = tk.Button(self.cmd_frame, text="-", command=self.__remove_row, 
+        self.btn_rm = tk.Button(cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
 
-    def __add_row(self):
-        self.sheet.insert_row()
-        self.sheet.refresh()
-
-    def __remove_row(self):
-        index = 0
-        selected_rows = self.sheet.get_selected_rows()
-        for next in selected_rows:
-            total_rows = len(self.sheet.get_column_data(0))
-            row = next - index
-            if row < total_rows:
-                self.sheet.delete_row(row)
-                index+=1
-
-        self.sheet.refresh()
-
     def read_exif(self, img_path):
-        self.reader = ExifReader(img_path)
-        self.sheet.set_sheet_data(self.reader.list_of_lists())
-        self.sheet.set_all_column_widths(250)
+        self.mediator.read_exif(img_path)
         self.__add_image(img_path)
 
     def __add_image(self, img_path):
-        img_reader = ImageReader()
-        render = ImageTk.PhotoImage(img_reader.read(img_path))
-        self.label = tk.Label(self.frame, image=render)
-        self.label.image = render
-        self.label.grid(row = 0, column = 1, sticky = "nswe")
+        image = self.mediator.read_image(img_path)
+        label = tk.Label(self.frame, image=image)
+        label.image = image
+        label.grid(row = 0, column = 1, sticky = "nswe")
 
     def save_exif(self):
         data = self.sheet.get_sheet_data()
@@ -114,9 +93,6 @@ class App(tk.Tk):
 
     def deselect(self, event):
         self.__change_button_state(event)
-
-    def rc(self, event):
-        print (event)
         
     def cell_select(self, event):
         self.__change_button_state(event)
@@ -124,26 +100,9 @@ class App(tk.Tk):
     def row_select(self, event):
         self.__change_button_state(event)
 
-    def shift_select_columns(self, event):
-        print (event)
-
     def __change_button_state(self, event):
         name = event[0]
         if name == "select_row":
             self.btn_rm.config(state=tk.NORMAL)
         elif name == "deselect_all" or name == "select_cell":
             self.btn_rm.config(state=tk.DISABLED)
-
-
-def img_path():
-    img_path = os.path.realpath('./test/resources/lookup.jpg')
-    args_len = len(sys.argv) - 1
-    if args_len > 0:
-        img_path = os.path.realpath(sys.argv[1])
-    return img_path
-
-
-app = App()
-app.read_exif(img_path())
-app.save_exif()
-app.mainloop()
