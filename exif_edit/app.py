@@ -62,17 +62,14 @@ class App(tk.Tk):
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
 
-    def read_exif(self, img_path):
-        self.mediator.read_exif(img_path)
-        self.__add_image(img_path)
-
-    def __add_image(self, img_path):
+    def load_image(self, img_path):
+        self.mediator.append_exif(img_path)
         image = self.mediator.read_image(img_path)
         label = tk.Label(self.frame, image=image)
         label.image = image
-        label.grid(row = 0, column = 1, sticky = "nswe")
+        label.grid(row = 0, column = 1, sticky = "nswe")        
 
-    def save_exif(self):
+    def save_image(self):
         data = self.sheet.get_sheet_data()
         print(data)
 

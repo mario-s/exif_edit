@@ -1,6 +1,13 @@
 from exif import Image as Exif
 from PIL import Image, ImageTk
 
+class ImageReader:
+    
+    @staticmethod
+    def read(img_path, base_width=400):
+        img = Image.open(img_path)
+        img.thumbnail((base_width, base_width))
+        return img
 
 class ExifReader:
     def __init__(self, img_path):
@@ -61,28 +68,17 @@ class ExifWriter:
             f.write(self.image.get_file())
 
 
-class ImageReader:
-    def __init__(self, base_width=400):
-        self.base_width = base_width
-
-    def read(self, img_path):
-        img = Image.open(img_path)
-        img.thumbnail((self.base_width, self.base_width))
-        return img
-
-
 class Mediator:
     def __init__(self, sheet):
         self.sheet = sheet
 
-    def read_exif(self, img_path):
+    def append_exif(self, img_path):
         reader = ExifReader(img_path)
         self.sheet.set_sheet_data(reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
 
     def read_image(self, img_path):
-        img_reader = ImageReader()
-        return ImageTk.PhotoImage(img_reader.read(img_path))
+        return ImageTk.PhotoImage(ImageReader.read(img_path))
 
     def add_row(self):
         self.sheet.insert_row()

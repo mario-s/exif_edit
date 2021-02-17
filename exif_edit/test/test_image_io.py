@@ -1,6 +1,7 @@
 import unittest
 import os
 from unittest.mock import Mock
+from tksheet import Sheet
 
 from ..image_io import ExifReader, ExifWriter, ImageReader, Mediator
 
@@ -14,6 +15,7 @@ class TestIO(unittest.TestCase):
         p = self.__path('lookup.jpg')
         self.reader = ExifReader(p)
         self.writer = ExifWriter(self.reader.binary())
+        self.mock = Mock(name='sheet', spec=Sheet)
 
     def test_keys(self):
         self.assertFalse(len(self.reader.keys()) == 0)
@@ -49,16 +51,20 @@ class TestIO(unittest.TestCase):
         self.assertTrue("model" in keys)
 
     def test_read_image(self):
-        r = ImageReader()
-        i = r.read(self.__path('lookup.jpg'))
+        i = ImageReader.read(self.__path('lookup.jpg'))
         w, _ = i.size
         self.assertEqual(400, w)
 
     def test_add_row(self):
-        mock = Mock()
-        mediator = Mediator(mock)
+        mediator = Mediator(self.mock)
         mediator.add_row()
-        mock.insert_row.assert_called()
+        self.mock.insert_row.assert_called()
+
+    def test_remove_row(self):
+        self.mock.get_selected_rows.return_value = []
+        mediator = Mediator(self.mock)
+        mediator.remove_row()
+        self.mock.get_selected_rows.assert_called()
 
 if __name__ == '__main__':
     unittest.main()

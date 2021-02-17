@@ -12,5 +12,5 @@ if __name__ == "__main__":
         return img_path
 
     app = App()
-    app.read_exif(img_path())
+    app.load_image(img_path())
     app.mainloop()
