@@ -73,8 +73,8 @@ class Mediator:
         self.sheet = sheet
 
     def append_exif(self, img_path):
-        reader = ExifReader(img_path)
-        self.sheet.set_sheet_data(reader.list_of_lists())
+        self.exif_reader = ExifReader(img_path)
+        self.sheet.set_sheet_data(self.exif_reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
 
     def read_image(self, img_path):
@@ -96,3 +96,9 @@ class Mediator:
                 index+=1
 
         self.sheet.refresh()
+
+    def save_exif(self, img_path):
+        data = self.sheet.get_sheet_data()
+        img = self.exif_reader.binary()
+        writer = ExifWriter(img)
+        writer.save(data, img_path)
