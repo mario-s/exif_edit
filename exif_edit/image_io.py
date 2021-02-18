@@ -73,9 +73,10 @@ class Mediator:
         self.sheet = sheet
 
     def append_exif(self, img_path):
-        self.exif_reader = ExifReader(img_path)
-        self.sheet.set_sheet_data(self.exif_reader.list_of_lists())
+        reader = ExifReader(img_path)
+        self.sheet.set_sheet_data(reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
+        self.origin_img_path = img_path
 
     def read_image(self, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))
@@ -97,8 +98,12 @@ class Mediator:
 
         self.sheet.refresh()
 
-    def save_exif(self, img_path):
-        data = self.sheet.get_sheet_data()
-        img = self.exif_reader.binary()
+    def save_exif(self, new_img_path, origin_img_path=""):
+        orig_path = self.__origin_path(origin_img_path)
+        img = ExifReader(orig_path).binary()
         writer = ExifWriter(img)
-        writer.save(data, img_path)
+        data = self.sheet.get_sheet_data()
+        writer.save(data, new_img_path)
+
+    def __origin_path(self, path):
+        return self.origin_img_path if (path is None or path == "") else path
