@@ -15,7 +15,7 @@ class TestIO(unittest.TestCase):
         p = self.__path('lookup.jpg')
         self.reader = ExifReader(p)
         self.writer = ExifWriter(self.reader.binary())
-        self.mock = Mock(name='sheet', spec=Sheet)
+        self.sheet = Mock(name='sheet', spec=Sheet)
 
     def test_keys(self):
         self.assertFalse(len(self.reader.keys()) == 0)
@@ -56,15 +56,21 @@ class TestIO(unittest.TestCase):
         self.assertEqual(400, w)
 
     def test_add_row(self):
-        mediator = Mediator(self.mock)
+        mediator = Mediator(self.sheet)
         mediator.add_row()
-        self.mock.insert_row.assert_called()
+        
+        self.sheet.insert_row.assert_called()
+        self.sheet.refresh.assert_called()
 
     def test_remove_row(self):
-        self.mock.get_selected_rows.return_value = []
-        mediator = Mediator(self.mock)
+        self.sheet.get_selected_rows.return_value = [0]
+        self.sheet.get_column_data = Mock(return_value=[[0]])
+
+        mediator = Mediator(self.sheet)
         mediator.remove_row()
-        self.mock.get_selected_rows.assert_called()
+
+        self.sheet.delete_row.assert_called()
+        self.sheet.refresh.assert_called()
 
 if __name__ == '__main__':
     unittest.main()

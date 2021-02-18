@@ -88,7 +88,8 @@ class Mediator:
         index = 0
         selected_rows = self.sheet.get_selected_rows()
         for next in selected_rows:
-            total_rows = len(self.sheet.get_column_data(0))
+            col_data = self.sheet.get_column_data(0)
+            total_rows = len(col_data)
             row = next - index
             if row < total_rows:
                 self.sheet.delete_row(row)
