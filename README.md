@@ -12,3 +12,9 @@ Python 3.9.x
 All other required libraries:
 
 `pip3 install -r requirements.txt`
+
+## Testing
+`python3 -m unittest`
+
+## Running
+`python3 exif_edit`
