@@ -28,12 +28,13 @@ class ExifReader:
         map = {}
         keys = self.keys()
         for k in keys:
-            if self.__editable(k):
+            if self.__is_editable(k):
                 v = self.value(k)
                 map[k] = v
         return map
 
-    def __editable(self, key):
+    #if not in filter, we can edit it
+    def __is_editable(self, key):
         return key not in self.filter
 
     def list_of_lists(self) -> list[list[str]]:
