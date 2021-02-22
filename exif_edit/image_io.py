@@ -11,6 +11,7 @@ class ImageReader:
 
 class ExifReader:
     def __init__(self, img_path):
+        self.filter = ["_exif_ifd_pointer", "exif_version"]
         with open(img_path, 'rb') as f:
             self.image = Exif(f)
 
@@ -27,9 +28,13 @@ class ExifReader:
         map = {}
         keys = self.keys()
         for k in keys:
-            v = self.value(k)
-            map[k] = v
+            if self.__editable(k):
+                v = self.value(k)
+                map[k] = v
         return map
+
+    def __editable(self, key):
+        return key not in self.filter
 
     def list_of_lists(self) -> list[list[str]]:
         return list(map(list, self.dict().items()))
@@ -59,9 +64,9 @@ class ExifWriter:
         return dict
 
     def __set_values(self, dict):
-        self.image.delete_all()
         for k,v in dict.items():
-            self.image.set(k, v)
+            if v is not None:
+                self.image.set(k, v)
     
     def __save(self, img_path):
         with open(img_path, 'wb') as f:
@@ -98,12 +103,14 @@ class Mediator:
 
         self.sheet.refresh()
 
-    def save_exif(self, new_img_path, origin_img_path=""):
-        orig_path = self.__origin_path(origin_img_path)
+    def save_exif(self, new_img_path="", origin_img_path=""):
+        orig_path = self.__path(self.origin_img_path, origin_img_path)
         img = ExifReader(orig_path).binary()
         writer = ExifWriter(img)
-        data = self.sheet.get_sheet_data()
-        writer.save(data, new_img_path)
 
-    def __origin_path(self, path):
-        return self.origin_img_path if (path is None or path == "") else path
+        target_path = self.__path(orig_path, new_img_path)
+        data = self.sheet.get_sheet_data()
+        writer.save(data, target_path)
+
+    def __path(self, source, path):
+        return source if (path is None or path == "") else path

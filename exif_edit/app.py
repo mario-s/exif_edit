@@ -3,6 +3,7 @@ from image_io import Mediator
 from tksheet import Sheet
 
 import tkinter as tk
+import tkinter.filedialog as filedialog
 
 class App(tk.Tk):
     def __init__(self):
@@ -65,7 +66,7 @@ class App(tk.Tk):
         right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
         btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.destroy)
         btn_exit.pack(padx=5, pady=10, side=tk.RIGHT)
-        btn_save = tk.Button(right_cmd_frame, text="save")
+        btn_save = tk.Button(right_cmd_frame, text="save", command=self.mediator.save_exif)
         btn_save.pack(padx=5, pady=10, side=tk.RIGHT)
 
     def load_image(self, img_path):
@@ -109,3 +110,4 @@ class App(tk.Tk):
             self.btn_rm.config(state=tk.NORMAL)
         elif name == "deselect_all" or name == "select_cell":
             self.btn_rm.config(state=tk.DISABLED)
+
