@@ -29,6 +29,7 @@ class TestIO(unittest.TestCase):
     def test_dict(self):
         d = self.reader.dict()
         self.assertFalse(len(d) == 0)
+        self.assertFalse("_exif_ifd_pointer" in d)
 
     def test_list(self):
         l = self.reader.list_of_lists()
