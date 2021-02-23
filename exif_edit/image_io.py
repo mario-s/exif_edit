@@ -11,7 +11,13 @@ class ImageReader:
 
 class ExifReader:
     def __init__(self, img_path):
-        self.filter = ["_exif_ifd_pointer", "exif_version"]
+        self.filter = ("_exif_ifd_pointer", "exif_version", "bits_per_sample",
+            "x_resolution", "y_resolution", "resolution_unit",
+            "image_width", "image_height", "compression",
+            "photometric_interpretation", "samples_per_pixel",
+            "jpeg_interchange_format", "jpeg_interchange_format_length",
+            "color_space", "pixel_x_dimension", "pixel_y_dimension", 
+            "image_unique_id")
         with open(img_path, 'rb') as f:
             self.image = Exif(f)
 
@@ -19,7 +25,7 @@ class ExifReader:
         return self.image
 
     def keys(self) -> list[str]:
-        return dir(self.image)
+        return self.image.list_all()
 
     def value(self, key) -> str:
         return self.image.get(key)
@@ -27,7 +33,9 @@ class ExifReader:
     def dict(self) -> dict:
         map = {}
         keys = self.keys()
+        print(f"exif keys: {keys}")
         for k in keys:
+            #todo: instead of exclusinsing, mark them as not editable
             if self.__is_editable(k):
                 v = self.value(k)
                 map[k] = v
@@ -65,6 +73,8 @@ class ExifWriter:
         return dict
 
     def __set_values(self, dict):
+        #todo: add, remove and update
+        #self.image.delete_all()
         for k,v in dict.items():
             if v is not None:
                 self.image.set(k, v)

@@ -1,3 +1,3 @@
-exif
-tksheet
-Pillow
+exif >= 1.2.0
+tksheet >= 4.9.96
+Pillow >= 8.1.0
