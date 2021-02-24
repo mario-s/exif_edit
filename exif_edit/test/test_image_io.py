@@ -29,7 +29,6 @@ class TestIO(unittest.TestCase):
     def test_dict(self):
         d = self.reader.dict()
         self.assertFalse(len(d) == 0)
-        self.assertFalse("_exif_ifd_pointer" in d)
 
     def test_list(self):
         l = self.reader.list_of_lists()
@@ -81,6 +80,18 @@ class TestIO(unittest.TestCase):
         self.sheet.get_sheet_data.return_value = [["model", "bar"]]
         
         self.mediator.save_exif(self.__path('modified.jpg'))
+
+    def test_keep_origin(self):
+        self.mediator.keep_origin((0,1))
+        self.sheet.get_cell_data.assert_called()
+
+    def test_not_keep_origin(self):
+        self.mediator.keep_origin((0,0))
+        self.sheet.get_cell_data.assert_not_called()
+
+    def test_restore_origin(self):
+        self.mediator.restore_origin((0,1))
+        self.sheet.set_cell_data.assert_not_called()
 
 if __name__ == '__main__':
     unittest.main()

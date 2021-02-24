@@ -84,10 +84,10 @@ class App(tk.Tk):
         print(event)
     
     def begin_edit_cell(self, event):
-        print(event)  
+        self.mediator.keep_origin((event[0], event[1])) 
 
     def end_edit_cell(self, event):
-        print(event)
+        self.mediator.restore_origin((event[0], event[1]))
 
     def mouse_motion(self, event):
         region = self.sheet.identify_region(event)

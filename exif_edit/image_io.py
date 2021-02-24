@@ -9,15 +9,24 @@ class ImageReader:
         img.thumbnail((base_width, base_width))
         return img
 
-class ExifReader:
-    def __init__(self, img_path):
-        self.filter = ("_exif_ifd_pointer", "exif_version", "bits_per_sample",
+class ExifTagsFilter:
+    def __init__(self):
+        self.tags = ("_exif_ifd_pointer", "exif_version", "bits_per_sample",
             "x_resolution", "y_resolution", "resolution_unit",
             "image_width", "image_height", "compression",
             "photometric_interpretation", "samples_per_pixel",
             "jpeg_interchange_format", "jpeg_interchange_format_length",
             "color_space", "pixel_x_dimension", "pixel_y_dimension", 
             "image_unique_id")
+
+    #if not in filter, we can edit it
+    def is_editable(self, key):
+        return key not in self.tags
+
+
+class ExifReader:
+    def __init__(self, img_path):
+        self.filter = ExifTagsFilter()
         with open(img_path, 'rb') as f:
             self.image = Exif(f)
 
@@ -33,17 +42,11 @@ class ExifReader:
     def dict(self) -> dict:
         map = {}
         keys = self.keys()
-        print(f"exif keys: {keys}")
+        #print(f"exif keys: {keys}")
         for k in keys:
-            #todo: instead of exclusinsing, mark them as not editable
-            if self.__is_editable(k):
-                v = self.value(k)
-                map[k] = v
+            v = self.value(k)
+            map[k] = v
         return map
-
-    #if not in filter, we can edit it
-    def __is_editable(self, key):
-        return key not in self.filter
 
     def list_of_lists(self) -> list[list[str]]:
         return list(map(list, self.dict().items()))
@@ -87,6 +90,7 @@ class ExifWriter:
 class Mediator:
     def __init__(self, sheet):
         self.sheet = sheet
+        self.filter = ExifTagsFilter()
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
@@ -125,3 +129,20 @@ class Mediator:
 
     def __path(self, source, path):
         return source if (path is None or path == "") else path
+
+    def keep_origin(self, row):
+        if self.__is_in_value_column(row):
+            value = self.sheet.get_cell_data(row[0], 1)
+            self.origin_cell_value = value
+
+    def restore_origin(self, row):
+        if self.__is_in_value_column(row):
+            r = row[0]
+            key = self.sheet.get_cell_data(r, 0)
+            print(r)
+            if not self.filter.is_editable(key):
+                value = self.origin_cell_value
+                self.sheet.set_cell_data(r, 1, value)
+
+    def __is_in_value_column(self, row):
+        return row[1] == 1
