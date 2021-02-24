@@ -13,4 +13,4 @@ if __name__ == "__main__":
 
     app = App()
     app.load_image(img_path())
-    app.mainloop()
+    app.start()

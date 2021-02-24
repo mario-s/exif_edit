@@ -5,13 +5,14 @@ from tksheet import Sheet
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
-class App(tk.Tk):
+class App:
     def __init__(self):
-        tk.Tk.__init__(self, className='exif_edit')
-        self.grid_columnconfigure(0, weight = 1)
-        self.grid_rowconfigure(0, weight = 1)
+        self.root = tk.Tk()
+        self.root.title("Exif Edit")
+        self.root.grid_columnconfigure(0, weight = 1)
+        self.root.grid_rowconfigure(0, weight = 1)
 
-        self.frame = tk.Frame(self)
+        self.frame = tk.Frame(self.root)
         self.frame.grid(row = 0, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
@@ -22,7 +23,7 @@ class App(tk.Tk):
         #TODO add sheet for read only and one for editing
         sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
-            height = 600, width = 600)
+            height = 500, width = 600)
         sheet.grid(row = 0, column = 0, sticky = "nswe")
         self.mediator = Mediator(sheet) 
         self.sheet = sheet
@@ -65,7 +66,7 @@ class App(tk.Tk):
 
         right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
-        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.destroy)
+        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.root.destroy)
         btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
         btn_save = tk.Button(right_cmd_frame, text="save", command=self.mediator.save_exif)
         btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
@@ -108,3 +109,7 @@ class App(tk.Tk):
         elif name == "deselect_all" or name == "select_cell":
             self.btn_rm.config(state=tk.DISABLED)
 
+    def start(self):
+        #see also: https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
+        self.root.eval('tk::PlaceWindow . center')
+        self.root.mainloop()        
