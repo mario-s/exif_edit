@@ -1,5 +1,5 @@
 from math import e
-from image_io import Mediator
+from exif_edit.mediator import Mediator
 from tksheet import Sheet
 
 import tkinter as tk
@@ -75,10 +75,6 @@ class App(tk.Tk):
         label = tk.Label(self.frame, image=image)
         label.image = image
         label.grid(row = 0, column = 1, sticky = "nswe")        
-
-    def save_image(self):
-        data = self.sheet.get_sheet_data()
-        print(data)
 
     def single_select(self, event):
         print(event)
