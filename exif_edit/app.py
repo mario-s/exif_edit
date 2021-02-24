@@ -19,6 +19,7 @@ class App(tk.Tk):
         self.__add_sheet()
 
     def __add_sheet(self):
+        #TODO add sheet for read only and one for editing
         sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 600, width = 600)
@@ -57,17 +58,17 @@ class App(tk.Tk):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
         btn_add = tk.Button(left_cmd_frame, text="+", command=self.mediator.add_row)
-        btn_add.pack(padx=5, pady=10, side=tk.LEFT)
+        btn_add.pack(padx=5, pady=5, side=tk.LEFT)
         self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
-        self.btn_rm.pack(padx=5, pady=10, side=tk.LEFT)
+        self.btn_rm.pack(padx=5, pady=5, side=tk.LEFT)
 
         right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
         btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.destroy)
-        btn_exit.pack(padx=5, pady=10, side=tk.RIGHT)
+        btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
         btn_save = tk.Button(right_cmd_frame, text="save", command=self.mediator.save_exif)
-        btn_save.pack(padx=5, pady=10, side=tk.RIGHT)
+        btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
 
     def load_image(self, img_path):
         self.mediator.append_exif(img_path)

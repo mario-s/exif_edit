@@ -49,6 +49,7 @@ class ExifReader:
         return map
 
     def list_of_lists(self) -> list[list[str]]:
+        #TODO split list into two groups: one for read only and one for editing
         return list(map(list, self.dict().items()))
 
 

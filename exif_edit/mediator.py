@@ -8,6 +8,8 @@ class Mediator:
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
+        #TODO split list into two groups: one for read only and one for editing then
+        #self.sheet.readonly_rows([0, ...])
         self.sheet.set_sheet_data(reader.list_of_lists())
         self.sheet.set_all_column_widths(250)
         self.origin_img_path = img_path
