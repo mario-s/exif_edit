@@ -85,7 +85,7 @@ class ExifWriter:
         #self.image.delete_all()
         for key, value in dict.items():
             if value is not None:
-                v = self.converter.convert(key, value)
+                v = self.converter.to_enumeration(key, value)
                 self.image.set(key, v)
     
     def __save(self, img_path):

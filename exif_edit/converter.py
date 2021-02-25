@@ -12,7 +12,7 @@ class Converter:
             "5": Orientation.LEFT_TOP, "6": Orientation.RIGHT_TOP,
             "7": Orientation.RIGHT_BOTTOM, "8": Orientation.LEFT_BOTTOM}
 
-    def convert(self, key, value):
+    def to_enumeration(self, key, value):
         if key == "color_space":
             return self.__lookup(self.color_spaces, value)
         elif key == "resolution_unit":
