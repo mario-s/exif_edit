@@ -59,6 +59,7 @@ class ExifReader:
 class ExifWriter:
     def __init__(self, image):
         self.image = image
+        self.converter = Converter()
 
     def save(self, collection, img_path):
         if type(collection) is dict:
@@ -84,7 +85,7 @@ class ExifWriter:
         #self.image.delete_all()
         for key, value in dict.items():
             if value is not None:
-                v = Converter.convert(key, value)
+                v = self.converter.convert(key, value)
                 self.image.set(key, v)
     
     def __save(self, img_path):
