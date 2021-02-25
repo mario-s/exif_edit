@@ -3,9 +3,11 @@ from exif import ColorSpace, ResolutionUnit, Orientation
 
 class Converter:
     def __init__(self):
-        self.orientations = {"8": Orientation.LEFT_BOTTOM, "7": Orientation.RIGHT_BOTTOM, 
-            "6": Orientation.RIGHT_TOP, "5": Orientation.LEFT_TOP, "4": Orientation.BOTTOM_LEFT,
-            "3": Orientation.BOTTOM_RIGHT, "2": Orientation.TOP_RIGHT, "1": Orientation.TOP_LEFT}
+        self.orientations = {
+            "8": Orientation.LEFT_BOTTOM, "7": Orientation.RIGHT_BOTTOM, 
+            "6": Orientation.RIGHT_TOP, "5": Orientation.LEFT_TOP, 
+            "4": Orientation.BOTTOM_LEFT, "3": Orientation.BOTTOM_RIGHT, 
+            "2": Orientation.TOP_RIGHT, "1": Orientation.TOP_LEFT}
 
     def convert(self, key, value):
         if key == "color_space":
@@ -27,7 +29,7 @@ class Converter:
         return ResolutionUnit.INCHES
 
     def __to_orientation(self, value):
-        v = self.orientations[value]
-        if v is None:
+        try:
+            return self.orientations[value]
+        except:
             return Orientation.LEFT_TOP
-        return v
