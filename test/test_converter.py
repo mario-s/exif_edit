@@ -28,7 +28,7 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(Orientation.LEFT_BOTTOM, self.converter.convert("orientation", "8"))
 
     def test_convert_orientations_default(self):
-        self.assertEqual(Orientation.LEFT_TOP, self.converter.convert("orientation", "9"))
+        self.assertEqual(Orientation.TOP_LEFT, self.converter.convert("orientation", "9"))
 
 
 if __name__ == '__main__':

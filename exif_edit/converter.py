@@ -3,33 +3,27 @@ from exif import ColorSpace, ResolutionUnit, Orientation
 
 class Converter:
     def __init__(self):
+        #the first key, value pair is used as a fall back for an illegal input
+        self.color_spaces = {"2": ColorSpace.UNCALIBRATED, "1": ColorSpace.SRGB}
+        self.resolution_units = {"2": ResolutionUnit.INCHES, "3": ResolutionUnit.CENTIMETERS}
         self.orientations = {
-            "8": Orientation.LEFT_BOTTOM, "7": Orientation.RIGHT_BOTTOM, 
-            "6": Orientation.RIGHT_TOP, "5": Orientation.LEFT_TOP, 
-            "4": Orientation.BOTTOM_LEFT, "3": Orientation.BOTTOM_RIGHT, 
-            "2": Orientation.TOP_RIGHT, "1": Orientation.TOP_LEFT}
+            "1": Orientation.TOP_LEFT, "2": Orientation.TOP_RIGHT,
+            "3": Orientation.BOTTOM_RIGHT, "4": Orientation.BOTTOM_LEFT,
+            "5": Orientation.LEFT_TOP, "6": Orientation.RIGHT_TOP,
+            "7": Orientation.RIGHT_BOTTOM, "8": Orientation.LEFT_BOTTOM}
 
     def convert(self, key, value):
         if key == "color_space":
-            return self.__to_color_space(value)
+            return self.__lookup(self.color_spaces, value)
         elif key == "resolution_unit":
-            return self.__to_resolution_unit(value)
+            return self.__lookup(self.resolution_units, value)
         elif key == "orientation":
-            return self.__to_orientation(value)
+            return self.__lookup(self.orientations, value)
         return value
 
-    def __to_color_space(self, value):
-        if value == "1":
-            return ColorSpace.SRGB
-        return ColorSpace.UNCALIBRATED
-
-    def __to_resolution_unit(self, value):
-        if value == "3":
-            return ResolutionUnit.CENTIMETERS
-        return ResolutionUnit.INCHES
-
-    def __to_orientation(self, value):
+    def __lookup(self, dict, value):
         try:
-            return self.orientations[value]
+            return dict[value]
         except:
-            return Orientation.LEFT_TOP
+            k = next(iter(dict))
+            return dict[k]
