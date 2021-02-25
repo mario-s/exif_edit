@@ -1,6 +1,6 @@
 from exif import Image as Exif
+from exif import ColorSpace, ResolutionUnit
 from PIL import Image
-from exif_edit.converter import Converter
 
 class ImageReader:
     
@@ -10,10 +10,12 @@ class ImageReader:
         img.thumbnail((base_width, base_width))
         return img
 
+
 class ExifTagsFilter:
     def __init__(self):
+        #TODO add converters
         self.tags = ("_exif_ifd_pointer", "exif_version", "bits_per_sample",
-            "x_resolution", "y_resolution", "resolution_unit",
+            "x_resolution", "y_resolution",
             "image_width", "image_height", "compression",
             "photometric_interpretation", "samples_per_pixel",
             "jpeg_interchange_format", "jpeg_interchange_format_length",
@@ -90,3 +92,24 @@ class ExifWriter:
             f.write(self.image.get_file())
 
 
+class Converter:
+
+    @staticmethod
+    def convert(key, value):
+        if key == "color_space":
+            return Converter.__to_color_space(value)
+        elif key == "resolution_unit":
+            return Converter.__to_resolution_unit(value)
+        return value
+
+    @staticmethod
+    def __to_color_space(value):
+        if value == "1":
+            return ColorSpace.SRGB
+        return ColorSpace.UNCALIBRATED
+
+    @staticmethod
+    def __to_resolution_unit(value):
+        if value == "3":
+            return ResolutionUnit.CENTIMETERS
+        return ResolutionUnit.INCHES
