@@ -1,5 +1,6 @@
 from exif import Image as Exif
 from PIL import Image
+from exif_edit.converter import Converter
 
 class ImageReader:
     
@@ -16,7 +17,7 @@ class ExifTagsFilter:
             "image_width", "image_height", "compression",
             "photometric_interpretation", "samples_per_pixel",
             "jpeg_interchange_format", "jpeg_interchange_format_length",
-            "color_space", "pixel_x_dimension", "pixel_y_dimension", 
+            "pixel_x_dimension", "pixel_y_dimension", 
             "image_unique_id")
 
     #if not in filter, we can edit it
@@ -43,13 +44,13 @@ class ExifReader:
         map = {}
         keys = self.keys()
         #print(f"exif keys: {keys}")
-        for k in keys:
-            v = self.value(k)
-            map[k] = v
+        for key in keys:
+            if self.filter.is_editable(key):
+                v = self.value(key)
+                map[key] = v
         return map
 
     def list_of_lists(self) -> list[list[str]]:
-        #TODO split list into two groups: one for read only and one for editing
         return list(map(list, self.dict().items()))
 
 
@@ -79,9 +80,10 @@ class ExifWriter:
     def __set_values(self, dict):
         #todo: add, remove and update
         #self.image.delete_all()
-        for k,v in dict.items():
-            if v is not None:
-                self.image.set(k, v)
+        for key, value in dict.items():
+            if value is not None:
+                v = Converter.convert(key, value)
+                self.image.set(key, v)
     
     def __save(self, img_path):
         with open(img_path, 'wb') as f:
