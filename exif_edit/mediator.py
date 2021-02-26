@@ -1,10 +1,9 @@
 from PIL import ImageTk
-from exif_edit.image_io import ImageReader, ExifTagsFilter, ExifReader, ExifWriter
+from exif_edit.image_io import ImageReader, ExifReader, ExifWriter
 
 class Mediator:
     def __init__(self, sheet):
         self.sheet = sheet
-        self.filter = ExifTagsFilter()
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
@@ -54,8 +53,8 @@ class Mediator:
         if self.__is_in_value_column(row):
             r = row[0]
             key = self.sheet.get_cell_data(r, 0)
-            print(r)
-            if not self.filter.is_editable(key):
+            print(key)
+            if key in ExifReader.filter():
                 value = self.origin_cell_value
                 self.sheet.set_cell_data(r, 1, value)
 

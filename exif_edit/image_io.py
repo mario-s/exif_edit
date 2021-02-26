@@ -11,25 +11,9 @@ class ImageReader:
         img.thumbnail((base_width, base_width))
         return img
 
-class ExifTagsFilter:
-    def __init__(self):
-        #TODO add converters
-        self.tags = ("_exif_ifd_pointer", "exif_version", "bits_per_sample",
-            "x_resolution", "y_resolution",
-            "image_width", "image_height", "compression",
-            "photometric_interpretation", "samples_per_pixel",
-            "jpeg_interchange_format", "jpeg_interchange_format_length",
-            "pixel_x_dimension", "pixel_y_dimension", 
-            "image_unique_id")
-
-    #if not in filter, we can edit it
-    def is_editable(self, key):
-        return key not in self.tags
-
-
 class ExifReader:
     def __init__(self, img_path):
-        self.filter = ExifTagsFilter()
+        self.filter = ("exif_version")
         with open(img_path, 'rb') as f:
             self.image = Exif(f)
 
@@ -47,13 +31,17 @@ class ExifReader:
         keys = self.keys()
         #print(f"exif keys: {keys}")
         for key in keys:
-            if self.filter.is_editable(key):
+            if key not in ExifReader.filter():
                 v = self.value(key)
                 map[key] = v
         return map
 
     def list_of_lists(self) -> list[list[str]]:
         return list(map(list, self.dict().items()))
+
+    @staticmethod
+    def filter():
+        return ("exif_version")
 
 
 class ExifWriter:

@@ -49,8 +49,11 @@ class TestMediator(unittest.TestCase):
         self.sheet.get_cell_data.assert_not_called()
 
     def test_restore_origin(self):
+        self.sheet.get_cell_data = Mock(return_value="exif_version")
+
+        self.mediator.keep_origin((0,1))
         self.mediator.restore_origin((0,1))
-        self.sheet.set_cell_data.assert_not_called()
+        self.sheet.set_cell_data.assert_called()
 
 if __name__ == '__main__':
     unittest.main()
