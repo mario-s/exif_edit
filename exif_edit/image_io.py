@@ -39,10 +39,6 @@ class ExifReader:
             map[key] = self.value(key)
         return map
 
-    def list_of_lists(self) -> list[list[str]]:
-        return list(map(list, self.dict().items()))
-
-
 class ExifWriter:
     def __init__(self, image):
         self.image = image

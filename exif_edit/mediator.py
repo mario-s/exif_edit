@@ -7,17 +7,22 @@ class Mediator:
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
-        lists = reader.list_of_lists()
-        self.sheet.set_sheet_data(lists)
-        self.__disable_rows__(lists)
-        self.sheet.set_all_column_widths(250)
-        self.origin_img_path = img_path
+        dict = reader.dict()
 
-    def __disable_rows__(self, lists):
+        self.origin_img_path = img_path
+        self.sheet.set_sheet_data(self.__to_list__(dict))
+        self.sheet.set_all_column_widths(230)
+        self.__disable_rows__(dict)
+
+    def __to_list__(self, dict) -> list[list[str]]:
+        return list(map(list, dict.items()))
+
+    def __disable_rows__(self, dict):
         rows = []
-        for i in range(len(lists)):
-            list = lists[i]
-            if list[0] in ExifWriter.filter():
+        keys = list(dict.keys())
+        for i in range(len(keys)):
+            key = keys[i]
+            if key in ExifWriter.filter():
                 rows.append(i)
         self.sheet.readonly_rows(rows)
 

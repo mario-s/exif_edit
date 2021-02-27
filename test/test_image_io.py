@@ -26,10 +26,6 @@ class TestImageIO(unittest.TestCase):
         d = self.reader.dict()
         self.assertFalse(len(d) == 0)
 
-    def test_list(self):
-        l = self.reader.list_of_lists()
-        self.assertFalse(len(l) == 0)
-
     def test_save_dict(self):
         dict = {"model": "bar"}
         p = self.__path('modified.jpg')
