@@ -7,10 +7,19 @@ class Mediator:
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
-        #self.sheet.readonly_rows([0, ...])
-        self.sheet.set_sheet_data(reader.list_of_lists())
+        lists = reader.list_of_lists()
+        self.sheet.set_sheet_data(lists)
+        self.__disable_rows__(lists)
         self.sheet.set_all_column_widths(250)
         self.origin_img_path = img_path
+
+    def __disable_rows__(self, lists):
+        rows = []
+        for i in range(len(lists)):
+            list = lists[i]
+            if list[0] in ExifWriter.filter():
+                rows.append(i)
+        self.sheet.readonly_rows(rows)
 
     def read_image(self, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))

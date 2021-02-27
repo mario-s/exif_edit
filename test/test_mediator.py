@@ -33,6 +33,7 @@ class TestMediator(unittest.TestCase):
     def test_append_exif(self):
         self.mediator.append_exif(self.__path('lookup.jpg'))
         self.sheet.set_sheet_data.assert_called()
+        self.sheet.readonly_rows.assert_called()
 
     def test_save_exif(self):
         self.mediator.append_exif(self.__path('lookup.jpg'))
