@@ -85,5 +85,4 @@ class ExifWriter:
 
     @staticmethod
     def filter():
-        #TODO include an make cell read only
         return ("exif_version")

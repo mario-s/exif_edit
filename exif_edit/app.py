@@ -23,7 +23,6 @@ class App:
         self.__add_sheet()
 
     def __add_sheet(self):
-        #TODO add sheet for read only and one for editing
         sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 500, width = 600)
