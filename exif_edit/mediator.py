@@ -10,19 +10,18 @@ class Mediator:
         dict = reader.dict()
 
         self.origin_img_path = img_path
-        self.sheet.set_sheet_data(self.__to_list__(dict))
+        self.sheet.set_sheet_data(self.__to_list(dict))
         self.sheet.set_all_column_widths(230)
-        self.__disable_rows__(dict)
+        self.__disable_rows(dict)
 
-    def __to_list__(self, dict) -> list[list[str]]:
+    def __to_list(self, dict) -> list[list[str]]:
         return list(map(list, dict.items()))
 
-    def __disable_rows__(self, dict):
+    def __disable_rows(self, dict):
         rows = []
         keys = list(dict.keys())
         for i in range(len(keys)):
-            key = keys[i]
-            if key in ExifWriter.filter():
+            if keys[i] in ExifWriter.filter():
                 rows.append(i)
         self.sheet.readonly_rows(rows)
 
