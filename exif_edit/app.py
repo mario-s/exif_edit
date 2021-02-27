@@ -6,6 +6,9 @@ import tkinter as tk
 import tkinter.filedialog as filedialog
 
 class App:
+
+    """This class contains the GUI. It uses a spreadsheet to display Exif Tags."""
+
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Exif Edit")

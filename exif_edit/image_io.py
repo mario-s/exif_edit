@@ -6,6 +6,8 @@ from exif_edit.converter import Converter
 
 class ImageReader:
     
+    """This class reads the binary image, which will be used to display in the GUI."""
+
     @staticmethod
     def read(img_path, base_width=400):
         img = Image.open(img_path)
@@ -13,6 +15,9 @@ class ImageReader:
         return img
 
 class ExifReader:
+
+    """This class reads all Exif Tags from the image."""
+
     def __init__(self, img_path):
         self.filter = ("exif_version")
         with open(img_path, 'rb') as f:
@@ -40,6 +45,9 @@ class ExifReader:
         return map
 
 class ExifWriter:
+
+    """This class writes the edited Exif Tags back to the image."""
+
     def __init__(self, image):
         self.image = image
         self.converter = Converter()

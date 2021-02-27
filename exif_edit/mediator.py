@@ -2,6 +2,9 @@ from PIL import ImageTk
 from exif_edit.image_io import ImageReader, ExifReader, ExifWriter
 
 class Mediator:
+
+    """This mediator coordinates between the GUI and the reading/ writing of the image."""
+
     def __init__(self, sheet):
         self.sheet = sheet
 

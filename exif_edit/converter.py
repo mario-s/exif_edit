@@ -1,6 +1,9 @@
 from exif import ColorSpace, ResolutionUnit, Orientation
 
 class Converter:
+
+    """This class converts between the human readable values and the Enum values."""
+
     def __init__(self):
         self.dict = {"color_space": ColorSpace, "resolution_unit": ResolutionUnit,
             "orientation": Orientation}
