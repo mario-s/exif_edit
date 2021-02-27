@@ -18,8 +18,8 @@ class TestMediator(unittest.TestCase):
     def test_add_row(self):
         self.mediator.add_row()
         
-        self.sheet.insert_row.assert_called()
-        self.sheet.refresh.assert_called()
+        expected_calls = [self.sheet.insert_row, self.sheet.refresh]
+        self.sheet.mock_calls = expected_calls
 
     def test_remove_row(self):
         self.sheet.get_selected_rows.return_value = [0]
@@ -27,13 +27,15 @@ class TestMediator(unittest.TestCase):
 
         self.mediator.remove_row()
 
-        self.sheet.delete_row.assert_called()
-        self.sheet.refresh.assert_called()
+        expected_calls = [self.sheet.get_selected_rows, self.sheet.get_column_data, 
+            self.sheet.delete_row, self.sheet.refresh]
+        self.sheet.mock_calls = expected_calls
 
     def test_append_exif(self):
         self.mediator.append_exif(self.__path('lookup.jpg'))
-        self.sheet.set_sheet_data.assert_called()
-        self.sheet.readonly_rows.assert_called()
+        expected_calls = [self.sheet.set_sheet_data(), self.sheet.set_all_column_widths, 
+            self.sheet.readonly_rows]
+        self.sheet.mock_calls = expected_calls
 
     def test_save_exif(self):
         self.mediator.append_exif(self.__path('lookup.jpg'))
