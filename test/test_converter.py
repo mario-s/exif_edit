@@ -13,19 +13,19 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(1, self.converter.to_enumeration('foo', 1))
 
     def test_convert_color_space_srgb(self):
-        self.assertEqual(ColorSpace.SRGB, self.converter.to_enumeration("color_space", "1"))
+        self.assertEqual(ColorSpace.SRGB, self.converter.to_enumeration("color_space", "SRGB"))
 
     def test_convert_color_space_uncalibrated(self):
-        self.assertEqual(ColorSpace.UNCALIBRATED, self.converter.to_enumeration("color_space", "0"))
+        self.assertEqual(ColorSpace.UNCALIBRATED, self.converter.to_enumeration("color_space", "UNCALIBRATED"))
 
     def test_convert_resolution_unit_centimeters(self):
-        self.assertEqual(ResolutionUnit.CENTIMETERS, self.converter.to_enumeration("resolution_unit", "3"))
+        self.assertEqual(ResolutionUnit.CENTIMETERS, self.converter.to_enumeration("resolution_unit", "CENTIMETERS"))
 
     def test_convert_resolution_unit_inches(self):
         self.assertEqual(ResolutionUnit.INCHES, self.converter.to_enumeration("resolution_unit", "1"))
     
     def test_convert_orientations(self):
-        self.assertEqual(Orientation.LEFT_BOTTOM, self.converter.to_enumeration("orientation", "8"))
+        self.assertEqual(Orientation.LEFT_BOTTOM, self.converter.to_enumeration("orientation", "LEFT_BOTTOM"))
 
     def test_convert_orientations_default(self):
         self.assertEqual(Orientation.TOP_LEFT, self.converter.to_enumeration("orientation", "9"))

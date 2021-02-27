@@ -1,3 +1,4 @@
+from enum import Enum
 from exif import Image as Exif
 from PIL import Image
 
@@ -24,24 +25,22 @@ class ExifReader:
         return self.image.list_all()
 
     def value(self, key) -> str:
-        return self.image.get(key)
+        v = self.image.get(key)
+        #human readable value if we have an enum
+        if isinstance(v, Enum):
+            return v.name
+        return v
 
     def dict(self) -> dict:
         map = {}
         keys = self.keys()
         #print(f"exif keys: {keys}")
         for key in keys:
-            if key not in ExifReader.filter():
-                v = self.value(key)
-                map[key] = v
+            map[key] = self.value(key)
         return map
 
     def list_of_lists(self) -> list[list[str]]:
         return list(map(list, self.dict().items()))
-
-    @staticmethod
-    def filter():
-        return ("exif_version")
 
 
 class ExifWriter:
@@ -72,10 +71,15 @@ class ExifWriter:
         #todo: add, remove and update
         #self.image.delete_all()
         for key, value in dict.items():
-            if value is not None:
+            if key not in ExifWriter.filter() and value is not None:
                 v = self.converter.to_enumeration(key, value)
                 self.image.set(key, v)
     
     def __save(self, img_path):
         with open(img_path, 'wb') as f:
             f.write(self.image.get_file())
+
+    @staticmethod
+    def filter():
+        #TODO include an make cell read only
+        return ("exif_version")

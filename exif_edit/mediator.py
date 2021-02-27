@@ -54,7 +54,7 @@ class Mediator:
             r = row[0]
             key = self.sheet.get_cell_data(r, 0)
             print(key)
-            if key in ExifReader.filter():
+            if key in ExifWriter.filter():
                 value = self.origin_cell_value
                 self.sheet.set_cell_data(r, 1, value)
 
