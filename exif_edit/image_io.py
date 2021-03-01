@@ -44,21 +44,17 @@ class ExifReader:
         return v
 
     def dict(self) -> dict:
-        map = {}
-        keys = self.keys()
-        #print(f"exif keys: {keys}")
-        for key in keys:
-            map[key] = self.value(key)
-        return map
+        list = [(key, self.value(key)) for key in self.keys()]
+        return dict(list)
 
     def grouped_dict(self) -> dict:
-        map = self.dict()
+        dic = self.dict()
         #remove elements from dictionary to avoid sorting them in the big one
-        llist = [(k, map.pop(k)) for k in ExifFilter.filter() if k in map]
+        list = [(k, dic.pop(k)) for k in ExifFilter.filter() if k in dic]
         #sort those elements seperately
-        head = SortedDict(dict(llist))
+        head = SortedDict(dict(list))
         #join the dictionaries
-        return head | SortedDict(map)
+        return head | SortedDict(dic)
 
 class ExifWriter:
 
