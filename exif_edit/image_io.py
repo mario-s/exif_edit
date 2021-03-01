@@ -7,6 +7,8 @@ from exif_edit.converter import Converter
 
 class ExifFilter:
 
+    """Filter for keys which should be handled different."""
+
     @staticmethod
     def filter():
         return "exif_version",
@@ -75,12 +77,12 @@ class ExifWriter:
 
         self.__save(img_path)
 
-    def __list_to_dict(self, list) -> dict:
+    def __list_to_dict(self, row) -> dict:
         dict = {}
-        for l in list:
-            if len(l) < 2:
-                raise ValueError("Expect at least two elements in the list")
-            dict[l[0]] = l[1]
+        for col in row:
+            if len(col) < 2:
+                raise ValueError("Expect at least two cells in the row")
+            dict[col[0]] = col[1]
         return dict
 
     def __set_values(self, dict):
