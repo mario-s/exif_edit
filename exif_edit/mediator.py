@@ -1,3 +1,4 @@
+from sortedcontainers import SortedDict
 from PIL import ImageTk
 from exif_edit.image_io import ImageReader, ExifReader, ExifWriter
 
@@ -10,7 +11,7 @@ class Mediator:
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
-        dict = reader.dict()
+        dict = SortedDict(reader.dict())
 
         self.origin_img_path = img_path
         self.sheet.set_sheet_data(self.__to_list(dict))
@@ -27,6 +28,7 @@ class Mediator:
             if keys[i] in ExifWriter.filter():
                 rows.append(i)
         self.sheet.readonly_rows(rows)
+        self.sheet.highlight_rows(rows, bg = "light blue", fg = "black")
 
     def read_image(self, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))
