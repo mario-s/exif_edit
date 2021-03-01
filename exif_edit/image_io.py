@@ -1,8 +1,15 @@
 from enum import Enum
+from sortedcontainers import SortedDict
 from exif import Image as Exif
 from PIL import Image
 
 from exif_edit.converter import Converter
+
+class ExifFilter:
+
+    @staticmethod
+    def filter():
+        return "exif_version",
 
 class ImageReader:
     
@@ -44,6 +51,15 @@ class ExifReader:
             map[key] = self.value(key)
         return map
 
+    def grouped_dict(self) -> dict:
+        map = self.dict()
+        #remove elements from dictionary to avoid sorting them in the big one
+        llist = [(k, map.pop(k)) for k in ExifFilter.filter() if k in map]
+        #sort those elements seperately
+        head = SortedDict(dict(llist))
+        #join the dictionaries
+        return head | SortedDict(map)
+
 class ExifWriter:
 
     """This class writes the edited Exif Tags back to the image."""
@@ -75,7 +91,7 @@ class ExifWriter:
         #todo: add, remove and update
         #self.image.delete_all()
         for key, value in dict.items():
-            if key not in ExifWriter.filter() and value is not None:
+            if key not in ExifFilter.filter() and value is not None:
                 v = self.converter.to_enumeration(key, value)
                 self.image.set(key, v)
     
@@ -83,6 +99,3 @@ class ExifWriter:
         with open(img_path, 'wb') as f:
             f.write(self.image.get_file())
 
-    @staticmethod
-    def filter():
-        return ("exif_version")

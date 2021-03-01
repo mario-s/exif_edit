@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from exif_edit.image_io import ExifReader, ExifWriter, ImageReader
+from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter, ImageReader
 
 class TestImageIO(unittest.TestCase):
 
@@ -25,6 +25,11 @@ class TestImageIO(unittest.TestCase):
     def test_dict(self):
         d = self.reader.dict()
         self.assertFalse(len(d) == 0)
+    
+    def test_grouped_dict(self):
+        l = list(self.reader.grouped_dict().keys())
+        k = ExifFilter.filter()[0]
+        self.assertEqual(0, l.index(k))
 
     def test_save_dict(self):
         dict = {"model": "bar"}
