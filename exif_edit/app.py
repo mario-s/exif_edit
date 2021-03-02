@@ -27,7 +27,7 @@ class App:
             headers = ["Key", "Value"],
             height = 500, width = 600)
         sheet.grid(row = 0, column = 0, sticky = "nswe")
-        self.mediator = Mediator(sheet) 
+        self.mediator = Mediator(sheet)
         self.sheet = sheet
         self.__add_bindings()
         self.__add_commands()

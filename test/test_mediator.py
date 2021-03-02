@@ -27,8 +27,8 @@ class TestMediator(unittest.TestCase):
 
         self.mediator.remove_row()
 
-        expected_calls = [self.sheet.get_selected_rows, self.sheet.get_column_data, 
-            self.sheet.delete_row, self.sheet.refresh]
+        expected_calls = [self.sheet.get_selected_rows, self.sheet.get_column_data,
+            self.sheet.get_cell_data, self.sheet.delete_row, self.sheet.refresh]
         self.sheet.mock_calls = expected_calls
 
     def test_append_exif(self):

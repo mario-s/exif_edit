@@ -44,11 +44,15 @@ class Mediator:
             col_data = self.sheet.get_column_data(0)
             total_rows = len(col_data)
             row = next - index
-            if row < total_rows:
+            if row < total_rows and self.__is_editable(row):
                 self.sheet.delete_row(row)
                 index+=1
 
         self.sheet.refresh()
+
+    def __is_editable(self, row):
+        key = self.sheet.get_cell_data(row, 0)
+        return not key in ExifFilter.filter()
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)
