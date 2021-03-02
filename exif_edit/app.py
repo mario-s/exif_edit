@@ -54,7 +54,8 @@ class App:
                                    ("begin_edit_cell", self.begin_edit_cell),
                                    ("end_edit_cell", self.end_edit_cell),
                                     ("row_select", self.row_select),
-                                    ("deselect", self.deselect)
+                                    ("deselect", self.deselect),
+                                    ("drag_select_rows", self.drag_select_rows)
                                     ])
         
     def __add_commands(self):
@@ -82,6 +83,9 @@ class App:
 
     def single_select(self, event):
         print(event)
+
+    def drag_select_rows(self, event):
+        self.__change_button_state(event)
     
     def begin_edit_cell(self, event):
         self.mediator.keep_origin((event[0], event[1])) 
@@ -107,7 +111,7 @@ class App:
     def __change_button_state(self, event):
         print(event)
         name = event[0]
-        if name == "select_row":
+        if name == "select_row" or "drag_select_rows":
             st = tk.NORMAL if self.mediator.is_editable_row_selected() else tk.DISABLED
             self.btn_rm.config(state=st)
         elif name == "deselect_all" or name == "select_cell":
