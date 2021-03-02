@@ -50,7 +50,7 @@ class Mediator:
 
         self.sheet.refresh()
 
-    def __is_editable(self, row):
+    def is_editable(self, row):
         key = self.sheet.get_cell_data(row, 0)
         return not key in ExifFilter.filter()
 
