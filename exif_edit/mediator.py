@@ -1,4 +1,5 @@
 from PIL import ImageTk
+from tkinter import NORMAL, DISABLED 
 from exif_edit.image_io import ImageReader, ExifFilter, ExifReader, ExifWriter
 
 class Mediator:
@@ -50,13 +51,19 @@ class Mediator:
 
         self.sheet.refresh()
 
+    def get_remove_button_state(self, event):
+        name = event[0]
+        if name == "select_row" or "drag_select_rows":
+            return NORMAL if self.__is_editable_row_selected() else DISABLED
+        return DISABLED
+
+    def __is_editable_row_selected(self):
+        selected_rows = self.sheet.get_selected_rows()
+        return [self.__is_editable(row) for row in selected_rows].count(True) > 0
+
     def __is_editable(self, row):
         key = self.sheet.get_cell_data(row, 0)
         return not key in ExifFilter.filter()
-
-    def is_editable_row_selected(self):
-        selected_rows = self.sheet.get_selected_rows()
-        return [self.__is_editable(row) for row in selected_rows].count(True) > 0
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)

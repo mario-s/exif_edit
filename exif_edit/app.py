@@ -110,12 +110,7 @@ class App:
 
     def __change_button_state(self, event):
         print(event)
-        name = event[0]
-        if name == "select_row" or "drag_select_rows":
-            st = tk.NORMAL if self.mediator.is_editable_row_selected() else tk.DISABLED
-            self.btn_rm.config(state=st)
-        elif name == "deselect_all" or name == "select_cell":
-            self.btn_rm.config(state=tk.DISABLED)
+        self.btn_rm.config(state=self.mediator.get_remove_button_state(event))
 
     def start(self):
         #see also: https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
