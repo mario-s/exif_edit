@@ -108,7 +108,7 @@ class App:
         print(event)
         name = event[0]
         if name == "select_row":
-            st = tk.NORMAL if self.mediator.is_editable(event[1]) else tk.DISABLED
+            st = tk.NORMAL if self.mediator.is_editable_row_selected() else tk.DISABLED
             self.btn_rm.config(state=st)
         elif name == "deselect_all" or name == "select_cell":
             self.btn_rm.config(state=tk.DISABLED)

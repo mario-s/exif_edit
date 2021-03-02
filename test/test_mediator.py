@@ -58,5 +58,9 @@ class TestMediator(unittest.TestCase):
         self.mediator.restore_origin((0,1))
         self.sheet.set_cell_data.assert_called()
 
+    def test_is_ediable_row_selected(self):
+        self.sheet.get_selected_rows = Mock(return_value= [0])
+        self.assertTrue(self.mediator.is_editable_row_selected())
+
 if __name__ == '__main__':
     unittest.main()
