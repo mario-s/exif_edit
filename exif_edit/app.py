@@ -14,6 +14,7 @@ class App:
         self.root.title("Exif Edit")
         self.root.grid_columnconfigure(0, weight = 1)
         self.root.grid_rowconfigure(0, weight = 1)
+        self.root.protocol("WM_DELETE_WINDOW", self.quit)
 
         self.frame = tk.Frame(self.root)
         self.frame.grid(row = 0, column = 0, sticky = "nswe")
@@ -69,7 +70,7 @@ class App:
 
         right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
-        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.root.destroy)
+        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.quit)
         btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
         btn_save = tk.Button(right_cmd_frame, text="save", command=self.mediator.save_exif)
         btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
@@ -115,4 +116,7 @@ class App:
     def start(self):
         #see also: https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.root.eval('tk::PlaceWindow . center')
-        self.root.mainloop()        
+        self.root.mainloop()
+
+    def quit(self):
+        self.root.destroy()    
