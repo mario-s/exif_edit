@@ -7,8 +7,17 @@ class Converter:
     def __init__(self):
         self.dict = {"color_space": ex.ColorSpace, 
             "exposure_mode": ex.ExposureMode,
+            "exposure_program": ex.ExposureProgram,
+            "gps_altitude_ref": ex.GpsAltitudeRef,
+            "light_source": ex.LightSource,
+            "metering_mode": ex.MeteringMode,
+            "orientation": ex.Orientation,
             "resolution_unit": ex.ResolutionUnit,
-            "orientation": ex.Orientation}
+            "saturation": ex.Saturation,
+            "scene_capture_type": ex.SceneCaptureType,
+            "sending_method": ex.SensingMethod,
+            "sharpness": ex.Sharpness,
+            "white_balance": ex.WhiteBalance}
 
     def to_enumeration(self, key, value):
         #do we have a matching enum in our dictionary?

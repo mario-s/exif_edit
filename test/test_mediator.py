@@ -64,5 +64,9 @@ class TestMediator(unittest.TestCase):
         event = ('select_row', (0,))
         self.assertEqual(tk.NORMAL, self.mediator.get_remove_button_state(event))
 
+    def test_get_remove_button_state_disabled(self):
+        event = ('foo', (0,))
+        self.assertEqual(tk.DISABLED, self.mediator.get_remove_button_state(event))
+
 if __name__ == '__main__':
     unittest.main()

@@ -53,7 +53,7 @@ class Mediator:
 
     def get_remove_button_state(self, event):
         name = event[0]
-        if name == "select_row" or "drag_select_rows":
+        if name == "select_row" or name == "drag_select_rows":
             return NORMAL if self.__is_editable_row_selected() else DISABLED
         return DISABLED
 
