@@ -6,29 +6,30 @@ from exif_edit.converter import Converter
 
 class TestConverter(unittest.TestCase):
 
-    def setUp(self):
-        self.converter = Converter()
+    def test_filter(self):
+        keys = Converter.keys()
+        self.assertTrue(len(keys) > 0)
 
     def test_convert_unknown(self):
-        self.assertEqual(1, self.converter.to_enumeration('foo', 1))
+        self.assertEqual(1, Converter.cast('foo', 1))
 
     def test_convert_color_space_srgb(self):
-        self.assertEqual(ColorSpace.SRGB, self.converter.to_enumeration("color_space", "SRGB"))
+        self.assertEqual(ColorSpace.SRGB, Converter.cast("color_space", "SRGB"))
 
     def test_convert_color_space_uncalibrated(self):
-        self.assertEqual(ColorSpace.UNCALIBRATED, self.converter.to_enumeration("color_space", "UNCALIBRATED"))
+        self.assertEqual(ColorSpace.UNCALIBRATED, Converter.cast("color_space", "UNCALIBRATED"))
 
     def test_convert_resolution_unit_centimeters(self):
-        self.assertEqual(ResolutionUnit.CENTIMETERS, self.converter.to_enumeration("resolution_unit", "CENTIMETERS"))
+        self.assertEqual(ResolutionUnit.CENTIMETERS, Converter.cast("resolution_unit", "CENTIMETERS"))
 
     def test_convert_resolution_unit_inches(self):
-        self.assertEqual(ResolutionUnit.INCHES, self.converter.to_enumeration("resolution_unit", "1"))
+        self.assertEqual(ResolutionUnit.INCHES, Converter.cast("resolution_unit", "1"))
     
     def test_convert_orientations(self):
-        self.assertEqual(Orientation.LEFT_BOTTOM, self.converter.to_enumeration("orientation", "LEFT_BOTTOM"))
+        self.assertEqual(Orientation.LEFT_BOTTOM, Converter.cast("orientation", "LEFT_BOTTOM"))
 
     def test_convert_orientations_default(self):
-        self.assertEqual(Orientation.TOP_LEFT, self.converter.to_enumeration("orientation", "9"))
+        self.assertEqual(Orientation.TOP_LEFT, Converter.cast("orientation", "9"))
 
 
 if __name__ == '__main__':

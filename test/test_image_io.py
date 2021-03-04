@@ -28,7 +28,7 @@ class TestImageIO(unittest.TestCase):
     
     def test_grouped_dict(self):
         l = list(self.reader.grouped_dict().keys())
-        k = ExifFilter.filter()[0]
+        k = ExifFilter.read_only()[0]
         self.assertEqual(0, l.index(k))
 
     def test_save_dict(self):

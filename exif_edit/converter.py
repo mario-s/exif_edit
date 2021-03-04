@@ -1,11 +1,11 @@
+from enum import Enum
 import exif as ex
 
 class Converter:
 
     """This class converts between the human readable values and the Enum values."""
 
-    def __init__(self):
-        self.dict = {"color_space": ex.ColorSpace, 
+    dictionary = {"color_space": ex.ColorSpace, 
             "exposure_mode": ex.ExposureMode,
             "exposure_program": ex.ExposureProgram,
             "gps_altitude_ref": ex.GpsAltitudeRef,
@@ -19,14 +19,24 @@ class Converter:
             "sharpness": ex.Sharpness,
             "white_balance": ex.WhiteBalance}
 
-    def to_enumeration(self, key, value):
+    @classmethod
+    def keys(cls):
+        return list(cls.dictionary.keys())
+
+    """Converts a string value to a proper type."""
+    @classmethod
+    def cast(cls, key, value):
         #do we have a matching enum in our dictionary?
-        if key in self.dict:
-            en = self.dict[key]
+        if key in cls.dictionary:
+            en = cls.dictionary[key]
             #is the value a valid enum name?
             if value in en.__members__:
                 return en[value]
             #fallback to first enum value
             return list(en)[0]
-
-        return value
+        else:
+            try:
+                return int(value)
+            except:
+                return value
+        

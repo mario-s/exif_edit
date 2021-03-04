@@ -10,8 +10,13 @@ class ExifFilter:
     """Filter for keys which should be handled different."""
 
     @staticmethod
-    def filter():
-        return "exif_version",
+    def read_only():
+        return ("_exif_ifd_pointer", "bits_per_sample",
+            "compression", "exif_version",
+            "image_unique_id",
+            "jpeg_interchange_format", "jpeg_interchange_format_length",
+            "photometric_interpretation")
+            
 
 class ImageReader:
     
@@ -52,7 +57,7 @@ class ExifReader:
     def grouped_dict(self) -> dict:
         dic = self.dict()
         #remove elements from dictionary to avoid sorting them in the big one
-        list = [(k, dic.pop(k)) for k in ExifFilter.filter() if k in dic]
+        list = [(k, dic.pop(k)) for k in ExifFilter.read_only() if k in dic]
         #sort those elements seperately
         head = SortedDict(dict(list))
         #join the dictionaries
@@ -89,8 +94,9 @@ class ExifWriter:
         #todo: add, remove and update
         #self.image.delete_all()
         for key, value in dict.items():
-            if key not in ExifFilter.filter() and value is not None:
-                v = self.converter.to_enumeration(key, value)
+            if key not in ExifFilter.read_only() and value is not None:
+                v = self.converter.cast(key, value)
+                print(key)
                 self.image.set(key, v)
     
     def __save(self, img_path):

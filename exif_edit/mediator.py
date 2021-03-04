@@ -25,7 +25,7 @@ class Mediator:
         rows = []
         keys = list(dict.keys())
         for i in range(len(keys)):
-            if keys[i] in ExifFilter.filter():
+            if keys[i] in ExifFilter.read_only():
                 rows.append(i)
         if len(rows) > 0:
             self.sheet.readonly_rows(rows)
@@ -63,7 +63,7 @@ class Mediator:
 
     def __is_editable(self, row):
         key = self.sheet.get_cell_data(row, 0)
-        return not key in ExifFilter.filter()
+        return not key in ExifFilter.read_only()
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)
@@ -87,7 +87,7 @@ class Mediator:
             r = row[0]
             key = self.sheet.get_cell_data(r, 0)
             print(key)
-            if key in ExifFilter.filter():
+            if key in ExifFilter.read_only():
                 value = self.origin_cell_value
                 self.sheet.set_cell_data(r, 1, value)
 
