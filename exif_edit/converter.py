@@ -1,12 +1,14 @@
-from exif import ColorSpace, ResolutionUnit, Orientation
+import exif as ex
 
 class Converter:
 
     """This class converts between the human readable values and the Enum values."""
 
     def __init__(self):
-        self.dict = {"color_space": ColorSpace, "resolution_unit": ResolutionUnit,
-            "orientation": Orientation}
+        self.dict = {"color_space": ex.ColorSpace, 
+            "exposure_mode": ex.ExposureMode,
+            "resolution_unit": ex.ResolutionUnit,
+            "orientation": ex.Orientation}
 
     def to_enumeration(self, key, value):
         #do we have a matching enum in our dictionary?
