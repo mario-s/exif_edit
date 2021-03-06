@@ -1,6 +1,4 @@
-from enum import Enum
 import exif as ex
-import re
 
 class Converter:
 
@@ -20,26 +18,21 @@ class Converter:
             "sharpness": ex.Sharpness,
             "white_balance": ex.WhiteBalance}
 
-    pattern = re.compile('\d')
-
     @classmethod
     def keys(cls):
         return list(cls.dictionary.keys())
 
     @classmethod
     def __from_enum(cls, key, value):
-        en = cls.dictionary[key]
-        #is it a number?
-        if cls.pattern.match(value):
-            try:
-                return en(int(value))
-            except:
-                return list(en)[0]
-        #is the value a valid enum name?
-        elif value in en.__members__:
-            return en[value]
-        #fallback to first enum value
-        return list(en)[0]
+        enm = cls.dictionary[key]
+        try:
+            return enm(int(value))
+        except:
+            #is the value a valid enum name?
+            if value in enm.__members__:
+                return enm[value]
+            #fallback to first enum value
+            return list(enm)[0]
 
     """Converts a string value to a proper type."""
     @classmethod
@@ -52,6 +45,3 @@ class Converter:
                 return int(value)
             except:
                 return value
-
-
-        
