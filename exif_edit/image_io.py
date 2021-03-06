@@ -91,7 +91,7 @@ class ExifWriter:
         return dict
 
     def __set_values(self, dict):
-        #todo: add, remove and update
+        #todo: iterate over all key and delte them if not in filter
         #self.image.delete_all()
         for key, value in dict.items():
             if key not in ExifFilter.read_only() and value is not None:

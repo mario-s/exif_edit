@@ -34,6 +34,9 @@ class TestConverter(unittest.TestCase):
     def test_convert_orientations_default(self):
         self.assertEqual(Orientation.TOP_LEFT, Converter.cast("orientation", "9"))
 
+    def test_convert_orientations_none(self):
+        self.assertEqual(Orientation.TOP_LEFT, Converter.cast("orientation", None))
+
 
 if __name__ == '__main__':
     unittest.main()
