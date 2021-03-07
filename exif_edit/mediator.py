@@ -22,11 +22,8 @@ class Mediator:
         return list(map(list, dict.items()))
 
     def __disable_rows(self, dict):
-        rows = []
         keys = list(dict.keys())
-        for i in range(len(keys)):
-            if keys[i] in ExifFilter.read_only():
-                rows.append(i)
+        rows = [i for i in range(len(keys)) if keys[i] in ExifFilter.read_only()]
         if len(rows) > 0:
             self.sheet.readonly_rows(rows)
             self.sheet.highlight_rows(rows, bg = "light blue", fg = "black")
@@ -45,7 +42,7 @@ class Mediator:
             col_data = self.sheet.get_column_data(0)
             total_rows = len(col_data)
             row = next - index
-            if row < total_rows and self.__is_editable(row):
+            if row < total_rows and self.__is_deletable(row):
                 self.sheet.delete_row(row)
                 index+=1
 
@@ -59,11 +56,11 @@ class Mediator:
 
     def __is_editable_row_selected(self):
         selected_rows = self.sheet.get_selected_rows()
-        return [self.__is_editable(row) for row in selected_rows].count(True) > 0
+        return [self.__is_deletable(row) for row in selected_rows].count(True) > 0
 
-    def __is_editable(self, row):
+    def __is_deletable(self, row):
         key = self.sheet.get_cell_data(row, 0)
-        return not key in ExifFilter.read_only()
+        return not key in ExifFilter.locked()
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)

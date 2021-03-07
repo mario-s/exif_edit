@@ -10,18 +10,25 @@ class ExifFilter:
     """Filter for keys which should be handled different."""
 
     @staticmethod
+    def locked():
+        """This method joins all filter into one."""
+        return ExifFilter.not_deleteable() + ExifFilter.read_only()
+
+    @staticmethod
     def not_deleteable():
+        """Filter for attributes which are editable bot not deletable."""
         return ("image_height", "image_width", "resolution_unit",
             "samples_per_pixel", "x_resolution", "y_resolution")
 
     @staticmethod
     def read_only():
+        """Filter for attributes which are read only."""
         return ("_exif_ifd_pointer", "bits_per_sample",
             "compression", "exif_version",
             "image_unique_id",
             "jpeg_interchange_format", "jpeg_interchange_format_length",
             "photometric_interpretation")
-            
+
 
 class ImageReader:
     
@@ -100,13 +107,13 @@ class ExifWriter:
         for key, value in dict.items():
             if key not in ExifFilter.read_only() and value is not None:
                 v = self.converter.cast(key, value)
-                print(key)
                 self.image.set(key, v)
 
     def __delete_all(self):
-        keys = self.image.list_all()
-        filter = ExifFilter.read_only() + ExifFilter.not_deleteable()
-        for key in keys:
+        #we need to iterate through each and check if we allowed to delete it,
+        #if not we will have problems while saving the new tags
+        filter = ExifFilter.locked()
+        for key in self.image.list_all():
             if key not in filter:
                 self.image.delete(key)
     
