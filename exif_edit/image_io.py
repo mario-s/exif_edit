@@ -10,6 +10,11 @@ class ExifFilter:
     """Filter for keys which should be handled different."""
 
     @staticmethod
+    def not_deleteable():
+        return ("image_height", "image_width", "resolution_unit",
+            "samples_per_pixel", "x_resolution", "y_resolution")
+
+    @staticmethod
     def read_only():
         return ("_exif_ifd_pointer", "bits_per_sample",
             "compression", "exif_version",
@@ -91,13 +96,19 @@ class ExifWriter:
         return dict
 
     def __set_values(self, dict):
-        #todo: iterate over all key and delte them if not in filter
-        #self.image.delete_all()
+        self.__delete_all()
         for key, value in dict.items():
             if key not in ExifFilter.read_only() and value is not None:
                 v = self.converter.cast(key, value)
                 print(key)
                 self.image.set(key, v)
+
+    def __delete_all(self):
+        keys = self.image.list_all()
+        filter = ExifFilter.read_only() + ExifFilter.not_deleteable()
+        for key in keys:
+            if key not in filter:
+                self.image.delete(key)
     
     def __save(self, img_path):
         with open(img_path, 'wb') as f:
