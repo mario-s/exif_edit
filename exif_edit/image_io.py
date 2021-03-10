@@ -17,17 +17,17 @@ class ExifFilter:
     @staticmethod
     def not_deleteable():
         """Filter for attributes which are editable bot not deletable."""
-        return ("image_height", "image_width", "resolution_unit",
+        return ("bits_per_sample", "compression",
+            "image_height", "image_width", "image_unique_id",
+            "jpeg_interchange_format", "jpeg_interchange_format_length",
+            "photometric_interpretation",
+            "resolution_unit",
             "samples_per_pixel", "x_resolution", "y_resolution")
 
     @staticmethod
     def read_only():
         """Filter for attributes which are read only."""
-        return ("_exif_ifd_pointer", "bits_per_sample",
-            "compression", "exif_version",
-            "image_unique_id",
-            "jpeg_interchange_format", "jpeg_interchange_format_length",
-            "photometric_interpretation")
+        return "_exif_ifd_pointer", "exif_version"
 
 
 class ImageReader:
@@ -67,12 +67,14 @@ class ExifReader:
         return dict(list)
 
     def grouped_dict(self) -> dict:
+        """Returns a dictionary with groups, were evry group is sorted"""
         dic = self.dict()
-        #sort elements seperately, which can not be deleted
+        #sort elements seperately, which can only be read
         read_only = SortedDict(self.__filter(dic, ExifFilter.read_only()))
-        not_editable = SortedDict(self.__filter(dic, ExifFilter.not_deleteable()))
+        #sort elements seperately, which can not be deleted
+        edit_only = SortedDict(self.__filter(dic, ExifFilter.not_deleteable()))
         #join the dictionaries
-        return read_only | not_editable | SortedDict(dic)
+        return read_only | edit_only | SortedDict(dic)
 
     def __filter(self, dic, filter):
         """Remove elements from dictionary to avoid sorting them in the big one"""

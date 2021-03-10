@@ -23,6 +23,7 @@ class Mediator:
 
     def __disable_rows(self, dict):
         keys = list(dict.keys())
+        
         rows = self.__count_matching_rows(keys, ExifFilter.read_only())
         if len(rows) > 0:
             self.sheet.readonly_rows(rows)
@@ -30,6 +31,7 @@ class Mediator:
 
         rows = self.__count_matching_rows(keys, ExifFilter.not_deleteable())
         if len(rows) > 0:
+            [self.sheet.readonly_cells(row, 0) for row in rows]                
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
     def __count_matching_rows(self, keys, filter):
