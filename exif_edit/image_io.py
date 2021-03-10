@@ -45,7 +45,6 @@ class ExifReader:
     """This class reads all Exif Tags from the image."""
 
     def __init__(self, img_path):
-        self.filter = ("exif_version")
         with open(img_path, 'rb') as f:
             self.image = Exif(f)
 

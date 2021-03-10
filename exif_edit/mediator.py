@@ -23,7 +23,7 @@ class Mediator:
 
     def __disable_rows(self, dict):
         keys = list(dict.keys())
-        
+
         rows = self.__count_matching_rows(keys, ExifFilter.read_only())
         if len(rows) > 0:
             self.sheet.readonly_rows(rows)
