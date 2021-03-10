@@ -23,10 +23,17 @@ class Mediator:
 
     def __disable_rows(self, dict):
         keys = list(dict.keys())
-        rows = [i for i in range(len(keys)) if keys[i] in ExifFilter.read_only()]
+        rows = self.__count_matching_rows(keys, ExifFilter.read_only())
         if len(rows) > 0:
             self.sheet.readonly_rows(rows)
             self.sheet.highlight_rows(rows, bg = "light blue", fg = "black")
+
+        rows = self.__count_matching_rows(keys, ExifFilter.not_deleteable())
+        if len(rows) > 0:
+            self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
+
+    def __count_matching_rows(self, keys, filter):
+        return [i for i in range(len(keys)) if keys[i] in filter]
 
     def read_image(self, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))

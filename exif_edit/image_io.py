@@ -68,12 +68,15 @@ class ExifReader:
 
     def grouped_dict(self) -> dict:
         dic = self.dict()
-        #remove elements from dictionary to avoid sorting them in the big one
-        list = [(k, dic.pop(k)) for k in ExifFilter.read_only() if k in dic]
-        #sort those elements seperately
-        head = SortedDict(dict(list))
+        #sort elements seperately, which can not be deleted
+        read_only = SortedDict(self.__filter(dic, ExifFilter.read_only()))
+        not_editable = SortedDict(self.__filter(dic, ExifFilter.not_deleteable()))
         #join the dictionaries
-        return head | SortedDict(dic)
+        return read_only | not_editable | SortedDict(dic)
+
+    def __filter(self, dic, filter):
+        """Remove elements from dictionary to avoid sorting them in the big one"""
+        return dict([(k, dic.pop(k)) for k in filter if k in dic])
 
 class ExifWriter:
 
