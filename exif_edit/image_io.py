@@ -67,7 +67,7 @@ class ExifReader:
         return dict(list)
 
     def grouped_dict(self) -> dict:
-        """Returns a dictionary with groups, were evry group is sorted"""
+        """Returns a dictionary with groups, were every group is sorted"""
         dic = self.dict()
         #sort elements seperately, which can only be read
         read_only = SortedDict(self.__filter(dic, ExifFilter.read_only()))
