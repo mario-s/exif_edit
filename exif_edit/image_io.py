@@ -45,8 +45,8 @@ class ExifReader:
     """This class reads all Exif Tags from the image."""
 
     def __init__(self, img_path):
-        with open(img_path, 'rb') as f:
-            self.image = Exif(f)
+        with open(img_path, 'rb') as file:
+            self.image = Exif(file)
 
     def binary(self):
         return self.image
@@ -55,11 +55,11 @@ class ExifReader:
         return self.image.list_all()
 
     def value(self, key) -> str:
-        v = self.image.get(key)
+        value = self.image.get(key)
         #human readable value if we have an enum
-        if isinstance(v, Enum):
-            return v.name
-        return v
+        if isinstance(value, Enum):
+            return value.name
+        return value
 
     def dict(self) -> dict:
         list = [(key, self.value(key)) for key in self.keys()]
@@ -110,8 +110,8 @@ class ExifWriter:
         self.__delete_all()
         for key, value in dict.items():
             if key not in ExifFilter.read_only() and value is not None:
-                v = self.converter.cast(key, value)
-                self.image.set(key, v)
+                val = self.converter.cast(key, value)
+                self.image.set(key, val)
 
     def __delete_all(self):
         #we need to iterate through each and check if we allowed to delete it,
@@ -122,6 +122,6 @@ class ExifWriter:
                 self.image.delete(key)
     
     def __save(self, img_path):
-        with open(img_path, 'wb') as f:
-            f.write(self.image.get_file())
+        with open(img_path, 'wb') as file:
+            file.write(self.image.get_file())
 

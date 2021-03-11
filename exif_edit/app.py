@@ -1,9 +1,7 @@
-from math import e
-from exif_edit.mediator import Mediator
-from tksheet import Sheet
-
 import tkinter as tk
-import tkinter.filedialog as filedialog
+from tksheet import Sheet
+from exif_edit.mediator import Mediator
+
 
 class App:
 

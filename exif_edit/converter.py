@@ -34,14 +34,13 @@ class Converter:
             #fallback to first enum value
             return list(enm)[0]
 
-    """Converts a string value to a proper type."""
     @classmethod
     def cast(cls, key, value):
+        """Converts a string value to a proper type."""
         #do we have a matching enum in our dictionary?
         if key in cls.dictionary:
             return cls.__from_enum(key, value)
-        else:
-            try:
-                return int(value)
-            except:
-                return value
+        try:
+            return int(value)
+        except:
+            return value

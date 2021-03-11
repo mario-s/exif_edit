@@ -11,12 +11,12 @@ class Mediator:
 
     def append_exif(self, img_path):
         reader = ExifReader(img_path)
-        dict = reader.grouped_dict()
+        dic = reader.grouped_dict()
 
         self.origin_img_path = img_path
-        self.sheet.set_sheet_data(self.__to_list(dict))
+        self.sheet.set_sheet_data(self.__to_list(dic))
         self.sheet.set_all_column_widths(230)
-        self.__disable_rows(dict)
+        self.__disable_rows(dic)
 
     def __to_list(self, dict) -> list[list[str]]:
         return list(map(list, dict.items()))
@@ -83,19 +83,19 @@ class Mediator:
     def __path(self, source, path):
         return source if (path is None or path == "") else path
 
-    def keep_origin(self, row):
-        if self.__is_in_value_column(row):
-            value = self.sheet.get_cell_data(row[0], 1)
+    def keep_origin(self, cell):
+        if self.__is_in_value_column(cell):
+            value = self.sheet.get_cell_data(cell[0], 1)
             self.origin_cell_value = value
 
-    def restore_origin(self, row):
-        if self.__is_in_value_column(row):
-            r = row[0]
-            key = self.sheet.get_cell_data(r, 0)
+    def restore_origin(self, cell):
+        if self.__is_in_value_column(cell):
+            row = cell[0]
+            key = self.sheet.get_cell_data(row, 0)
             print(key)
             if key in ExifFilter.read_only():
                 value = self.origin_cell_value
-                self.sheet.set_cell_data(r, 1, value)
+                self.sheet.set_cell_data(row, 1, value)
 
-    def __is_in_value_column(self, row):
-        return row[1] == 1
+    def __is_in_value_column(self, cell):
+        return cell[1] == 1
