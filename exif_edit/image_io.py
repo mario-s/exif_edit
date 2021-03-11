@@ -64,8 +64,8 @@ class ExifReader:
         return value
 
     def dict(self) -> dict:
-        list = [(key, self.value(key)) for key in self.keys()]
-        return dict(list)
+        lst = [(key, self.value(key)) for key in self.keys()]
+        return dict(lst)
 
     def grouped_dict(self) -> dict:
         """Returns a dictionary with groups, were every group is sorted"""
@@ -101,12 +101,12 @@ class ExifWriter:
         self.__save(img_path)
 
     def __list_to_dict(self, row) -> dict:
-        dict = {}
+        dic = {}
         for col in row:
             if len(col) < 2:
                 raise ValueError("Expect at least two cells in the row")
-            dict[col[0]] = col[1]
-        return dict
+            dic[col[0]] = col[1]
+        return dic
 
     def __set_values(self, dict):
         self.__delete_all()
