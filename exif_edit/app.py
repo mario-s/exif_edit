@@ -114,7 +114,7 @@ class App:
         self.btn_rm.config(state=self.mediator.get_remove_button_state(event))
 
     def start(self):
-        #see also: https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
+        #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.root.eval('tk::PlaceWindow . center')
         self.root.mainloop()
 

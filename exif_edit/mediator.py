@@ -21,11 +21,11 @@ class Mediator:
         self.sheet.set_all_column_widths(230)
         self.__disable_rows(dic)
 
-    def __to_list(self, dict) -> list[list[str]]:
-        return list(map(list, dict.items()))
+    def __to_list(self, dic) -> list[list[str]]:
+        return list(map(list, dic.items()))
 
-    def __disable_rows(self, dict):
-        keys = list(dict.keys())
+    def __disable_rows(self, dic):
+        keys = list(dic.keys())
 
         rows = self.__count_matching_rows(keys, ExifFilter.read_only())
         if len(rows) > 0:
@@ -37,8 +37,8 @@ class Mediator:
             [self.sheet.readonly_cells(row, 0) for row in rows]                
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
-    def __count_matching_rows(self, keys, filter):
-        return [i for i in range(len(keys)) if keys[i] in filter]
+    def __count_matching_rows(self, keys, fltr):
+        return [i for i in range(len(keys)) if keys[i] in fltr]
 
     def read_image(self, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))
@@ -50,10 +50,10 @@ class Mediator:
     def remove_row(self):
         index = 0
         selected_rows = self.sheet.get_selected_rows()
-        for next in selected_rows:
+        for selected in selected_rows:
             col_data = self.sheet.get_column_data(0)
             total_rows = len(col_data)
-            row = next - index
+            row = selected - index
             if row < total_rows and self.__is_deletable(row):
                 self.sheet.delete_row(row)
                 index+=1

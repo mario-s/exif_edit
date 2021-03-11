@@ -108,9 +108,9 @@ class ExifWriter:
             dic[col[0]] = col[1]
         return dic
 
-    def __set_values(self, dict):
+    def __set_values(self, dic):
         self.__delete_all()
-        for key, value in dict.items():
+        for key, value in dic.items():
             if key not in ExifFilter.read_only() and value is not None:
                 val = self.converter.cast(key, value)
                 self.image.set(key, val)
@@ -118,9 +118,9 @@ class ExifWriter:
     def __delete_all(self):
         #we need to iterate through each and check if we allowed to delete it,
         #if not we will have problems while saving the new tags
-        filter = ExifFilter.locked()
+        locked = ExifFilter.locked()
         for key in self.image.list_all():
-            if key not in filter:
+            if key not in locked:
                 self.image.delete(key)
     
     def __save(self, img_path):
