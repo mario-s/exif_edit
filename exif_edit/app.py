@@ -1,5 +1,7 @@
 import tkinter as tk
+
 from tksheet import Sheet
+
 from exif_edit.mediator import Mediator
 
 

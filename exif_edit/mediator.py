@@ -1,6 +1,9 @@
+from tkinter import DISABLED, NORMAL
+
 from PIL import ImageTk
-from tkinter import NORMAL, DISABLED 
-from exif_edit.image_io import ImageReader, ExifFilter, ExifReader, ExifWriter
+
+from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter, ImageReader
+
 
 class Mediator:
 

@@ -1,9 +1,11 @@
 from enum import Enum
-from sortedcontainers import SortedDict
+
 from exif import Image as Exif
 from PIL import Image
+from sortedcontainers import SortedDict
 
 from exif_edit.converter import Converter
+
 
 class ExifFilter:
 
