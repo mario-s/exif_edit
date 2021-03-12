@@ -34,7 +34,8 @@ class Mediator:
 
         rows = self.__count_matching_rows(keys, ExifFilter.not_deleteable())
         if len(rows) > 0:
-            [self.sheet.readonly_cells(row, 0) for row in rows]                
+            for row in rows:
+                self.sheet.readonly_cells(row, 0)             
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
     def __count_matching_rows(self, keys, fltr):
@@ -87,18 +88,28 @@ class Mediator:
         return source if (path is None or path == "") else path
 
     def keep_origin(self, cell):
-        if self.__is_in_value_column(cell):
-            value = self.sheet.get_cell_data(cell[0], 1)
-            self.origin_cell_value = value
+        """Keep the original value of the cell."""
+        orig = self.sheet.get_cell_data(cell[0], cell[1])
+        self.origin_cell_value = orig
 
     def restore_origin(self, cell):
-        if self.__is_in_value_column(cell):
+        """ 
+            Restores the original value. 
+            In case of the key column it means avoiding duplicates.
+        """
+        if self.__is_in_key_column(cell):
             row = cell[0]
-            key = self.sheet.get_cell_data(row, 0)
-            print(key)
-            if key in ExifFilter.read_only():
-                value = self.origin_cell_value
-                self.sheet.set_cell_data(row, 1, value)
+            #only one unique value is allowed
+            if self.__has_duplicate_keys(row):
+                origin = self.origin_cell_value
+                self.sheet.set_cell_data(row, 0, origin)
 
-    def __is_in_value_column(self, cell):
-        return cell[1] == 1
+    def __is_in_key_column(self, cell):
+        return cell[1] == 0
+
+    def __has_duplicate_keys(self, row):
+        key = self.sheet.get_cell_data(row, 0)
+        if "".__eq__(key):
+            return False
+        keys = self.sheet.get_column_data(0)
+        return keys.count(key) > 1

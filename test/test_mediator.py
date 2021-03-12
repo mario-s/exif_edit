@@ -45,19 +45,22 @@ class TestMediator(unittest.TestCase):
         self.mediator.save_exif(self.__path('modified.jpg'))
 
     def test_keep_origin(self):
-        self.mediator.keep_origin((0,1))
-        self.sheet.get_cell_data.assert_called()
-
-    def test_not_keep_origin(self):
         self.mediator.keep_origin((0,0))
-        self.sheet.get_cell_data.assert_not_called()
+        self.sheet.get_cell_data.assert_called()
 
     def test_restore_origin(self):
         self.sheet.get_cell_data = Mock(return_value="exif_version")
+        self.sheet.get_column_data = Mock(return_value=["exif_version", "exif_version"])
 
-        self.mediator.keep_origin((0,1))
-        self.mediator.restore_origin((0,1))
+        self.mediator.keep_origin((0,0))
+        self.mediator.restore_origin((0,0))
         self.sheet.set_cell_data.assert_called()
+
+    def test_restore_origin_not_whitespace(self):
+        self.sheet.get_cell_data = Mock(return_value="")
+
+        self.mediator.restore_origin((0,0))
+        self.sheet.set_cell_data.assert_not_called()
 
     def test_get_remove_button_state(self):
         self.sheet.get_selected_rows = Mock(return_value= [0])

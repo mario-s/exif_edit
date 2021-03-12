@@ -77,9 +77,9 @@ class ExifReader:
         #join the dictionaries
         return read_only | edit_only | SortedDict(dic)
 
-    def __filter(self, dic, filter):
+    def __filter(self, dic, fltr):
         """Remove elements from dictionary to avoid sorting them in the big one"""
-        return dict([(k, dic.pop(k)) for k in filter if k in dic])
+        return dict([(k, dic.pop(k)) for k in fltr if k in dic])
 
 class ExifWriter:
 
@@ -93,8 +93,7 @@ class ExifWriter:
         if type(collection) is dict:
             self.__set_values(collection)
         elif type(collection) is list:
-            d = self.__list_to_dict(collection)
-            self.__set_values(d)
+            self.__set_values(self.__list_to_dict(collection))
         else:
             raise ValueError("Expect either dict or list[list]!")
 
