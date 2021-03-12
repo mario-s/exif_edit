@@ -33,7 +33,6 @@ class ExifFilter:
 
 
 class ImageReader:
-    
     """This class reads the binary image, which will be used to display in the GUI."""
 
     @staticmethod
@@ -82,7 +81,6 @@ class ExifReader:
         return dict([(k, dic.pop(k)) for k in fltr if k in dic])
 
 class ExifWriter:
-
     """This class writes the edited Exif Tags back to the image."""
 
     def __init__(self, image):
@@ -90,9 +88,10 @@ class ExifWriter:
         self.converter = Converter()
 
     def save(self, collection, img_path):
-        if type(collection) is dict:
+        """Saves the the collection of Exif tags to a file given by the path."""
+        if isinstance(collection, dict):
             self.__set_values(collection)
-        elif type(collection) is list:
+        elif isinstance(collection, list):
             self.__set_values(self.__list_to_dict(collection))
         else:
             raise ValueError("Expect either dict or list[list]!")
