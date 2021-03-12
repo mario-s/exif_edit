@@ -76,9 +76,10 @@ class ExifReader:
         #join the dictionaries
         return read_only | edit_only | SortedDict(dic)
 
-    def __filter(self, dic, fltr):
+    @classmethod 
+    def __filter(cls, dic, fltr):
         """Remove elements from dictionary to avoid sorting them in the big one"""
-        return dict([(k, dic.pop(k)) for k in fltr if k in dic])
+        return [(k, dic.pop(k)) for k in fltr if k in dic]
 
 class ExifWriter:
     """This class writes the edited Exif Tags back to the image."""
@@ -98,7 +99,8 @@ class ExifWriter:
 
         self.__save(img_path)
 
-    def __list_to_dict(self, row) -> dict:
+    @classmethod
+    def __list_to_dict(cls, row) -> dict:
         dic = {}
         for col in row:
             if len(col) < 2:

@@ -21,7 +21,8 @@ class Mediator:
         self.sheet.set_all_column_widths(230)
         self.__disable_rows(dic)
 
-    def __to_list(self, dic) -> list[list[str]]:
+    @classmethod
+    def __to_list(cls, dic) -> list[list[str]]:
         return list(map(list, dic.items()))
 
     def __disable_rows(self, dic):
@@ -38,10 +39,12 @@ class Mediator:
                 self.sheet.readonly_cells(row, 0)             
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
-    def __count_matching_rows(self, keys, fltr):
+    @classmethod
+    def __count_matching_rows(cls, keys, fltr):
         return [i for i in range(len(keys)) if keys[i] in fltr]
 
-    def read_image(self, img_path):
+    @classmethod
+    def read_image(cls, img_path):
         return ImageTk.PhotoImage(ImageReader.read(img_path))
 
     def add_row(self):
@@ -63,7 +66,7 @@ class Mediator:
 
     def get_remove_button_state(self, event):
         name = event[0]
-        if name == "select_row" or name == "drag_select_rows":
+        if name in ("select_row", "drag_select_rows"):
             return NORMAL if self.__is_editable_row_selected() else DISABLED
         return DISABLED
 
@@ -84,7 +87,8 @@ class Mediator:
         data = self.sheet.get_sheet_data()
         writer.save(data, target_path)
 
-    def __path(self, source, path):
+    @classmethod
+    def __path(cls, source, path):
         return source if (path is None or path == "") else path
 
     def keep_origin(self, cell):
@@ -104,7 +108,8 @@ class Mediator:
                 origin = self.origin_cell_value
                 self.sheet.set_cell_data(row, 0, origin)
 
-    def __is_in_key_column(self, cell):
+    @classmethod
+    def __is_in_key_column(cls, cell):
         return cell[1] == 0
 
     def __has_duplicate_keys(self, row):
