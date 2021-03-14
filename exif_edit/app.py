@@ -134,5 +134,6 @@ class App:
     def __save(self):
         self.mediator.save_exif()
 
-    def __quit(self, event = None):
+    @classmethod 
+    def __quit(cls, event = None):
         sys.exit(0)
