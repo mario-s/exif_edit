@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 
 from tksheet import Sheet
@@ -14,7 +15,7 @@ class App:
         self.root.title("Exif Edit")
         self.root.grid_columnconfigure(0, weight = 1)
         self.root.grid_rowconfigure(0, weight = 1)
-        self.root.protocol("WM_DELETE_WINDOW", self.quit)
+        self.root.protocol("WM_DELETE_WINDOW", self.__quit)
 
         self.frame = tk.Frame(self.root)
         self.frame.grid(row = 0, column = 0, sticky = "nswe")
@@ -22,42 +23,51 @@ class App:
         self.frame.grid_rowconfigure(0, weight = 1)
         
         self.__add_sheet()
+        self.__add_menubar()
+        self.__add_commands()
 
     def __add_sheet(self):
         sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 500, width = 600)
         sheet.grid(row = 0, column = 0, sticky = "nswe")
+        sheet.enable_bindings(("single_select", 
+                                "drag_select",   
+                                "row_select",
+                                "row_height_resize",
+                                "double_click_row_resize",
+                                "rc_select",
+                                "rc_insert_column",
+                                "rc_delete_column",
+                                "rc_insert_row",
+                                "rc_delete_row",
+                                "copy",
+                                "cut",
+                                "paste",
+                                "delete",
+                                "undo",
+                                "edit_cell"))
+
+        sheet.extra_bindings([("cell_select", self.cell_select),
+                                ("begin_edit_cell", self.begin_edit_cell),
+                                ("end_edit_cell", self.end_edit_cell),
+                                ("row_select", self.row_select),
+                                ("deselect", self.deselect),
+                                ("drag_select_rows", self.drag_select_rows)
+                                ])
         self.mediator = Mediator(sheet)
         self.sheet = sheet
-        self.__add_bindings()
-        self.__add_commands()
 
-    def __add_bindings(self):
-        self.sheet.enable_bindings(("single_select", 
-                                         "drag_select",   
-                                         "row_select",
-                                         "row_height_resize",
-                                         "double_click_row_resize",
-                                         "rc_select",
-                                         "rc_insert_column",
-                                         "rc_delete_column",
-                                         "rc_insert_row",
-                                         "rc_delete_row",
-                                         "copy",
-                                         "cut",
-                                         "paste",
-                                         "delete",
-                                         "undo",
-                                         "edit_cell"))
-
-        self.sheet.extra_bindings([("cell_select", self.cell_select),
-                                   ("begin_edit_cell", self.begin_edit_cell),
-                                   ("end_edit_cell", self.end_edit_cell),
-                                    ("row_select", self.row_select),
-                                    ("deselect", self.deselect),
-                                    ("drag_select_rows", self.drag_select_rows)
-                                    ])
+    def __add_menubar(self): 
+        menubar = tk.Menu(self.root)
+        filemenu = tk.Menu(menubar)
+        filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
+        filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
+        filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
+        menubar.add_cascade(label="File", menu=filemenu)
+        self.root.config(menu=menubar)
+        #add key bindings according to accelerators
+        self.root.bind('<Command-w>', self.__quit)
         
     def __add_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
@@ -70,9 +80,9 @@ class App:
 
         right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
-        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.quit)
+        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.__quit)
         btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
-        btn_save = tk.Button(right_cmd_frame, text="save", command=self.mediator.save_exif)
+        btn_save = tk.Button(right_cmd_frame, text="save", command=self.__save)
         btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
 
     def load_image(self, img_path):
@@ -117,6 +127,12 @@ class App:
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.root.eval('tk::PlaceWindow . center')
         self.root.mainloop()
+    
+    def __open(self):
+        pass
 
-    def quit(self):
-        self.root.destroy()    
+    def __save(self):
+        self.mediator.save_exif()
+
+    def __quit(self, event = None):
+        sys.exit(0)
