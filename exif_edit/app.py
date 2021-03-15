@@ -1,5 +1,6 @@
 import sys
 import tkinter as tk
+import tkinter.filedialog as filedialog
 
 from tksheet import Sheet
 
@@ -67,6 +68,7 @@ class App:
         menubar.add_cascade(label="File", menu=filemenu)
         self.root.config(menu=menubar)
         #add key bindings according to accelerators
+        self.root.bind('<Command-o>', self.__open)
         self.root.bind('<Command-w>', self.__quit)
         
     def __add_commands(self):
@@ -128,8 +130,9 @@ class App:
         self.root.eval('tk::PlaceWindow . center')
         self.root.mainloop()
     
-    def __open(self):
-        pass
+    def __open(self, event = None):
+        name = filedialog.askopenfilename()
+        self.load_image(name)
 
     def __save(self):
         self.mediator.save_exif()

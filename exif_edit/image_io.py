@@ -63,7 +63,12 @@ class ExifReader:
         return value
 
     def dict(self) -> dict:
-        lst = [(key, self.value(key)) for key in self.keys()]
+        lst = []
+        for key in self.keys():
+            try:
+                lst.append((key, self.value(key)))
+            except ValueError:
+                pass
         return dict(lst)
 
     def grouped_dict(self) -> dict:
