@@ -4,7 +4,7 @@ from tkinter import DISABLED, NORMAL
 
 from PIL import ImageTk
 
-from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter, ImageReader
+from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter
 
 
 class Mediator:
@@ -46,7 +46,7 @@ class Mediator:
 
     @classmethod
     def read_image(cls, img_path):
-        return ImageTk.PhotoImage(ImageReader.read(img_path))
+        return ImageTk.PhotoImage(ExifReader.read_thumbnail(img_path))
 
     def add_row(self):
         self.sheet.insert_row()

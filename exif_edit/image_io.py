@@ -30,15 +30,6 @@ class ExifFilter:
         return "_exif_ifd_pointer", "exif_version"
 
 
-class ImageReader:
-    """This class reads the binary image, which will be used to display in the GUI."""
-
-    @staticmethod
-    def read(img_path, base_width=400):
-        img = Image.open(img_path)
-        img.thumbnail((base_width, base_width))
-        return img
-
 class ExifReader:
 
     """This class reads all Exif Tags from the image."""
@@ -49,6 +40,13 @@ class ExifReader:
 
     def binary(self):
         return self.image
+
+    @classmethod
+    def read_thumbnail(cls, img_path, base_width=400):
+        """This method reads the binary image, and returns it as thumbnail."""
+        img = Image.open(img_path)
+        img.thumbnail((base_width, base_width))
+        return img
 
     def keys(self) -> list[str]:
         return self.image.list_all()

@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter, ImageReader
+from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter
 
 class TestImageIO(unittest.TestCase):
 
@@ -49,7 +49,7 @@ class TestImageIO(unittest.TestCase):
         self.assertTrue("model" in keys)
 
     def test_read_image(self):
-        i = ImageReader.read(self.__path('lookup.jpg'))
+        i = ExifReader.read_thumbnail(self.__path('lookup.jpg'))
         w, _ = i.size
         self.assertEqual(400, w)
 
