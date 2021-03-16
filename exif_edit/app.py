@@ -96,7 +96,7 @@ class App:
         image = self.mediator.read_image(img_path)
         label = tk.Label(self.frame, image=image)
         label.image = image
-        label.grid(row = 0, column = 1, sticky = "nswe")
+        label.grid(row = 0, column = 1, padx=5, pady=5, sticky = "nswe")
 
         self.root.focus_set()
 
