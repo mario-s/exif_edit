@@ -1,3 +1,5 @@
+import logging
+
 from tkinter import DISABLED, NORMAL
 
 from PIL import ImageTk
@@ -84,6 +86,7 @@ class Mediator:
         writer = ExifWriter(img)
 
         target_path = self.__path(orig_path, new_img_path)
+        logging.info("saving file: %s", target_path)
         data = self.sheet.get_sheet_data()
         writer.save(data, target_path)
 

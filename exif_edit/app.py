@@ -31,8 +31,8 @@ class App:
     def __add_sheet(self):
         sheet = Sheet(self.frame, page_up_down_select_row = True,
             headers = ["Key", "Value"],
-            height = 500, width = 600)
-        sheet.grid(row = 0, column = 0, sticky = "nswe")
+            height = 500, width = 550)
+        sheet.grid(row = 0, column = 0)
         sheet.enable_bindings(("single_select", 
                                 "drag_select",   
                                 "row_select",
@@ -70,6 +70,7 @@ class App:
         self.root.config(menu=menubar)
         #add key bindings according to accelerators
         self.root.bind('<Command-o>', self.__open)
+        self.root.bind('<Command-s>', self.__save)
         self.root.bind('<Command-w>', self.__quit)
         
     def __add_commands(self):
@@ -140,7 +141,7 @@ class App:
         name = filedialog.askopenfilename()
         self.load_image(name)
 
-    def __save(self):
+    def __save(self, event = None):
         self.mediator.save_exif()
 
     @classmethod 
