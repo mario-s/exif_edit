@@ -37,6 +37,10 @@ class TestConverter(unittest.TestCase):
     def test_convert_orientations_none(self):
         self.assertEqual(Orientation.TOP_LEFT, Converter.cast("orientation", None))
 
+    def test_try_read(self):
+        m = {'foo': 'bar'}
+        self.assertIsNone(Converter.try_read(m, 'baz'))
+
 
 if __name__ == '__main__':
     unittest.main()

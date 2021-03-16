@@ -1,3 +1,6 @@
+from enum import Enum
+import logging
+
 import exif as ex
 
 class Converter:
@@ -19,7 +22,8 @@ class Converter:
             "white_balance": ex.WhiteBalance}
 
     @classmethod
-    def keys(cls):
+    def keys(cls) -> list:
+        """Returns a list of keys from the dictionary."""
         return list(cls.dictionary.keys())
 
     @classmethod
@@ -44,3 +48,16 @@ class Converter:
             return int(value)
         except:
             return value
+
+    @staticmethod
+    def try_read(dic, key):
+        try:
+            #this may fail if there is an illegal value for the key
+            value = dic.get(key)
+            #human readable value if we have an enum
+            if isinstance(value, Enum):
+                return value.name
+            return value
+        except ValueError as exc:
+            logging.warning("Illegal value in exif: %s", exc)
+            return None

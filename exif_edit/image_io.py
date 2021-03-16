@@ -1,5 +1,3 @@
-from enum import Enum
-
 from exif import Image as Exif
 from PIL import Image
 from sortedcontainers import SortedDict
@@ -56,19 +54,15 @@ class ExifReader:
         return self.image.list_all()
 
     def value(self, key) -> str:
-        value = self.image.get(key)
-        #human readable value if we have an enum
-        if isinstance(value, Enum):
-            return value.name
-        return value
+        return Converter.try_read(self.image, key)
 
     def dict(self) -> dict:
         lst = []
         for key in self.keys():
-            try:
-                lst.append((key, self.value(key)))
-            except ValueError:
-                pass
+            value = self.value(key)
+            if not value is None:
+                lst.append((key, value))
+
         return dict(lst)
 
     def grouped_dict(self) -> dict:
