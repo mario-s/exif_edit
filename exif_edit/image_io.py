@@ -1,5 +1,3 @@
-from enum import Enum
-
 from exif import Image as Exif
 from PIL import Image
 from sortedcontainers import SortedDict
@@ -56,14 +54,15 @@ class ExifReader:
         return self.image.list_all()
 
     def value(self, key) -> str:
-        value = self.image.get(key)
-        #human readable value if we have an enum
-        if isinstance(value, Enum):
-            return value.name
-        return value
+        return Converter.try_read(self.image, key)
 
     def dict(self) -> dict:
-        lst = [(key, self.value(key)) for key in self.keys()]
+        lst = []
+        for key in self.keys():
+            value = self.value(key)
+            if not value is None:
+                lst.append((key, value))
+
         return dict(lst)
 
     def grouped_dict(self) -> dict:
@@ -126,4 +125,3 @@ class ExifWriter:
     def __save(self, img_path):
         with open(img_path, 'wb') as file:
             file.write(self.image.get_file())
-
