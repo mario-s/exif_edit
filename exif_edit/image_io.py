@@ -125,4 +125,3 @@ class ExifWriter:
     def __save(self, img_path):
         with open(img_path, 'wb') as file:
             file.write(self.image.get_file())
-
