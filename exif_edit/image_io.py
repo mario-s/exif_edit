@@ -30,9 +30,9 @@ class ExifFilter:
         return "_exif_ifd_pointer", "exif_version"
 
 
-class ExifReader:
+class Reader:
 
-    """This class reads all Exif Tags from the image."""
+    """This class reads Exif Tags and the image itself."""
 
     def __init__(self, img_path):
         with open(img_path, 'rb') as file:
@@ -78,7 +78,8 @@ class ExifReader:
         """Remove elements from dictionary to avoid sorting them in the big one"""
         return [(k, dic.pop(k)) for k in fltr if k in dic]
 
-class ExifWriter:
+
+class Writer:
     """This class writes the edited Exif Tags back to the image."""
 
     def __init__(self, image):

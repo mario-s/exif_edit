@@ -4,7 +4,7 @@ from tkinter import DISABLED, NORMAL
 
 from PIL import ImageTk
 
-from exif_edit.image_io import ExifFilter, ExifReader, ExifWriter
+from exif_edit.image_io import ExifFilter, Reader, Writer
 
 
 class Mediator:
@@ -15,7 +15,7 @@ class Mediator:
         self.sheet = sheet
 
     def append_exif(self, img_path):
-        reader = ExifReader(img_path)
+        reader = Reader(img_path)
         dic = reader.grouped_dict()
 
         self.origin_img_path = img_path
@@ -46,7 +46,7 @@ class Mediator:
 
     @classmethod
     def read_image(cls, img_path):
-        return ImageTk.PhotoImage(ExifReader.read_thumbnail(img_path))
+        return ImageTk.PhotoImage(Reader.read_thumbnail(img_path))
 
     def add_row(self):
         self.sheet.insert_row()
@@ -81,8 +81,8 @@ class Mediator:
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)
-        img = ExifReader(orig_path).binary()
-        writer = ExifWriter(img)
+        img = Reader(orig_path).binary()
+        writer = Writer(img)
 
         target_path = self.__path(orig_path, new_img_path)
         logging.info("saving file: %s", target_path)
