@@ -20,7 +20,6 @@ class Mediator:
 
         self.origin_img_path = img_path
         self.sheet.set_sheet_data(self.__to_list(dic))
-        self.sheet.set_all_column_widths(230)
         self.__disable_rows(dic)
 
     @classmethod

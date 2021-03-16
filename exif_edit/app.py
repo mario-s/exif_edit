@@ -29,10 +29,12 @@ class App:
         self.__add_commands()
 
     def __add_sheet(self):
-        sheet = Sheet(self.frame, page_up_down_select_row = True,
+        sheet = Sheet(self.frame, 
+            column_width = 230,
+            page_up_down_select_row = True,
             headers = ["Key", "Value"],
             height = 500, width = 550)
-        sheet.grid(row = 0, column = 0)
+        sheet.grid(row = 0, column = 0, sticky = "nsw")
         sheet.enable_bindings(("single_select", 
                                 "drag_select",   
                                 "row_select",
@@ -97,7 +99,7 @@ class App:
         image = self.mediator.read_image(img_path)
         label = tk.Label(self.frame, image=image)
         label.image = image
-        label.grid(row = 0, column = 1, padx=5, pady=5, sticky = "nswe")
+        label.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
 
         self.root.focus_set()
 
