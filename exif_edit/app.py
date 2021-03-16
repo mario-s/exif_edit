@@ -1,4 +1,5 @@
 import sys
+import logging
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
@@ -88,7 +89,10 @@ class App:
         btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
 
     def load_image(self, img_path):
+        logging.info("loading image: %s", img_path)
+
         self.mediator.append_exif(img_path)
+
         image = self.mediator.read_image(img_path)
         label = tk.Label(self.frame, image=image)
         label.image = image
