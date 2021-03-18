@@ -69,6 +69,7 @@ class App:
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
         filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
+        filemenu.add_separator()
         filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
         menubar.add_cascade(label="File", menu=filemenu)
         self.root.config(menu=menubar)
