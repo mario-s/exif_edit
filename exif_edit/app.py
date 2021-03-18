@@ -29,12 +29,14 @@ class App:
         self.__add_commands()
 
     def __add_sheet(self):
-        sheet = Sheet(self.frame, 
-            column_width = 230,
-            page_up_down_select_row = True,
+        sheet = Sheet(self.frame,
             headers = ["Key", "Value"],
-            height = 500, width = 550)
-        sheet.grid(row = 0, column = 0, sticky = "nsw")
+            column_width = 250,
+            page_up_down_select_row = True,
+            total_columns=2,
+            empty_horizontal=5, empty_vertical=5,
+            height=500, width = 550)
+        sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
         sheet.enable_bindings(("single_select", 
                                 "drag_select",   
                                 "row_select",
