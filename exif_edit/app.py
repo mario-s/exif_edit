@@ -24,9 +24,27 @@ class App:
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
         
-        self.__add_sheet()
         self.__add_menubar()
+        self.__add_toolbar()
+        self.__add_sheet()
         self.__add_commands()
+
+    def __add_menubar(self): 
+        menubar = tk.Menu(self.root)
+        filemenu = tk.Menu(menubar)
+        filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
+        filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
+        menubar.add_cascade(label="File", menu=filemenu)
+        self.root.config(menu=menubar)
+        #add key bindings according to accelerators
+        self.root.bind('<Command-o>', self.__open)
+        self.root.bind('<Command-s>', self.__save)
+        self.root.bind('<Command-w>', self.__quit)
+
+    def __add_toolbar(self):
+        pass
 
     def __add_sheet(self):
         sheet = Sheet(self.frame,
@@ -63,20 +81,6 @@ class App:
                                 ])
         self.mediator = Mediator(sheet)
         self.sheet = sheet
-
-    def __add_menubar(self): 
-        menubar = tk.Menu(self.root)
-        filemenu = tk.Menu(menubar)
-        filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
-        filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
-        menubar.add_cascade(label="File", menu=filemenu)
-        self.root.config(menu=menubar)
-        #add key bindings according to accelerators
-        self.root.bind('<Command-o>', self.__open)
-        self.root.bind('<Command-s>', self.__save)
-        self.root.bind('<Command-w>', self.__quit)
         
     def __add_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
