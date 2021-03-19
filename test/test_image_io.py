@@ -49,7 +49,7 @@ class TestImageIO(unittest.TestCase):
         self.assertTrue("model" in keys)
 
     def test_read_image(self):
-        i = Reader.read_thumbnail(self.__path('lookup.jpg'))
+        i = Reader.read_image(self.__path('lookup.jpg'), True)
         w, _ = i.size
         self.assertEqual(400, w)
 

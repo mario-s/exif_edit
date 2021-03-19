@@ -1,3 +1,4 @@
+import os
 import logging
 
 from tkinter import DISABLED, NORMAL
@@ -46,7 +47,12 @@ class Mediator:
 
     @classmethod
     def read_image(cls, img_path):
-        return ImageTk.PhotoImage(Reader.read_thumbnail(img_path))
+        return ImageTk.PhotoImage(Reader.read_image(img_path, True))
+
+    @classmethod
+    def read_icon(cls, icon_name):
+        icon_path = os.path.join(os.path.dirname(__file__), "assets/" + icon_name)
+        return ImageTk.PhotoImage(Reader.read_image(icon_path))
 
     def add_row(self):
         self.sheet.insert_row()

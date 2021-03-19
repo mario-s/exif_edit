@@ -23,6 +23,15 @@ class App:
         self.frame.grid(row = 1, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
+
+        self.sheet = Sheet(self.frame,
+            headers = ["Key", "Value"],
+            column_width = 250,
+            page_up_down_select_row = True,
+            total_columns=2,
+            empty_horizontal=5, empty_vertical=5,
+            height=500, width = 550)
+        self.mediator = Mediator(self.sheet)
         
         self.__add_menubar()
         self.__add_toolbar()
@@ -47,23 +56,19 @@ class App:
         toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
         toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_save = tk.Button(toolbar, text="save", command=self.__save)
-        btn_save.pack(side=tk.LEFT, padx=2, pady=5, )
+        icon = self.mediator.read_icon("save-file.png")
+        btn_save = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__save)
+        btn_save.image = icon
+        btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
-        btn_exit = tk.Button(toolbar, text="exit", relief=tk.FLAT,
-            command=self.__quit)
+        icon = self.mediator.read_icon("exit.png")
+        btn_exit = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__quit)
+        btn_exit.image = icon
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __add_sheet(self):
-        sheet = Sheet(self.frame,
-            headers = ["Key", "Value"],
-            column_width = 250,
-            page_up_down_select_row = True,
-            total_columns=2,
-            empty_horizontal=5, empty_vertical=5,
-            height=500, width = 550)
-        sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
-        sheet.enable_bindings(("single_select", 
+        self.sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
+        self.sheet.enable_bindings(("single_select", 
                                 "drag_select",   
                                 "row_select",
                                 "row_height_resize",
@@ -80,15 +85,13 @@ class App:
                                 "undo",
                                 "edit_cell"))
 
-        sheet.extra_bindings([("cell_select", self.cell_select),
+        self.sheet.extra_bindings([("cell_select", self.cell_select),
                                 ("begin_edit_cell", self.begin_edit_cell),
                                 ("end_edit_cell", self.end_edit_cell),
                                 ("row_select", self.row_select),
                                 ("deselect", self.deselect),
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
-        self.mediator = Mediator(sheet)
-        self.sheet = sheet
         
     def __add_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
