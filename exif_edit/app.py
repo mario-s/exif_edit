@@ -20,7 +20,7 @@ class App:
         self.root.protocol("WM_DELETE_WINDOW", self.__quit)
 
         self.frame = tk.Frame(self.root)
-        self.frame.grid(row = 0, column = 0, sticky = "nswe")
+        self.frame.grid(row = 1, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
         
@@ -44,7 +44,15 @@ class App:
         self.root.bind('<Command-w>', self.__quit)
 
     def __add_toolbar(self):
-        pass
+        toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        toolbar.grid(row = 0, column = 0, sticky = "nswe")
+
+        btn_save = tk.Button(toolbar, text="save", command=self.__save)
+        btn_save.pack(side=tk.LEFT, padx=2, pady=5, )
+
+        btn_exit = tk.Button(toolbar, text="exit", relief=tk.FLAT,
+            command=self.__quit)
+        btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __add_sheet(self):
         sheet = Sheet(self.frame,
@@ -90,13 +98,6 @@ class App:
         self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=5, side=tk.LEFT)
-
-        right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
-        right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
-        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.__quit)
-        btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
-        btn_save = tk.Button(right_cmd_frame, text="save", command=self.__save)
-        btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
 
     def load_image(self, img_path):
         logging.info("loading image: %s", img_path)
