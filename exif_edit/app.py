@@ -6,6 +6,7 @@ import tkinter.filedialog as filedialog
 from tksheet import Sheet
 
 from exif_edit.mediator import Mediator
+from exif_edit.tooltip import Hovertip
 
 
 class App:
@@ -58,11 +59,13 @@ class App:
 
         icon = self.mediator.read_icon("save-file.png")
         btn_save = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__save)
+        Hovertip(btn_save, "save file", hover_delay=2000)
         btn_save.image = icon
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
         icon = self.mediator.read_icon("exit.png")
         btn_exit = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__quit)
+        Hovertip(btn_exit, "exit", hover_delay=2000)
         btn_exit.image = icon
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
