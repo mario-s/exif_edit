@@ -1,3 +1,7 @@
+"""
+GUI of the application.
+"""
+
 import sys
 import logging
 import tkinter as tk
@@ -54,20 +58,29 @@ class App:
         self.root.bind('<Command-w>', self.__quit)
 
     def __add_toolbar(self):
-        toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
-        toolbar.grid(row = 0, column = 0, sticky = "nswe")
+        self.toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        icon = self.mediator.read_icon("save-file.png")
-        btn_save = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__save)
-        tp.Hovertip(btn_save, "save file", hover_delay=2000)
-        btn_save.image = icon
+        btn_save = self.__create_toolbar_button("save-file.png", 
+            "save file " + self.__acc("S"), 
+            self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
-        icon = self.mediator.read_icon("exit.png")
-        btn_exit = tk.Button(toolbar, image=icon, relief=tk.FLAT, command=self.__quit)
-        tp.Hovertip(btn_exit, "exit", hover_delay=2000)
-        btn_exit.image = icon
+        btn_exit = self.__create_toolbar_button("exit.png", 
+            "exit "+ self.__acc("W"), 
+            self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
+
+    def __create_toolbar_button(self, icon_name, toooltip, cmd):
+        icon = self.mediator.read_icon(icon_name)
+        btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
+        tp.Hovertip(btn, text=toooltip, hover_delay=2000)
+        btn.image = icon
+        return btn
+
+    @classmethod
+    def __acc(cls, key):
+        return "(" + (u"\u2318") + f"{key})"
 
     def __add_sheet(self):
         self.sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")

@@ -1,3 +1,7 @@
+"""
+IO package to read and write.
+"""
+
 from exif import Image as Exif
 from PIL import Image
 from sortedcontainers import SortedDict

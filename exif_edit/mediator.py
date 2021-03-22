@@ -1,3 +1,7 @@
+"""
+Mediator to coordinate tasks.
+"""
+
 import os
 import logging
 
