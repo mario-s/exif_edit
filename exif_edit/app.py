@@ -1,8 +1,13 @@
+"""
+GUI of the application.
+"""
+
 import sys
 import logging
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
+from idlelib import tooltip as tp
 from tksheet import Sheet
 
 from exif_edit.mediator import Mediator
@@ -20,24 +25,66 @@ class App:
         self.root.protocol("WM_DELETE_WINDOW", self.__quit)
 
         self.frame = tk.Frame(self.root)
-        self.frame.grid(row = 0, column = 0, sticky = "nswe")
+        self.frame.grid(row = 1, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
-        
-        self.__add_sheet()
-        self.__add_menubar()
-        self.__add_commands()
 
-    def __add_sheet(self):
-        sheet = Sheet(self.frame,
+        self.sheet = Sheet(self.frame,
             headers = ["Key", "Value"],
             column_width = 250,
             page_up_down_select_row = True,
             total_columns=2,
             empty_horizontal=5, empty_vertical=5,
             height=500, width = 550)
-        sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
-        sheet.enable_bindings(("single_select", 
+        self.mediator = Mediator(self.sheet)
+        
+        self.__add_menubar()
+        self.__add_toolbar()
+        self.__add_sheet()
+        self.__add_commands()
+
+    def __add_menubar(self): 
+        menubar = tk.Menu(self.root)
+        filemenu = tk.Menu(menubar)
+        filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
+        filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
+        menubar.add_cascade(label="File", menu=filemenu)
+        self.root.config(menu=menubar)
+        #add key bindings according to accelerators
+        self.root.bind('<Command-o>', self.__open)
+        self.root.bind('<Command-s>', self.__save)
+        self.root.bind('<Command-w>', self.__quit)
+
+    def __add_toolbar(self):
+        self.toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
+
+        btn_save = self.__create_toolbar_button("save-file.png", 
+            "save file " + self.__acc("S"), 
+            self.__save)
+        btn_save.pack(side=tk.LEFT, padx=2, pady=5)
+
+        btn_exit = self.__create_toolbar_button("exit.png", 
+            "exit "+ self.__acc("W"), 
+            self.__quit)
+        btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
+
+    def __create_toolbar_button(self, icon_name, toooltip, cmd):
+        icon = self.mediator.read_icon(icon_name)
+        btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
+        tp.Hovertip(btn, text=toooltip, hover_delay=2000)
+        btn.image = icon
+        return btn
+
+    @classmethod
+    def __acc(cls, key):
+        return "(" + (u"\u2318") + f"{key})"
+
+    def __add_sheet(self):
+        self.sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
+        self.sheet.enable_bindings(("single_select", 
                                 "drag_select",   
                                 "row_select",
                                 "row_height_resize",
@@ -54,29 +101,13 @@ class App:
                                 "undo",
                                 "edit_cell"))
 
-        sheet.extra_bindings([("cell_select", self.cell_select),
+        self.sheet.extra_bindings([("cell_select", self.cell_select),
                                 ("begin_edit_cell", self.begin_edit_cell),
                                 ("end_edit_cell", self.end_edit_cell),
                                 ("row_select", self.row_select),
                                 ("deselect", self.deselect),
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
-        self.mediator = Mediator(sheet)
-        self.sheet = sheet
-
-    def __add_menubar(self): 
-        menubar = tk.Menu(self.root)
-        filemenu = tk.Menu(menubar)
-        filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
-        filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
-        menubar.add_cascade(label="File", menu=filemenu)
-        self.root.config(menu=menubar)
-        #add key bindings according to accelerators
-        self.root.bind('<Command-o>', self.__open)
-        self.root.bind('<Command-s>', self.__save)
-        self.root.bind('<Command-w>', self.__quit)
         
     def __add_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
@@ -86,13 +117,6 @@ class App:
         self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=5, side=tk.LEFT)
-
-        right_cmd_frame = tk.Frame(self.frame, borderwidth=2)
-        right_cmd_frame.grid(row = 1, column = 1, sticky = "nswe")
-        btn_exit = tk.Button(right_cmd_frame, text="exit", command=self.__quit)
-        btn_exit.pack(padx=5, pady=5, side=tk.RIGHT)
-        btn_save = tk.Button(right_cmd_frame, text="save", command=self.__save)
-        btn_save.pack(padx=5, pady=5, side=tk.RIGHT)
 
     def load_image(self, img_path):
         logging.info("loading image: %s", img_path)

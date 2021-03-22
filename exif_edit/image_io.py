@@ -1,3 +1,7 @@
+"""
+IO package to read and write.
+"""
+
 from exif import Image as Exif
 from PIL import Image
 from sortedcontainers import SortedDict
@@ -42,10 +46,16 @@ class Reader:
         return self.image
 
     @classmethod
-    def read_thumbnail(cls, img_path, base_width=400):
-        """This method reads the binary image, and returns it as thumbnail."""
+    def read_image(cls, img_path, scale=False, max_len=400):
+        """
+        This method reads the binary image.
+        If the parameter scale is True, then the image will be scaled using max_len.
+        """
         img = Image.open(img_path)
-        img.thumbnail((base_width, base_width))
+
+        if scale:
+            img.thumbnail((max_len, max_len))
+        
         return img
 
     def keys(self) -> list[str]:
