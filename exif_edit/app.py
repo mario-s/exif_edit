@@ -65,6 +65,10 @@ class App:
         self.toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
         self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
+        btn_open = self.__create_toolbar_button("folder.png", 
+            "open file " + self.__acc("O"), 
+            self.__open)
+        btn_open.pack(side=tk.LEFT, padx=2, pady=5)
         btn_save = self.__create_toolbar_button("save-file.png", 
             "save file " + self.__acc("S"), 
             self.__save)
@@ -76,7 +80,7 @@ class App:
 
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = self.__create_toolbar_button("pin.png", 
+        btn_loc = self.__create_toolbar_button("world.png", 
             "show location",
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
