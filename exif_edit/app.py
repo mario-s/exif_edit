@@ -20,6 +20,8 @@ class App:
     """This class contains the GUI. It uses a spreadsheet to display Exif Tags."""
 
     def __init__(self):
+        self.img_display = None
+
         self.root = tk.Tk()
         self.root.title("Exif Edit")
         self.root.grid_columnconfigure(0, weight = 1)
@@ -43,7 +45,7 @@ class App:
         self.__add_menubar()
         self.__add_toolbar()
         self.__add_sheet()
-        self.__add_commands()
+        self.__add_table_commands()
 
     def __add_menubar(self): 
         menubar = tk.Menu(self.root)
@@ -79,12 +81,16 @@ class App:
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
-    def __create_toolbar_button(self, icon_name, toooltip, cmd):
+    def __create_toolbar_button(self, icon_name, tooltip, cmd):
         icon = self.mediator.read_icon(icon_name)
         btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
-        tp.Hovertip(btn, text=toooltip, hover_delay=2000)
         btn.image = icon
+        self.__add_tooltip(btn, tooltip)
         return btn
+
+    @classmethod
+    def __add_tooltip(cls, button, tooltip):
+        tp.Hovertip(button, text=tooltip, hover_delay=2000)
 
     @classmethod
     def __acc(cls, key):
@@ -117,25 +123,37 @@ class App:
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
         
-    def __add_commands(self):
+    def __add_table_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
+
         btn_add = tk.Button(left_cmd_frame, text="+", command=self.mediator.add_row)
-        btn_add.pack(padx=5, pady=5, side=tk.LEFT)
+        btn_add.pack(padx=5, pady=3, side=tk.LEFT)
+        self.__add_tooltip(btn_add, "add a row")
+
         self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
-        self.btn_rm.pack(padx=5, pady=5, side=tk.LEFT)
+        self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
+        self.__add_tooltip(self.btn_rm, "remove selected rows")
 
     def load_image(self, img_path):
+        """
+        This method loads the image and the exif data into the application.
+        """
         logging.info("loading image: %s", img_path)
 
         self.mediator.append_exif(img_path)
 
-        image = self.mediator.read_image(img_path)
-        label = tk.Label(self.frame, image=image)
-        label.image = image
-        label.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
+        #destroy a possible previous instance to avoid a stack of images
+        if not self.img_display is None:
+            self.img_display.destroy()
 
+        img = self.mediator.read_image(img_path)
+        self.img_display = tk.Label(self.frame, image=img)
+        self.img_display.image = img
+        self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
+
+        #ensure that window has focus again
         self.root.focus_set()
 
     def single_select(self, event):
