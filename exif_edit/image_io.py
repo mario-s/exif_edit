@@ -95,9 +95,9 @@ class Writer:
         self.image = image
         self.converter = Converter()
 
-    def save(self, collection, img_path):
+    def save(self, rows, img_path):
         """Saves the the collection of Exif tags to a file given by the path."""
-        self.__set_values(Converter.rows_to_dict(collection))
+        self.__set_values(Converter.rows_to_dict(rows))
         self.__save(img_path)
 
     def __set_values(self, dic):

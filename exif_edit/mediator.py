@@ -11,6 +11,7 @@ from tkinter import DISABLED, NORMAL
 from PIL import ImageTk
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
+from exif_edit.converter import Converter
 
 
 class Mediator:
@@ -133,7 +134,9 @@ class Mediator:
         return keys.count(key) > 1
 
     def __find_location(self):
-        pass
+        dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
+        return (dic.get('gps_longtitude'), dic.get('gps_longtitude_ref'), 
+                dic.get('gps_latitude'), dic.get('gps_latitude_ref'))
 
     @classmethod
     def open_url(cls, url):
