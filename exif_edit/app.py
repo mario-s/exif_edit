@@ -5,8 +5,10 @@ GUI of the application.
 import sys
 import logging
 import tkinter as tk
+from tkinter.constants import Y
 import tkinter.filedialog as filedialog
 
+from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
@@ -65,11 +67,17 @@ class App:
             "save file " + self.__acc("S"), 
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-
         btn_exit = self.__create_toolbar_button("exit.png", 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
+
+        sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
+        sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
+        btn_loc = self.__create_toolbar_button("pin.png", 
+            "show location",
+            self.__open_location)
+        btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __create_toolbar_button(self, icon_name, toooltip, cmd):
         icon = self.mediator.read_icon(icon_name)
@@ -172,6 +180,9 @@ class App:
 
     def __save(self, event = None):
         self.mediator.save_exif()
+
+    def __open_location(self, event = None):
+        self.mediator.open_url("https://www.google.com/maps/@50.5708328,11.4469587,14z")
 
     @classmethod 
     def __quit(cls, event = None):

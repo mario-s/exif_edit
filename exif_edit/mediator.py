@@ -4,6 +4,7 @@ Mediator to coordinate tasks.
 
 import os
 import logging
+import webbrowser
 
 from tkinter import DISABLED, NORMAL
 
@@ -130,3 +131,7 @@ class Mediator:
             return False
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
+
+    @classmethod
+    def open_url(cls, url):
+        webbrowser.open(url, new=0)
