@@ -41,6 +41,11 @@ class TestConverter(unittest.TestCase):
         m = {'foo': 'bar'}
         self.assertIsNone(Converter.try_read(m, 'baz'))
 
+    def test_rows_to_dict(self):
+        rows = [["model", "bar"]]
+        d = Converter.rows_to_dict(rows)
+        self.assertDictEqual({'model': 'bar'}, d)
+
 
 if __name__ == '__main__':
     unittest.main()

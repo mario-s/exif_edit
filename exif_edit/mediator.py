@@ -132,6 +132,9 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
+    def __find_location(self):
+        pass
+
     @classmethod
     def open_url(cls, url):
         webbrowser.open(url, new=0)

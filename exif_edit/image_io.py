@@ -35,7 +35,6 @@ class ExifFilter:
 
 
 class Reader:
-
     """This class reads Exif Tags and the image itself."""
 
     def __init__(self, img_path):
@@ -98,23 +97,8 @@ class Writer:
 
     def save(self, collection, img_path):
         """Saves the the collection of Exif tags to a file given by the path."""
-        if isinstance(collection, dict):
-            self.__set_values(collection)
-        elif isinstance(collection, list):
-            self.__set_values(self.__list_to_dict(collection))
-        else:
-            raise ValueError("Expect either dict or list[list]!")
-
+        self.__set_values(Converter.rows_to_dict(collection))
         self.__save(img_path)
-
-    @classmethod
-    def __list_to_dict(cls, row) -> dict:
-        dic = {}
-        for col in row:
-            if len(col) < 2:
-                raise ValueError("Expect at least two cells in the row")
-            dic[col[0]] = col[1]
-        return dic
 
     def __set_values(self, dic):
         self.__delete_all()

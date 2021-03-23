@@ -4,8 +4,7 @@ import logging
 import exif as ex
 
 class Converter:
-
-    """This class converts between the human readable values and the Enum values."""
+    """This class acts as a converter between the exif data and the data from the sheet."""
 
     dictionary = {"color_space": ex.ColorSpace, 
             "exposure_mode": ex.ExposureMode,
@@ -51,6 +50,10 @@ class Converter:
 
     @staticmethod
     def try_read(dic, key):
+        """
+        This method tries to get the value from the dictionary, and if it is an enum, 
+        return the name of it.
+        """
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
@@ -61,3 +64,15 @@ class Converter:
         except ValueError as exc:
             logging.warning("Illegal value in exif: %s", exc)
             return None
+
+    @staticmethod
+    def rows_to_dict(rows) -> dict:
+        """
+        This method converts a collection of rows into a dictionary.
+        """
+        dic = {}
+        for col in rows:
+            if len(col) < 2:
+                raise ValueError("Expect at least two cells in the row")
+            dic[col[0]] = col[1]
+        return dic
