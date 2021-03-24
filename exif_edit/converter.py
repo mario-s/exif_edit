@@ -16,7 +16,7 @@ class Converter:
             "resolution_unit": ex.ResolutionUnit,
             "saturation": ex.Saturation,
             "scene_capture_type": ex.SceneCaptureType,
-            "sending_method": ex.SensingMethod,
+            "sensing_method": ex.SensingMethod,
             "sharpness": ex.Sharpness,
             "white_balance": ex.WhiteBalance}
 
