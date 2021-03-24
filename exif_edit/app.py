@@ -89,12 +89,8 @@ class App(tk.Tk):
         icon = self.mediator.read_icon(icon_name)
         btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
         btn.image = icon
-        self.__add_tooltip(btn, tooltip)
+        Tooltip(btn, text=tooltip)
         return btn
-
-    @classmethod
-    def __add_tooltip(cls, button, tooltip):
-        tp.Hovertip(button, text=tooltip, hover_delay=2000)
 
     @classmethod
     def __acc(cls, key):
@@ -133,12 +129,12 @@ class App(tk.Tk):
 
         btn_add = tk.Button(left_cmd_frame, text="+", command=self.mediator.add_row)
         btn_add.pack(padx=5, pady=3, side=tk.LEFT)
-        self.__add_tooltip(btn_add, "add a row")
+        Tooltip(btn_add, "add a row")
 
         self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
-        self.__add_tooltip(self.btn_rm, "remove selected rows")
+        Tooltip(self.btn_rm, "remove selected rows")
 
     def load_image(self, img_path):
         """
@@ -209,3 +205,14 @@ class App(tk.Tk):
     @classmethod 
     def __quit(cls, event = None):
         sys.exit(0)
+
+class Tooltip(tp.Hovertip):
+
+    def __init__(self, anchor_widget, text, hover_delay = 2000):
+        super().__init__(anchor_widget, text, hover_delay=hover_delay)
+
+    def showcontents(self):
+        label = tk.Label(self.tipwindow, text=self.text, 
+                    justify=tk.LEFT, relief=tk.SOLID,
+                    foreground="#000000", background="#ffffe0", borderwidth=1)
+        label.pack()
