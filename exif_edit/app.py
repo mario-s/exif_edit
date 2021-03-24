@@ -15,20 +15,20 @@ from tksheet import Sheet
 from exif_edit.mediator import Mediator
 
 
-class App:
+class App(tk.Tk):
 
     """This class contains the GUI. It uses a spreadsheet to display Exif Tags."""
 
     def __init__(self):
+        super().__init__()
         self.img_display = None
 
-        self.root = tk.Tk()
-        self.root.title("Exif Edit")
-        self.root.grid_columnconfigure(0, weight = 1)
-        self.root.grid_rowconfigure(0, weight = 1)
-        self.root.protocol("WM_DELETE_WINDOW", self.__quit)
+        self.title("Exif Edit")
+        self.grid_columnconfigure(0, weight = 1)
+        self.grid_rowconfigure(0, weight = 1)
+        self.protocol("WM_DELETE_WINDOW", self.__quit)
 
-        self.frame = tk.Frame(self.root)
+        self.frame = tk.Frame(self)
         self.frame.grid(row = 1, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
@@ -48,21 +48,21 @@ class App:
         self.__add_table_commands()
 
     def __add_menubar(self): 
-        menubar = tk.Menu(self.root)
+        menubar = tk.Menu(self)
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
         filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
         menubar.add_cascade(label="File", menu=filemenu)
-        self.root.config(menu=menubar)
+        self.config(menu=menubar)
         #add key bindings according to accelerators
-        self.root.bind('<Command-o>', self.__open)
-        self.root.bind('<Command-s>', self.__save)
-        self.root.bind('<Command-w>', self.__quit)
+        self.bind('<Command-o>', self.__open)
+        self.bind('<Command-s>', self.__save)
+        self.bind('<Command-w>', self.__quit)
 
     def __add_toolbar(self):
-        self.toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
         self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
         btn_open = self.__create_toolbar_button("folder.png", 
@@ -158,7 +158,7 @@ class App:
         self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
 
         #ensure that window has focus again
-        self.root.focus_set()
+        self.focus_set()
 
     def single_select(self, event):
         print(event)
@@ -193,8 +193,8 @@ class App:
 
     def start(self):
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
-        self.root.eval('tk::PlaceWindow . center')
-        self.root.mainloop()
+        self.eval('tk::PlaceWindow . center')
+        self.mainloop()
     
     def __open(self, event = None):
         name = filedialog.askopenfilename()
