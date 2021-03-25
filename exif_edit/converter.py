@@ -3,6 +3,8 @@ import logging
 
 import exif as ex
 
+from exif_edit.geoloc import DmsFormat
+
 class Converter:
     """This class acts as a converter between the exif data and the data from the sheet."""
 
@@ -57,6 +59,8 @@ class Converter:
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
+            if Converter.__is_geoloc(key):
+                return DmsFormat(value)
             #human readable value if we have an enum
             if isinstance(value, Enum):
                 return value.name
@@ -64,6 +68,10 @@ class Converter:
         except ValueError as exc:
             logging.warning("Illegal value in exif: %s", exc)
             return None
+
+    @staticmethod 
+    def __is_geoloc(key):
+        return key == "gps_longitude" or key == "gps_latitude"
 
     @staticmethod
     def rows_to_dict(rows) -> dict:

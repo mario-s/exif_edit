@@ -135,7 +135,7 @@ class Mediator:
 
     def __find_location(self):
         dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
-        return (dic.get('gps_longtitude'), dic.get('gps_longtitude_ref'), 
+        return (dic.get('gps_longitude'), dic.get('gps_longtitude_ref'), 
                 dic.get('gps_latitude'), dic.get('gps_latitude_ref'))
 
     @classmethod
