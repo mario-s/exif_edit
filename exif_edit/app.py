@@ -200,7 +200,7 @@ class App(tk.Tk):
         self.mediator.save_exif()
 
     def __open_location(self, event = None):
-        self.mediator.open_url("https://www.google.com/maps/@50.5708328,11.4469587,14z")
+        self.mediator.open_location()
 
     @classmethod 
     def __quit(cls, event = None):

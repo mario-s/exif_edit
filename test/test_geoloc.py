@@ -1,6 +1,6 @@
 import unittest
 
-from exif_edit.geoloc import DmsFormat, DecimalFormat, Parser
+from exif_edit.geoloc import DmsFormat, DecimalFormat, Parser, Coordinate
 
 class TestDmsFormat(unittest.TestCase):
 
@@ -38,6 +38,18 @@ class TestDmsFormat(unittest.TestCase):
 
     def test_parser_raises_error(self):
         self.assertRaises(ValueError, lambda: Parser.parse('4711'))
+
+    def test_coordinate_to_dec_positive(self):
+        lat = DecimalFormat(30.263888889)
+        lon = DecimalFormat(30.263888889)
+        coord = Coordinate(lat, lon)
+        self.assertEquals((30.263889, 30.263889), coord.decimalFormat())
+
+    def test_coordinate_to_dec_negative(self):
+        lat = DecimalFormat(30.263888889)
+        lon = DecimalFormat(30.263888889)
+        coord = Coordinate(lat, lon, lat_ref='S', lon_ref='W')
+        self.assertEquals((-30.263889, -30.263889), coord.decimalFormat())
 
 
 if __name__ == '__main__':
