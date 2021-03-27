@@ -1,6 +1,8 @@
 """
 This module contains classes related to coordinates.
 """
+import re
+
 class DmsFormat:
     """
     Degree given in DMS format.
@@ -11,7 +13,7 @@ class DmsFormat:
 
         self.degrees = int(value[0])
         self.minutes = int(value[1])
-        self.seconds = value[2]
+        self.seconds = float(value[2])
 
     def __dms2dec(self):
         min = self.minutes/60
@@ -37,7 +39,7 @@ class DecimalFormat:
         if value is None:
             raise ValueError("expected degree in decimal")
 
-        self.degrees = value
+        self.degrees = float(value)
 
     def dmsDegrees(self):
         """ 
@@ -51,3 +53,21 @@ class DecimalFormat:
         
     def __repr__(self) -> str:
         return f"{round(self.degrees, 6)}°"
+
+class Parser:
+    """
+    Read a string and returns a matching format.
+    """
+    @staticmethod
+    def parse(str):
+        #DMS
+        match = re.search('(\d+)°(\d+)\'(\d+.?\d*)\"', str)
+        if match:
+            return DmsFormat((match.group(1), match.group(2), match.group(3)))
+        
+        #DEC
+        match = re.search('(\d+.?\d*)°', str)
+        if match:
+            return DecimalFormat(match.group(1))
+
+        raise ValueError(f"unknown format for {str}")

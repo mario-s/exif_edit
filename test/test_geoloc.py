@@ -1,6 +1,6 @@
 import unittest
 
-from exif_edit.geoloc import DmsFormat, DecimalFormat
+from exif_edit.geoloc import DmsFormat, DecimalFormat, Parser
 
 class TestDmsFormat(unittest.TestCase):
 
@@ -27,6 +27,17 @@ class TestDmsFormat(unittest.TestCase):
     def test_dec_to_string(self):
         loc = DecimalFormat(30.263888889)
         self.assertEquals("30.263889°", loc.__repr__())
+
+    def test_parser_to_dms(self):
+        loc = Parser.parse("78°55\'44.33324\"")
+        self.assertEqual(78.928981, loc.decimalDegrees())
+
+    def test_parser_to_dec(self):
+        loc = Parser.parse("30.263888889°")
+        self.assertEqual((30, 15, 50), loc.dmsDegrees())
+
+    def test_parser_raises_error(self):
+        self.assertRaises(ValueError, lambda: Parser.parse('4711'))
 
 
 if __name__ == '__main__':
