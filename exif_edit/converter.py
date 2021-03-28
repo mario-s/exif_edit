@@ -71,7 +71,7 @@ class Converter:
 
     @staticmethod 
     def __is_geoloc(key):
-        return key == "gps_longitude" or key == "gps_latitude"
+        return key in ("gps_longitude", "gps_latitude")
 
     @staticmethod
     def rows_to_dict(rows) -> dict:

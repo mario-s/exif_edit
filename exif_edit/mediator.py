@@ -12,7 +12,7 @@ from PIL import ImageTk
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
-from exif_edit.geoloc import Coordinate, Factory
+from exif_edit.geoloc import Coordinate
 
 class Mediator:
 
@@ -147,7 +147,7 @@ class Mediator:
     def open_location(self):
         loc = self.__find_location()
         if not loc is None:
-            lat, lon = loc.decimalFormat()
+            lat, lon = loc.decimal()
             url = f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"
             self.open_url(url)
 

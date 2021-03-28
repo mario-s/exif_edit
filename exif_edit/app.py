@@ -5,7 +5,6 @@ GUI of the application.
 import sys
 import logging
 import tkinter as tk
-from tkinter.constants import Y
 import tkinter.filedialog as filedialog
 
 from tkinter import ttk

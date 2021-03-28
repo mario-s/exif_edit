@@ -5,10 +5,10 @@ import re
 from typing import List, Tuple
 
 class Format:
-    def decimalDegrees(self):
+    def decimal_degrees(self):
         pass
 
-    def dmsDegrees(self):
+    def dms_degrees(self):
         pass
 
 class DmsFormat(Format):
@@ -20,7 +20,7 @@ class DmsFormat(Format):
             raise ValueError("expected (degree, minuntes, seconds)")
         self.degrees = (int(degrees[0]), int(degrees[1]), float(degrees[2]))
 
-    def dmdDegrees(self):
+    def dms_degrees(self):
         return self.degrees
 
     def __dms2dec(self):
@@ -31,7 +31,7 @@ class DmsFormat(Format):
             return deg + min + sec
         return deg - min - sec
 
-    def decimalDegrees(self):
+    def decimal_degrees(self):
         """ 
         Converts degrees, minutes, and seconds to decimal degrees.
         """
@@ -50,21 +50,21 @@ class DecimalFormat(Format):
 
         self.degrees = float(degree)
 
-    def dmsDegrees(self):
+    def dms_degrees(self):
         """ 
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
         deg = int(self.degrees)
-        min = int((self.degrees - deg) * 60)
-        sec = (self.degrees - deg - min/60) * 3600
+        minutes = int((self.degrees - deg) * 60)
+        sec = (self.degrees - deg - minutes/60) * 3600
         
-        return deg, min, round(sec, 6)
+        return deg, minutes, round(sec, 6)
 
-    def decimalDegrees(self):
+    def decimal_degrees(self):
         return round(self.degrees, 6)
         
     def __repr__(self) -> str:
-        return f"{self.decimalDegrees()}°"
+        return f"{self.decimal_degrees()}°"
     
 class Factory:
     """
@@ -104,9 +104,9 @@ class Coordinate:
         self.longitude = longitude
         self.lon_ref = lon_ref
 
-    def decimalFormat(self):
-        lat_dec = abs(self.latitude.decimalDegrees())
-        lon_dec = abs(self.longitude.decimalDegrees())
+    def decimal(self):
+        lat_dec = abs(self.latitude.decimal_degrees())
+        lon_dec = abs(self.longitude.decimal_degrees())
         lat = lat_dec if self.lat_ref == 'N' else -1 * lat_dec
         lon = lon_dec if self.lon_ref == 'E' else -1 * lon_dec
         return lat, lon
