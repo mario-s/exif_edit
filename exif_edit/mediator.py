@@ -12,7 +12,7 @@ from PIL import ImageTk
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
-from exif_edit.geoloc import Parser
+from exif_edit.geoloc import Coordinate, Factory
 
 class Mediator:
 
@@ -133,17 +133,22 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
-    def __find_location(self):
+    def __find_location(self) -> Coordinate:
         dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
-        return (dic.get('gps_latitude'), dic.get('gps_latitude_ref'),
-                dic.get('gps_longitude'), dic.get('gps_longtitude_ref'))
+        lat_lon = [dic.get(k) 
+            for k in ['gps_latitude', 'gps_longitude'] 
+            if k in dic]
+        if len(lat_lon) == 2:
+            lat_ref = dic.get('gps_latitude_ref')
+            lon_ref = dic.get('gps_longitude_ref')
+            return Coordinate(lat_lon[0], lat_lon[1], lat_ref=lat_ref, lon_ref=lon_ref)
+        return None
 
     def open_location(self):
         loc = self.__find_location()
-        if len(loc) > 0:
-            lon = Parser.parse(loc[0])
-            lat = Parser.parse(loc[2])
-            url = "https://www.google.com/maps/@50.5708328,11.4469587,14z"
+        if not loc is None:
+            lat, lon = loc.decimalFormat()
+            url = f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"
             self.open_url(url)
 
     @classmethod

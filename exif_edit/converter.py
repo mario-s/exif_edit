@@ -3,7 +3,7 @@ import logging
 
 import exif as ex
 
-from exif_edit.geoloc import DmsFormat
+from exif_edit.geoloc import Factory
 
 class Converter:
     """This class acts as a converter between the exif data and the data from the sheet."""
@@ -60,7 +60,7 @@ class Converter:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
             if Converter.__is_geoloc(key):
-                return DmsFormat(value)
+                return Factory.create(value)
             #human readable value if we have an enum
             if isinstance(value, Enum):
                 return value.name

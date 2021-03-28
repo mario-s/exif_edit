@@ -2,6 +2,7 @@
 This module contains classes related to coordinates.
 """
 import re
+from typing import List, Tuple
 
 class Format:
     def decimalDegrees(self):
@@ -64,24 +65,33 @@ class DecimalFormat(Format):
         
     def __repr__(self) -> str:
         return f"{self.decimalDegrees()}°"
-
-class Parser:
+    
+class Factory:
     """
-    Read a string and returns a matching format.
+    Creates a new instance of a format
     """
     @staticmethod
-    def parse(str):
+    def create(degrees):
+        if isinstance(degrees, Tuple) or isinstance(degrees, List):
+            return DmsFormat(degrees)
+        return DecimalFormat(degrees)
+
+    @staticmethod
+    def parse(arg):
+        """
+        Read a string and returns a matching format.
+        """
         #DMS
-        match = re.search('(\d+)°(\d+)\'(\d+.?\d*)\"', str)
+        match = re.search('(\d+)°(\d+)\'(\d+.?\d*)\"', str(arg))
         if match:
             return DmsFormat((match.group(1), match.group(2), match.group(3)))
         
         #DEC
-        match = re.search('(\d+.?\d*)°', str)
+        match = re.search('(\d+.?\d*)°', str(arg))
         if match:
             return DecimalFormat(match.group(1))
 
-        raise ValueError(f"unknown format for {str}")
+        raise ValueError(f"unknown format for {arg}")
 
 class Coordinate:
     """
