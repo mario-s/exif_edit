@@ -72,7 +72,7 @@ class Factory:
     """
     @staticmethod
     def create(degrees):
-        if isinstance(degrees, Tuple) or isinstance(degrees, List):
+        if isinstance(degrees, (List, Tuple)):
             return DmsFormat(degrees)
         return DecimalFormat(degrees)
 
