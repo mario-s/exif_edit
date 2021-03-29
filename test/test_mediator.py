@@ -1,3 +1,4 @@
+from exif_edit.geoloc import Factory
 import unittest
 import os
 import tkinter as tk
@@ -75,7 +76,15 @@ class TestMediator(unittest.TestCase):
         self.sheet.get_sheet_data.return_value = [["model", "bar"]]
         self.mediator.open_url = MagicMock()
         self.mediator.open_location()
-        self.mediator.open_url.assert_not_called
+        self.mediator.open_url.assert_not_called()
+
+    def test_open_location_coordinates(self):
+        lat = Factory.create((1,1,1))
+        lon = lat
+        self.sheet.get_sheet_data.return_value = [["gps_latitude", lat], ["gps_longitude", lon]]
+        self.mediator.open_url = MagicMock()
+        self.mediator.open_location()
+        self.mediator.open_url.assert_called_once()
 
 
 if __name__ == '__main__':

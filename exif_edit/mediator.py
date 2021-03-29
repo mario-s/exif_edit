@@ -133,6 +133,12 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
+    def open_location(self):
+        loc = self.__find_location()
+        if not loc is None:
+            url = self.__maps_url(loc)
+            self.open_url(url)
+
     def __find_location(self) -> Coordinate:
         dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
         lat_lon = [dic.get(k) 
@@ -144,12 +150,10 @@ class Mediator:
             return Coordinate(lat_lon[0], lat_lon[1], lat_ref=lat_ref, lon_ref=lon_ref)
         return None
 
-    def open_location(self):
-        loc = self.__find_location()
-        if not loc is None:
-            lat, lon = loc.decimal()
-            url = f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"
-            self.open_url(url)
+    @classmethod
+    def __maps_url(cls, loc):
+        lat, lon = loc.decimal()
+        return f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"
 
     @classmethod
     def open_url(cls, url):
