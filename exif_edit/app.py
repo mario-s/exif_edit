@@ -64,28 +64,30 @@ class App(tk.Tk):
         self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
         self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = self.__create_toolbar_button("folder.png", 
+        btn_open = self.__create_toolbar_button(self.__icon("folder.png"), 
             "open file " + self.__acc("O"), 
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_save = self.__create_toolbar_button("save-file.png", 
+        btn_save = self.__create_toolbar_button(self.__icon("save-file.png"), 
             "save file " + self.__acc("S"), 
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_exit = self.__create_toolbar_button("exit.png", 
+        btn_exit = self.__create_toolbar_button(self.__icon("exit.png"), 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = self.__create_toolbar_button("world.png", 
+        btn_loc = self.__create_toolbar_button(self.__icon("world.png"), 
             "show location",
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
-    def __create_toolbar_button(self, icon_name, tooltip, cmd):
-        icon = self.mediator.read_icon(icon_name)
+    def __icon(self, icon_name):
+        return self.mediator.read_icon(icon_name)
+
+    def __create_toolbar_button(self, icon, tooltip, cmd):
         btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
         btn.image = icon
         Tooltip(btn, text=tooltip)
