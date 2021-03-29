@@ -45,6 +45,7 @@ class App(tk.Tk):
         self.__add_toolbar()
         self.__add_sheet()
         self.__add_table_commands()
+        self.__add_bindings()
 
     def __add_menubar(self): 
         menubar = tk.Menu(self)
@@ -55,10 +56,6 @@ class App(tk.Tk):
         filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
         menubar.add_cascade(label="File", menu=filemenu)
         self.config(menu=menubar)
-        #add key bindings according to accelerators
-        self.bind('<Command-o>', self.__open)
-        self.bind('<Command-s>', self.__save)
-        self.bind('<Command-w>', self.__quit)
 
     def __add_toolbar(self):
         self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
@@ -80,7 +77,7 @@ class App(tk.Tk):
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
         btn_loc = self.__create_toolbar_button(self.__icon("world.png"), 
-            "show location",
+            "show location" + self.__acc("L"),
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
@@ -136,6 +133,13 @@ class App(tk.Tk):
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
+
+    def __add_bindings(self):
+        #add key bindings according to accelerators
+        self.bind('<Command-o>', self.__open)
+        self.bind('<Command-s>', self.__save)
+        self.bind('<Command-w>', self.__quit)
+        self.bind('<Command-l>', self.__open_location)
 
     def load_image(self, img_path):
         """
