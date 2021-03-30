@@ -59,8 +59,8 @@ class Mediator:
     @classmethod
     def read_icon(cls, icon_name):
         icon_path = os.path.join(os.path.dirname(__file__), "assets/" + icon_name)
-        icon = Reader.read_image(icon_path)
-        return ImageTk.PhotoImage(icon)
+        return Reader.read_image(icon_path)
+        #return ImageTk.PhotoImage(icon)
 
     def add_row(self):
         self.sheet.insert_row()

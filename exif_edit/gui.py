@@ -11,6 +11,9 @@ from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
+from PIL import ImageTk
+
+
 from exif_edit.mediator import Mediator
 
 
@@ -65,21 +68,26 @@ class App(tk.Tk):
             "open file " + self.__acc("O"), 
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_save = ToolbarButton(self.toolbar, self.__icon("save-file.png"), 
+
+        self.btn_save = ToolbarButton(self.toolbar, self.__icon("save-file.png"), 
             "save file " + self.__acc("S"), 
             self.__save)
-        btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_exit = ToolbarButton(self.toolbar, self.__icon("exit.png"), 
+        self.btn_save.pack(side=tk.LEFT, padx=2, pady=5)
+
+        self.exit_icon = self.__icon("exit.png")
+        btn_exit = ToolbarButton(self.toolbar, self.exit_icon, 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = ToolbarButton(self.toolbar, self.__icon("world.png"), 
+        self.loc_icon = self.__icon("world.png")
+        self.btn_loc = ToolbarButton(self.toolbar, self.loc_icon, 
             "show location " + self.__acc("L"),
             self.__open_location)
-        btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_loc.disable()
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
@@ -127,6 +135,7 @@ class App(tk.Tk):
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
+
     def __add_bindings(self):
         #add key bindings according to accelerators
         self.bind('<Command-o>', self.__open)
@@ -209,9 +218,19 @@ class ToolbarButton(tk.Button):
     Button especialy for the toolbar.
     """
     def __init__(self, anchor, icon, tooltip, cmd):
-        super().__init__(anchor, image=icon, relief=tk.FLAT, command=cmd)
-        self.image = icon
+        self.icon = icon
+        img = ImageTk.PhotoImage(self.icon)
+        super().__init__(anchor, image=img, relief=tk.FLAT, command=cmd)
+        self.image = img
         Tooltip(self, text=tooltip)
+
+    def disable(self):
+        self.config(state=tk.DISABLED)
+        icon = self.icon
+        icon.putalpha(50)
+        img = ImageTk.PhotoImage(icon)
+        self.config(image=img)
+        self.image = img
 
 class Tooltip(tp.Hovertip):
     """
