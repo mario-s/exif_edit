@@ -3,9 +3,10 @@ import logging
 
 import exif as ex
 
-class Converter:
+from exif_edit.geoloc import Factory
 
-    """This class converts between the human readable values and the Enum values."""
+class Converter:
+    """This class acts as a converter between the exif data and the data from the sheet."""
 
     dictionary = {"color_space": ex.ColorSpace, 
             "exposure_mode": ex.ExposureMode,
@@ -17,7 +18,7 @@ class Converter:
             "resolution_unit": ex.ResolutionUnit,
             "saturation": ex.Saturation,
             "scene_capture_type": ex.SceneCaptureType,
-            "sending_method": ex.SensingMethod,
+            "sensing_method": ex.SensingMethod,
             "sharpness": ex.Sharpness,
             "white_balance": ex.WhiteBalance}
 
@@ -51,9 +52,15 @@ class Converter:
 
     @staticmethod
     def try_read(dic, key):
+        """
+        This method tries to get the value from the dictionary, and if it is an enum, 
+        return the name of it.
+        """
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
+            if Converter.__is_geoloc(key):
+                return Factory.create(value)
             #human readable value if we have an enum
             if isinstance(value, Enum):
                 return value.name
@@ -61,3 +68,19 @@ class Converter:
         except ValueError as exc:
             logging.warning("Illegal value in exif: %s", exc)
             return None
+
+    @staticmethod 
+    def __is_geoloc(key):
+        return key in ("gps_longitude", "gps_latitude")
+
+    @staticmethod
+    def rows_to_dict(rows) -> dict:
+        """
+        This method converts a collection of rows into a dictionary.
+        """
+        dic = {}
+        for col in rows:
+            if len(col) < 2:
+                raise ValueError("Expect at least two cells in the row")
+            dic[col[0]] = col[1]
+        return dic

@@ -31,15 +31,6 @@ class TestImageIO(unittest.TestCase):
         k = ExifFilter.read_only()[0]
         self.assertEqual(0, l.index(k))
 
-    def test_save_dict(self):
-        dict = {"model": "bar"}
-        p = self.__path('modified.jpg')
-        self.writer.save(dict, p)
-
-        keys = Reader(p).keys()
-        first_key = next(iter(dict))
-        self.assertTrue(first_key in keys)
-
     def test_save_list(self):
         list = [["model", "bar"]]
         p = self.__path('modified.jpg')

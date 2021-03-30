@@ -1,7 +1,8 @@
+from exif_edit.geoloc import Factory
 import unittest
 import os
 import tkinter as tk
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 from tksheet import Sheet
 
 from exif_edit.mediator import Mediator
@@ -70,6 +71,20 @@ class TestMediator(unittest.TestCase):
     def test_get_remove_button_state_disabled(self):
         event = ('foo', (0,))
         self.assertEqual(tk.DISABLED, self.mediator.get_remove_button_state(event))
+
+    def test_open_location_no_coordinates(self):
+        self.sheet.get_sheet_data.return_value = [["model", "bar"]]
+        self.mediator.open_url = MagicMock()
+        self.mediator.open_location()
+        self.mediator.open_url.assert_not_called()
+
+    def test_open_location_coordinates(self):
+        deg = Factory.create((1,1,1))
+        self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
+        self.mediator.open_url = MagicMock()
+        self.mediator.open_location()
+        self.mediator.open_url.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
