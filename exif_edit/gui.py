@@ -61,22 +61,22 @@ class App(tk.Tk):
         self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
         self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = ToolbarButton(self.__icon("folder.png"), 
+        btn_open = ToolbarButton(self.toolbar, self.__icon("folder.png"), 
             "open file " + self.__acc("O"), 
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_save = ToolbarButton(self.__icon("save-file.png"), 
+        btn_save = ToolbarButton(self.toolbar, self.__icon("save-file.png"), 
             "save file " + self.__acc("S"), 
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_exit = ToolbarButton(self.__icon("exit.png"), 
+        btn_exit = ToolbarButton(self.toolbar, self.__icon("exit.png"), 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = ToolbarButton(self.__icon("world.png"), 
+        btn_loc = ToolbarButton(self.toolbar, self.__icon("world.png"), 
             "show location " + self.__acc("L"),
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)

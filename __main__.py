@@ -1,7 +1,7 @@
 import os
 import sys
 
-from exif_edit.app import App
+from exif_edit.gui import App
 
 if __name__ == "__main__":
     def img_path():
