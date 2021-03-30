@@ -61,34 +61,28 @@ class App(tk.Tk):
         self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
         self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = self.__create_toolbar_button(self.__icon("folder.png"), 
+        btn_open = ToolbarButton(self.__icon("folder.png"), 
             "open file " + self.__acc("O"), 
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_save = self.__create_toolbar_button(self.__icon("save-file.png"), 
+        btn_save = ToolbarButton(self.__icon("save-file.png"), 
             "save file " + self.__acc("S"), 
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_exit = self.__create_toolbar_button(self.__icon("exit.png"), 
+        btn_exit = ToolbarButton(self.__icon("exit.png"), 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = self.__create_toolbar_button(self.__icon("world.png"), 
-            "show location" + self.__acc("L"),
+        btn_loc = ToolbarButton(self.__icon("world.png"), 
+            "show location " + self.__acc("L"),
             self.__open_location)
         btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
-
-    def __create_toolbar_button(self, icon, tooltip, cmd):
-        btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
-        btn.image = icon
-        Tooltip(btn, text=tooltip)
-        return btn
 
     @classmethod
     def __acc(cls, key):
@@ -211,10 +205,21 @@ class App(tk.Tk):
     def __quit(cls, event = None):
         sys.exit(0)
 
-class Tooltip(tp.Hovertip):
+class ToolbarButton(tk.Button):
+    """
+    Button especialy for the toolbar.
+    """
+    def __init__(self, anchor, icon, tooltip, cmd):
+        super().__init__(anchor, image=icon, relief=tk.FLAT, command=cmd)
+        self.image = icon
+        Tooltip(self, text=tooltip)
 
-    def __init__(self, anchor_widget, text, hover_delay = 2000):
-        super().__init__(anchor_widget, text, hover_delay=hover_delay)
+class Tooltip(tp.Hovertip):
+    """
+    Tooltip which can be attached to buttons and more.
+    """
+    def __init__(self, anchor, text, hover_delay = 2000):
+        super().__init__(anchor, text, hover_delay=hover_delay)
 
     def showcontents(self):
         label = tk.Label(self.tipwindow, text=self.text, 
