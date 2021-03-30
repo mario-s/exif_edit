@@ -7,7 +7,10 @@ import logging
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
+<<<<<<< HEAD:exif_edit/gui.py
 from tkinter import ttk
+=======
+>>>>>>> master:exif_edit/app.py
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
@@ -19,6 +22,7 @@ class App(tk.Tk):
     """This class contains the GUI. It uses a spreadsheet to display Exif Tags."""
 
     def __init__(self):
+<<<<<<< HEAD:exif_edit/gui.py
         super().__init__()
         self.img_display = None
 
@@ -28,6 +32,15 @@ class App(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.__quit)
 
         self.frame = tk.Frame(self)
+=======
+        self.root = tk.Tk()
+        self.root.title("Exif Edit")
+        self.root.grid_columnconfigure(0, weight = 1)
+        self.root.grid_rowconfigure(0, weight = 1)
+        self.root.protocol("WM_DELETE_WINDOW", self.__quit)
+
+        self.frame = tk.Frame(self.root)
+>>>>>>> master:exif_edit/app.py
         self.frame.grid(row = 1, column = 0, sticky = "nswe")
         self.frame.grid_columnconfigure(0, weight = 1)
         self.frame.grid_rowconfigure(0, weight = 1)
@@ -44,17 +57,25 @@ class App(tk.Tk):
         self.__add_menubar()
         self.__add_toolbar()
         self.__add_sheet()
+<<<<<<< HEAD:exif_edit/gui.py
         self.__add_table_commands()
         self.__add_bindings()
 
     def __add_menubar(self): 
         menubar = tk.Menu(self)
+=======
+        self.__add_commands()
+
+    def __add_menubar(self): 
+        menubar = tk.Menu(self.root)
+>>>>>>> master:exif_edit/app.py
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
         filemenu.add_command(label="Save", accelerator="Cmd+S", command=self.__save)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", accelerator="Cmd+W", command=self.__quit)
         menubar.add_cascade(label="File", menu=filemenu)
+<<<<<<< HEAD:exif_edit/gui.py
         self.config(menu=menubar)
 
     def __add_toolbar(self):
@@ -70,10 +91,29 @@ class App(tk.Tk):
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
         btn_exit = ToolbarButton(self.toolbar, self.__icon("exit.png"), 
+=======
+        self.root.config(menu=menubar)
+        #add key bindings according to accelerators
+        self.root.bind('<Command-o>', self.__open)
+        self.root.bind('<Command-s>', self.__save)
+        self.root.bind('<Command-w>', self.__quit)
+
+    def __add_toolbar(self):
+        self.toolbar = tk.Frame(self.root, bd=1, relief=tk.RAISED)
+        self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
+
+        btn_save = self.__create_toolbar_button("save-file.png", 
+            "save file " + self.__acc("S"), 
+            self.__save)
+        btn_save.pack(side=tk.LEFT, padx=2, pady=5)
+
+        btn_exit = self.__create_toolbar_button("exit.png", 
+>>>>>>> master:exif_edit/app.py
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
+<<<<<<< HEAD:exif_edit/gui.py
         sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
         btn_loc = ToolbarButton(self.toolbar, self.__icon("world.png"), 
@@ -83,6 +123,14 @@ class App(tk.Tk):
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
+=======
+    def __create_toolbar_button(self, icon_name, toooltip, cmd):
+        icon = self.mediator.read_icon(icon_name)
+        btn = tk.Button(self.toolbar, image=icon, relief=tk.FLAT, command=cmd)
+        tp.Hovertip(btn, text=toooltip, hover_delay=2000)
+        btn.image = icon
+        return btn
+>>>>>>> master:exif_edit/app.py
 
     @classmethod
     def __acc(cls, key):
@@ -127,6 +175,8 @@ class App(tk.Tk):
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
+
+<<<<<<< HEAD:exif_edit/gui.py
     def __add_bindings(self):
         #add key bindings according to accelerators
         self.bind('<Command-o>', self.__open)
@@ -134,6 +184,8 @@ class App(tk.Tk):
         self.bind('<Command-w>', self.__quit)
         self.bind('<Command-l>', self.__open_location)
 
+=======
+>>>>>>> master:exif_edit/app.py
     def load_image(self, img_path):
         """
         This method loads the image and the exif data into the application.
