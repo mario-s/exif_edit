@@ -11,7 +11,7 @@ from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
-from PIL import ImageTk
+from PIL import ImageTk as itk
 
 
 from exif_edit.mediator import Mediator
@@ -61,29 +61,28 @@ class App(tk.Tk):
         self.config(menu=menubar)
 
     def __add_toolbar(self):
-        self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
-        self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
+        toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
+        toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = ToolbarButton(self.toolbar, self.__icon("folder.png"), 
+        btn_open = ToolbarButton(toolbar, self.__icon("folder.png"), 
             "open file " + self.__acc("O"), 
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
 
-        self.btn_save = ToolbarButton(self.toolbar, self.__icon("save-file.png"), 
+        btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"), 
             "save file " + self.__acc("S"), 
             self.__save)
-        self.btn_save.pack(side=tk.LEFT, padx=2, pady=5)
+        btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
-        self.exit_icon = self.__icon("exit.png")
-        btn_exit = ToolbarButton(self.toolbar, self.exit_icon, 
+        btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"), 
             "exit "+ self.__acc("W"), 
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
-        sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
+        sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        self.loc_icon = self.__icon("world.png")
-        self.btn_loc = ToolbarButton(self.toolbar, self.loc_icon, 
+
+        self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"), 
             "show location " + self.__acc("L"),
             self.__open_location)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
@@ -155,7 +154,7 @@ class App(tk.Tk):
         if not self.img_display is None:
             self.img_display.destroy()
 
-        img = self.mediator.read_image(img_path)
+        img = itk.PhotoImage(self.mediator.read_image(img_path))
         self.img_display = tk.Label(self.frame, image=img)
         self.img_display.image = img
         self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
@@ -215,22 +214,23 @@ class App(tk.Tk):
 
 class ToolbarButton(tk.Button):
     """
-    Button especialy for the toolbar.
+    Button for the toolbar.
     """
     def __init__(self, anchor, icon, tooltip, cmd):
         self.icon = icon
-        img = ImageTk.PhotoImage(self.icon)
-        super().__init__(anchor, image=img, relief=tk.FLAT, command=cmd)
-        self.image = img
+        self.image = itk.PhotoImage(self.icon)
+        super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
 
     def disable(self):
         self.config(state=tk.DISABLED)
+        self.__put_alpha(100)
+
+    def __put_alpha(self, alpha):
         icon = self.icon
-        icon.putalpha(50)
-        img = ImageTk.PhotoImage(icon)
-        self.config(image=img)
-        self.image = img
+        icon.putalpha(alpha)
+        self.image = itk.PhotoImage(icon)
+        self.config(image=self.image)
 
 class Tooltip(tp.Hovertip):
     """

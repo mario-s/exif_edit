@@ -8,8 +8,6 @@ import webbrowser
 
 from tkinter import DISABLED, NORMAL
 
-from PIL import ImageTk
-
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
 from exif_edit.geoloc import Coordinate
@@ -53,14 +51,12 @@ class Mediator:
 
     @classmethod
     def read_image(cls, img_path):
-        img = Reader.read_image(img_path, True)
-        return ImageTk.PhotoImage(img)
+        return Reader.read_image(img_path, True)
 
     @classmethod
     def read_icon(cls, icon_name):
         icon_path = os.path.join(os.path.dirname(__file__), "assets/" + icon_name)
         return Reader.read_image(icon_path)
-        #return ImageTk.PhotoImage(icon)
 
     def add_row(self):
         self.sheet.insert_row()

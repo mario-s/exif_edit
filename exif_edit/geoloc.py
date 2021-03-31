@@ -5,6 +5,9 @@ import re
 from typing import List, Tuple
 
 class Format:
+    """
+    Parent class for degree format.
+    """
     def decimal_degrees(self):
         pass
 
@@ -25,11 +28,11 @@ class DmsFormat(Format):
 
     def __dms2dec(self):
         deg = self.degrees[0]
-        min = self.degrees[1]/60
+        mnt = self.degrees[1]/60
         sec = self.degrees[2]/3600
         if deg >= 0:
-            return deg + min + sec
-        return deg - min - sec
+            return deg + mnt + sec
+        return deg - mnt - sec
 
     def decimal_degrees(self):
         """ 
@@ -55,10 +58,10 @@ class DecimalFormat(Format):
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
         deg = int(self.degrees)
-        minutes = int((self.degrees - deg) * 60)
-        sec = (self.degrees - deg - minutes/60) * 3600
+        mnt = int((self.degrees - deg) * 60)
+        sec = (self.degrees - deg - mnt/60) * 3600
         
-        return deg, minutes, round(sec, 6)
+        return deg, mnt, round(sec, 6)
 
     def decimal_degrees(self):
         return round(self.degrees, 6)
