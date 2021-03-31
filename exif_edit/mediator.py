@@ -6,6 +6,7 @@ import os
 import logging
 import webbrowser
 
+from typing import Optional
 from tkinter import DISABLED, NORMAL
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
@@ -131,13 +132,24 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
+    def has_location(self) -> bool:
+        """
+        This method returns True is there is a location info in the data,
+        else False.
+        """
+        return not self.find_location() is None
+
     def open_location(self):
-        loc = self.__find_location()
+        loc = self.find_location()
         if not loc is None:
             url = self.__maps_url(loc)
             self.open_url(url)
 
-    def __find_location(self) -> Coordinate:
+    def find_location(self) -> Optional[Coordinate]:
+        """
+        This method looks for a possible coordinate in the Exif data.
+        If there is one it will return it, if there is none it will return None.
+        """
         dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
         lat_lon = [dic.get(k) 
             for k in ['gps_latitude', 'gps_longitude'] 

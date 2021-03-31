@@ -85,6 +85,10 @@ class TestMediator(unittest.TestCase):
         self.mediator.open_location()
         self.mediator.open_url.assert_called_once()
 
+    def test_has_location(self):
+        deg = Factory.create((1,1,1))
+        self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
+        self.assertTrue(self.mediator.has_location())
 
 if __name__ == '__main__':
     unittest.main()

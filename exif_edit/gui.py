@@ -11,8 +11,8 @@ from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
+from PIL import ImageFilter
 from PIL import ImageTk as itk
-
 
 from exif_edit.mediator import Mediator
 
@@ -86,7 +86,6 @@ class App(tk.Tk):
             "show location " + self.__acc("L"),
             self.__open_location)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
-        self.btn_loc.disable()
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
@@ -159,8 +158,17 @@ class App(tk.Tk):
         self.img_display.image = img
         self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
 
+        self.__update_location_button()
+
         #ensure that window has focus again
         self.focus_set()
+
+    def __update_location_button(self):
+        with_loc = self.mediator.has_location()
+        if with_loc:
+            self.btn_loc.enable()
+        else:
+            self.btn_loc.disable()
 
     def single_select(self, event):
         print(event)
@@ -217,18 +225,21 @@ class ToolbarButton(tk.Button):
     Button for the toolbar.
     """
     def __init__(self, anchor, icon, tooltip, cmd):
-        self.icon = icon
+        self.icon = icon.convert("RGBA")
         self.image = itk.PhotoImage(self.icon)
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
 
     def disable(self):
         self.config(state=tk.DISABLED)
-        self.__put_alpha(100)
+        icon = self.icon.copy()
+        im = icon.filter(ImageFilter.EMBOSS)
+        self.image = itk.PhotoImage(im)
+        self.config(image=self.image)
 
-    def __put_alpha(self, alpha):
-        icon = self.icon
-        icon.putalpha(alpha)
+    def enable(self):
+        self.config(state=tk.NORMAL)
+        icon = self.icon.copy()
         self.image = itk.PhotoImage(icon)
         self.config(image=self.image)
 
