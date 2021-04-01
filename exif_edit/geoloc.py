@@ -77,7 +77,12 @@ class Factory:
     def create(degrees):
         if isinstance(degrees, (List, Tuple)):
             return DmsFormat(degrees)
-        return DecimalFormat(degrees)
+        if isinstance(degrees, (float, int)):
+            return DecimalFormat(degrees)
+        if isinstance(degrees, str):
+            return Factory.parse(degrees)
+
+        raise ValueError("cant not handle given type")
 
     @staticmethod
     def parse(arg):

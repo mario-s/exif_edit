@@ -30,11 +30,11 @@ class TestDmsFormat(unittest.TestCase):
         self.assertEquals("30.263889°", loc.__repr__())
 
     def test_parse_to_dms(self):
-        loc = Factory.parse("78°55\'44.33324\"")
+        loc = Factory.create("78°55\'44.33324\"")
         self.assertEqual(78.928981, loc.decimal_degrees())
 
     def test_parse_to_dec(self):
-        loc = Factory.parse("30.263888889°")
+        loc = Factory.create("30.263888889°")
         self.assertEqual((30, 15, 50), loc.dms_degrees())
 
     def test_parser_raises_error(self):
