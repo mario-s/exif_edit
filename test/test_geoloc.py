@@ -3,7 +3,7 @@ import unittest
 
 from exif_edit.geoloc import DmsFormat, DecimalFormat, Factory, Coordinate
 
-class TestDmsFormat(unittest.TestCase):
+class TestGeoLoc(unittest.TestCase):
 
     def test_wrong_constructor_arg(self):
         self.assertRaises(ValueError, lambda: DmsFormat([1]))
@@ -38,18 +38,14 @@ class TestDmsFormat(unittest.TestCase):
         self.assertEqual((30, 15, 50), loc.dms_degrees())
 
     def test_parser_raises_error(self):
-        self.assertRaises(ValueError, lambda: Factory.parse('4711'))
+        self.assertRaises(ValueError, lambda: Factory.parse('4711a'))
 
     def test_coordinate_to_dec_positive(self):
-        lat = Factory.create(30.263888889)
-        lon = Factory.create(30.263888889)
-        coord = Coordinate(lat, lon)
+        coord = Coordinate(30.263888889, 30.263888889)
         self.assertEquals((30.263889, 30.263889), coord.decimal())
 
     def test_coordinate_to_dec_negative(self):
-        lat = Factory.create(30.263888889)
-        lon = Factory.create(30.263888889)
-        coord = Coordinate(lat, lon, lat_ref='S', lon_ref='W')
+        coord = Coordinate(30.263888889, "30.263888889", lat_ref='S', lon_ref='W')
         self.assertEquals((-30.263889, -30.263889), coord.decimal())
 
 

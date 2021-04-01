@@ -95,7 +95,7 @@ class Factory:
             return DmsFormat((match.group(1), match.group(2), match.group(3)))
         
         #DEC
-        match = re.search('(\d+.?\d*)°', str(arg))
+        match = re.search('(\d+.?\d*)°?', str(arg))
         if match:
             return DecimalFormat(match.group(1))
 
@@ -106,9 +106,13 @@ class Coordinate:
     Represent a coordinate on the globe.
     """
     def __init__(self, latitude, longitude, lat_ref = 'N', lon_ref = 'E'):
+        if not isinstance(latitude, Format):
+            latitude = Factory.create(latitude)
         self.latitude = latitude
         self.lat_ref = lat_ref
 
+        if not isinstance(longitude, Format):
+            longitude = Factory.create(longitude)
         self.longitude = longitude
         self.lon_ref = lon_ref
 
