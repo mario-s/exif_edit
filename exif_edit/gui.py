@@ -7,6 +7,7 @@ import logging
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
+from tkinter import DISABLED, NORMAL
 from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
@@ -199,7 +200,8 @@ class App(tk.Tk):
 
     def __change_button_state(self, event):
         print(event)
-        self.btn_rm.config(state=self.mediator.get_remove_button_state(event))
+        s = NORMAL if self.mediator.can_remove_row(event) else DISABLED
+        self.btn_rm.config(state=s)
 
     def start(self):
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
@@ -231,14 +233,14 @@ class ToolbarButton(tk.Button):
         Tooltip(self, text=tooltip)
 
     def disable(self):
-        self.config(state=tk.DISABLED)
+        self.config(state=DISABLED)
         icon = self.icon.copy()
         im = icon.filter(ImageFilter.EMBOSS)
         self.image = itk.PhotoImage(im)
         self.config(image=self.image)
 
     def enable(self):
-        self.config(state=tk.NORMAL)
+        self.config(state=NORMAL)
         icon = self.icon.copy()
         self.image = itk.PhotoImage(icon)
         self.config(image=self.image)

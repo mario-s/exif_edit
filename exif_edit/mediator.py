@@ -7,7 +7,6 @@ import logging
 import webbrowser
 
 from typing import Optional
-from tkinter import DISABLED, NORMAL
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
@@ -76,11 +75,11 @@ class Mediator:
 
         self.sheet.refresh()
 
-    def get_remove_button_state(self, event):
+    def can_remove_row(self, event) -> bool:
         name = event[0]
         if name in ("select_row", "drag_select_rows"):
-            return NORMAL if self.__is_editable_row_selected() else DISABLED
-        return DISABLED
+            return True if self.__is_editable_row_selected() else False
+        return False
 
     def __is_editable_row_selected(self):
         selected_rows = self.sheet.get_selected_rows()

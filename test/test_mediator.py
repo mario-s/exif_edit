@@ -66,11 +66,11 @@ class TestMediator(unittest.TestCase):
     def test_get_remove_button_state(self):
         self.sheet.get_selected_rows = Mock(return_value= [0])
         event = ('select_row', (0,))
-        self.assertEqual(tk.NORMAL, self.mediator.get_remove_button_state(event))
+        self.assertTrue(self.mediator.can_remove_row(event))
 
     def test_get_remove_button_state_disabled(self):
         event = ('foo', (0,))
-        self.assertEqual(tk.DISABLED, self.mediator.get_remove_button_state(event))
+        self.assertFalse(self.mediator.can_remove_row(event))
 
     def test_open_location_no_coordinates(self):
         self.sheet.get_sheet_data.return_value = [["model", "bar"]]
