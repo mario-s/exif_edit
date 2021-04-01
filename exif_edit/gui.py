@@ -235,14 +235,15 @@ class ToolbarButton(tk.Button):
     def disable(self):
         self.config(state=DISABLED)
         icon = self.icon.copy()
-        im = icon.filter(ImageFilter.EMBOSS)
-        self.image = itk.PhotoImage(im)
-        self.config(image=self.image)
+        self.__config_image(itk.PhotoImage(icon.filter(ImageFilter.EMBOSS)))
 
     def enable(self):
         self.config(state=NORMAL)
         icon = self.icon.copy()
-        self.image = itk.PhotoImage(icon)
+        self.__config_image(itk.PhotoImage(icon))
+
+    def __config_image(self, img):
+        self.image = img
         self.config(image=self.image)
 
 class Tooltip(tp.Hovertip):
