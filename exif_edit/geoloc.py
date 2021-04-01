@@ -8,11 +8,12 @@ class Format:
     """
     Parent class for degree format.
     """
-    def decimal_degrees(self):
+    def decimal_degrees(self) -> float:
         pass
 
-    def dms_degrees(self):
+    def dms_degrees(self) -> tuple:
         pass
+
 
 class DmsFormat(Format):
     """
@@ -23,7 +24,7 @@ class DmsFormat(Format):
             raise ValueError("expected (degree, minuntes, seconds)")
         self.degrees = (int(degrees[0]), int(degrees[1]), float(degrees[2]))
 
-    def dms_degrees(self):
+    def dms_degrees(self) -> tuple:
         return self.degrees
 
     def __dms2dec(self):
@@ -34,7 +35,7 @@ class DmsFormat(Format):
             return deg + mnt + sec
         return deg - mnt - sec
 
-    def decimal_degrees(self):
+    def decimal_degrees(self) -> float:
         """ 
         Converts degrees, minutes, and seconds to decimal degrees.
         """
@@ -53,7 +54,7 @@ class DecimalFormat(Format):
 
         self.degrees = float(degree)
 
-    def dms_degrees(self):
+    def dms_degrees(self) -> tuple:
         """ 
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
@@ -63,7 +64,7 @@ class DecimalFormat(Format):
         
         return deg, mnt, round(sec, 6)
 
-    def decimal_degrees(self):
+    def decimal_degrees(self) -> float:
         return round(self.degrees, 6)
         
     def __repr__(self) -> str:

@@ -3,7 +3,7 @@ import logging
 
 import exif as ex
 
-from exif_edit.geoloc import Factory
+from exif_edit.geoloc import Factory, Format
 
 class Converter:
     """This class acts as a converter between the exif data and the data from the sheet."""
@@ -41,10 +41,13 @@ class Converter:
 
     @classmethod
     def cast(cls, key, value):
-        """Converts a string value to a proper type."""
+        """Converts the value frpm the sheet to a type."""
         #do we have a matching enum in our dictionary?
         if key in cls.dictionary:
             return cls.__from_enum(key, value)
+        #do we have a custom type?
+        if isinstance(value, Format):
+            return value.dms_degrees()
         try:
             return int(value)
         except:
