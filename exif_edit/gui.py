@@ -164,24 +164,18 @@ class App(tk.Tk):
         #ensure that window has focus again
         self.focus_set()
 
-    def __update_location_button(self):
-        with_loc = self.mediator.has_location()
-        if with_loc:
-            self.btn_loc.enable()
-        else:
-            self.btn_loc.disable()
-
     def single_select(self, event):
         print(event)
 
     def drag_select_rows(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
     
     def begin_edit_cell(self, event):
         self.mediator.keep_origin((event[0], event[1])) 
 
     def end_edit_cell(self, event):
         self.mediator.restore_origin((event[0], event[1]))
+        self.__update_location_button()
 
     def mouse_motion(self, event):
         region = self.sheet.identify_region(event)
@@ -190,18 +184,24 @@ class App(tk.Tk):
         print (region, row, column)
 
     def deselect(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
         
     def cell_select(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
 
     def row_select(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
 
-    def __change_button_state(self, event):
+    def __update_remove_row_button(self, event):
         print(event)
         s = NORMAL if self.mediator.can_remove_row(event) else DISABLED
         self.btn_rm.config(state=s)
+
+    def __update_location_button(self):
+        if self.mediator.has_location():
+            self.btn_loc.enable()
+        else:
+            self.btn_loc.disable()
 
     def start(self):
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter

@@ -150,10 +150,8 @@ class Mediator:
         If there is one it will return it, if there is none it will return None.
         """
         dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
-        lat_lon = [dic.get(k) 
-            for k in ['gps_latitude', 'gps_longitude'] 
-            if k in dic]
-        if len(lat_lon) == 2:
+        lat_lon = (dic.get('gps_latitude'), dic.get('gps_longitude'))
+        if all(lat_lon):
             lat_ref = dic.get('gps_latitude_ref')
             lon_ref = dic.get('gps_longitude_ref')
             return Coordinate(lat_lon[0], lat_lon[1], lat_ref=lat_ref, lon_ref=lon_ref)
