@@ -120,7 +120,7 @@ class Mediator:
     def __is_location_value(self, cell):
         if not self.__is_in_key_column(cell):
             key = self.sheet.get_cell_data(cell[0], 0)
-            return key in ('gps_latitude', 'gps_longitude')
+            return Converter.is_geoloc(key)
         return False
 
     def __parse_location(self, cell):

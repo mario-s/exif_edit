@@ -62,7 +62,7 @@ class Converter:
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
-            if Converter.__is_geoloc(key):
+            if Converter.is_geoloc(key):
                 return Factory.create(value)
             #human readable value if we have an enum
             if isinstance(value, Enum):
@@ -73,7 +73,7 @@ class Converter:
             return None
 
     @staticmethod 
-    def __is_geoloc(key):
+    def is_geoloc(key):
         return key in ("gps_longitude", "gps_latitude")
 
     @staticmethod
