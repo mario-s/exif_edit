@@ -171,10 +171,10 @@ class App(tk.Tk):
         self.__update_remove_row_button(event)
     
     def begin_edit_cell(self, event):
-        self.mediator.keep_origin((event[0], event[1])) 
+        self.mediator.begin_edit_cell((event[0], event[1])) 
 
     def end_edit_cell(self, event):
-        self.mediator.restore_origin((event[0], event[1]))
+        self.mediator.end_edit_cell((event[0], event[1]))
         self.__update_location_button()
 
     def mouse_motion(self, event):

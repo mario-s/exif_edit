@@ -103,15 +103,34 @@ class Mediator:
     def __path(cls, source, path):
         return source if (path is None or path == "") else path
 
-    def keep_origin(self, cell):
-        """Keep the original value of the cell."""
+    def begin_edit_cell(self, cell):
+        """Listener for begin of cell edit."""
         orig = self.sheet.get_cell_data(cell[0], cell[1])
         self.origin_cell_value = orig
 
-    def restore_origin(self, cell):
+    def end_edit_cell(self, cell):
+        """
+        Listener for end edit of a cell.
+        """
+        if self.__is_location_value(cell):
+            self.__parse_location(cell)
+        else:
+            self.__restore_origin(cell)
+
+    def __is_location_value(self, cell):
+        if not self.__is_in_key_column(cell):
+            key = self.sheet.get_cell_data(cell[0], 0)
+            return key in ('gps_latitude', 'gps_longitude')
+        return False
+
+    def __parse_location(self, cell):
+        dat = self.sheet.get_cell_data(cell[0], cell[1])
+        dat = Factory.create(dat)
+        self.sheet.set_cell_data(cell[0], cell[1], dat, False, True)
+
+    def __restore_origin(self, cell):
         """ 
-            Restores the original value. 
-            In case of the key column it means avoiding duplicates.
+            Restores the original cell data in the key column.
         """
         if self.__is_in_key_column(cell):
             row = cell[0]
@@ -149,7 +168,8 @@ class Mediator:
         This method looks for a possible coordinate in the Exif data.
         If there is one it will return it, if there is none it will return None.
         """
-        dic = Converter.rows_to_dict(self.sheet.get_sheet_data())
+        data = self.sheet.get_sheet_data()
+        dic = Converter.rows_to_dict(data)
         lat_lon = (dic.get('gps_latitude'), dic.get('gps_longitude'))
         if all(lat_lon):
             lat_ref = dic.get('gps_latitude_ref')

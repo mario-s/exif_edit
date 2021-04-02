@@ -1,4 +1,4 @@
 exif == 1.2.0
-tksheet == 5.0.18
+tksheet == 5.0.19
 Pillow == 8.1.0
 sortedcontainers == 2.3.0

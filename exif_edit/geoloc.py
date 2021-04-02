@@ -76,6 +76,10 @@ class Factory:
     """
     @staticmethod
     def create(degrees):
+        #already in the right format
+        if isinstance(degrees, Format):
+            return degrees
+
         if isinstance(degrees, (List, Tuple)):
             return DmsFormat(degrees)
         if isinstance(degrees, (float, int)):
