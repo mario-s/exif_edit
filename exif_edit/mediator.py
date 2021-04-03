@@ -115,7 +115,7 @@ class Mediator:
         if self.__is_location_value(cell):
             self.__parse_location(cell)
         else:
-            self.__restore_origin(cell)
+            self.__restore_origin_key(cell)
 
     def __is_location_value(self, cell):
         if not self.__is_in_key_column(cell):
@@ -125,10 +125,14 @@ class Mediator:
 
     def __parse_location(self, cell):
         dat = self.sheet.get_cell_data(cell[0], cell[1])
-        dat = Factory.create(dat)
-        self.sheet.set_cell_data(cell[0], cell[1], dat, False, True)
+        try:
+            deg = Factory.create(dat)
+            self.sheet.set_cell_data(cell[0], cell[1], deg, False, True)
+        except ValueError as exc:
+            logging.warning(exc)
+            self.__restore_origin_cell_data(cell[0], cell[1])
 
-    def __restore_origin(self, cell):
+    def __restore_origin_key(self, cell):
         """ 
             Restores the original cell data in the key column.
         """
@@ -137,7 +141,11 @@ class Mediator:
             #only one unique value is allowed
             if self.__has_duplicate_keys(row):
                 origin = self.origin_cell_value
-                self.sheet.set_cell_data(row, 0, origin)
+                self.__restore_origin_cell_data(row, 0)
+                
+    def __restore_origin_cell_data(self, row, column):
+        origin = self.origin_cell_value
+        self.sheet.set_cell_data(row, column, origin)
 
     @classmethod
     def __is_in_key_column(cls, cell):
@@ -157,7 +165,10 @@ class Mediator:
         """
         return not self.find_location() is None
 
-    def open_location(self):
+    def show_location(self):
+        """
+        This method shows a location, if it is present, in the default browser.
+        """
         loc = self.find_location()
         if not loc is None:
             url = self.__maps_url(loc)
@@ -170,11 +181,11 @@ class Mediator:
         """
         data = self.sheet.get_sheet_data()
         dic = Converter.rows_to_dict(data)
-        lat_lon = (dic.get('gps_latitude'), dic.get('gps_longitude'))
-        if all(lat_lon):
-            lat_ref = dic.get('gps_latitude_ref')
-            lon_ref = dic.get('gps_longitude_ref')
-            return Coordinate(lat_lon[0], lat_lon[1], lat_ref=lat_ref, lon_ref=lon_ref)
+        loc = (dic.get('gps_latitude'), dic.get('gps_longitude'))
+        if all(loc):
+            la_ref = dic.get('gps_latitude_ref')
+            lo_ref = dic.get('gps_longitude_ref')
+            return Coordinate(loc[0], loc[1], lat_ref=la_ref, lon_ref=lo_ref)
         return None
 
     @classmethod
@@ -184,4 +195,7 @@ class Mediator:
 
     @classmethod
     def open_url(cls, url):
+        """
+        Opens the given URL in the systems's default browser.
+        """
         webbrowser.open(url, new=0)

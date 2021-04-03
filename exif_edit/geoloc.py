@@ -104,7 +104,7 @@ class Factory:
         if match:
             return DecimalFormat(match.group(1))
 
-        raise ValueError(f"unknown format for {arg}")
+        raise ValueError("unknown format to parse degree")
 
 class Coordinate:
     """

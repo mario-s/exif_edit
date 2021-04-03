@@ -44,7 +44,7 @@ class App(tk.Tk):
             empty_horizontal=5, empty_vertical=5,
             height=500, width = 550)
         self.mediator = Mediator(self.sheet)
-        
+
         self.__add_menubar()
         self.__add_toolbar()
         self.__add_sheet()
@@ -194,8 +194,8 @@ class App(tk.Tk):
 
     def __update_remove_row_button(self, event):
         print(event)
-        s = NORMAL if self.mediator.can_remove_row(event) else DISABLED
-        self.btn_rm.config(state=s)
+        state = NORMAL if self.mediator.can_remove_row(event) else DISABLED
+        self.btn_rm.config(state=state)
 
     def __update_location_button(self):
         if self.mediator.has_location():
@@ -216,7 +216,7 @@ class App(tk.Tk):
         self.mediator.save_exif()
 
     def __open_location(self, event = None):
-        self.mediator.open_location()
+        self.mediator.show_location()
 
     @classmethod 
     def __quit(cls, event = None):
@@ -233,11 +233,17 @@ class ToolbarButton(tk.Button):
         Tooltip(self, text=tooltip)
 
     def disable(self):
+        """
+        Extended method to disable the button, it also changes the icon to be a grey.
+        """
         self.config(state=DISABLED)
         icon = self.icon.copy()
         self.__config_image(itk.PhotoImage(icon.filter(ImageFilter.EMBOSS)))
 
     def enable(self):
+        """
+        Extended method to enable the button, it restores the original icon.
+        """
         self.config(state=NORMAL)
         icon = self.icon.copy()
         self.__config_image(itk.PhotoImage(icon))

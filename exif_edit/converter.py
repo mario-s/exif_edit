@@ -1,3 +1,6 @@
+"""
+Module for converting between UI and Exif data.
+"""
 from enum import Enum
 import logging
 
@@ -73,7 +76,10 @@ class Converter:
             return None
 
     @staticmethod 
-    def is_geoloc(key):
+    def is_geoloc(key) -> bool:
+        """
+        This function returns True if the key is related to a geo location, else False"
+        """
         return key in ("gps_longitude", "gps_latitude")
 
     @staticmethod

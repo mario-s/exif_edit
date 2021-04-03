@@ -80,14 +80,14 @@ class TestMediator(unittest.TestCase):
     def test_open_location_no_coordinates(self):
         self.sheet.get_sheet_data.return_value = [["model", "bar"]]
         self.mediator.open_url = MagicMock()
-        self.mediator.open_location()
+        self.mediator.show_location()
         self.mediator.open_url.assert_not_called()
 
     def test_open_location_coordinates(self):
         deg = Factory.create((1,1,1))
         self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
         self.mediator.open_url = MagicMock()
-        self.mediator.open_location()
+        self.mediator.show_location()
         self.mediator.open_url.assert_called_once()
 
     def test_has_location(self):
