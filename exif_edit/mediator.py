@@ -42,7 +42,7 @@ class Mediator:
         rows = self.__count_matching_rows(keys, ExifFilter.not_deleteable())
         if len(rows) > 0:
             for row in rows:
-                self.sheet.readonly_cells(row, 0)             
+                self.sheet.readonly_cells(row, 0)
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
     @classmethod
@@ -133,7 +133,7 @@ class Mediator:
             self.__restore_origin_cell_data(cell[0], cell[1])
 
     def __restore_origin_key(self, cell):
-        """ 
+        """
             Restores the original cell data in the key column.
         """
         if self.__is_in_key_column(cell):
@@ -142,7 +142,7 @@ class Mediator:
             if self.__has_duplicate_keys(row):
                 origin = self.origin_cell_value
                 self.__restore_origin_cell_data(row, 0)
-                
+
     def __restore_origin_cell_data(self, row, column):
         origin = self.origin_cell_value
         self.sheet.set_cell_data(row, column, origin)

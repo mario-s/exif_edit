@@ -11,7 +11,7 @@ from exif_edit.geoloc import Factory, Format
 class Converter:
     """This class acts as a converter between the exif data and the data from the sheet."""
 
-    dictionary = {"color_space": ex.ColorSpace, 
+    dictionary = {"color_space": ex.ColorSpace,
             "exposure_mode": ex.ExposureMode,
             "exposure_program": ex.ExposureProgram,
             "gps_altitude_ref": ex.GpsAltitudeRef,
@@ -59,7 +59,7 @@ class Converter:
     @staticmethod
     def try_read(dic, key):
         """
-        This method tries to get the value from the dictionary, and if it is an enum, 
+        This method tries to get the value from the dictionary, and if it is an enum,
         return the name of it.
         """
         try:
@@ -75,7 +75,7 @@ class Converter:
             logging.warning("Illegal value in exif: %s", exc)
             return None
 
-    @staticmethod 
+    @staticmethod
     def is_geoloc(key) -> bool:
         """
         This function returns True if the key is related to a geo location, else False"

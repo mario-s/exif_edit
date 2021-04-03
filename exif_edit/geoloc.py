@@ -36,7 +36,7 @@ class DmsFormat(Format):
         return deg - mnt - sec
 
     def decimal_degrees(self) -> float:
-        """ 
+        """
         Converts degrees, minutes, and seconds to decimal degrees.
         """
         return round(self.__dms2dec(), 6)
@@ -55,21 +55,21 @@ class DecimalFormat(Format):
         self.degrees = float(degree)
 
     def dms_degrees(self) -> tuple:
-        """ 
+        """
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
         deg = int(self.degrees)
         mnt = int((self.degrees - deg) * 60)
         sec = (self.degrees - deg - mnt/60) * 3600
-        
+
         return deg, mnt, round(sec, 6)
 
     def decimal_degrees(self) -> float:
         return round(self.degrees, 6)
-        
+
     def __repr__(self) -> str:
         return f"{self.decimal_degrees()}°"
-    
+
 class Factory:
     """
     Creates a new instance of a format
@@ -98,7 +98,7 @@ class Factory:
         match = re.search('(\d+)°(\d+)\'(\d+.?\d*)\"', str(arg))
         if match:
             return DmsFormat((match.group(1), match.group(2), match.group(3)))
-        
+
         #DEC
         match = re.search('(\d+.?\d*)°?', str(arg))
         if match:

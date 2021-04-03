@@ -51,7 +51,7 @@ class App(tk.Tk):
         self.__add_table_commands()
         self.__add_bindings()
 
-    def __add_menubar(self): 
+    def __add_menubar(self):
         menubar = tk.Menu(self)
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
@@ -65,25 +65,25 @@ class App(tk.Tk):
         toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
         toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = ToolbarButton(toolbar, self.__icon("folder.png"), 
-            "open file " + self.__acc("O"), 
+        btn_open = ToolbarButton(toolbar, self.__icon("folder.png"),
+            "open file " + self.__acc("O"),
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
 
-        btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"), 
-            "save file " + self.__acc("S"), 
+        btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"),
+            "save file " + self.__acc("S"),
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
-        btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"), 
-            "exit "+ self.__acc("W"), 
+        btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"),
+            "exit "+ self.__acc("W"),
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
 
-        self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"), 
+        self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"),
             "show location " + self.__acc("L"),
             self.__open_location)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
@@ -97,8 +97,8 @@ class App(tk.Tk):
 
     def __add_sheet(self):
         self.sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
-        self.sheet.enable_bindings(("single_select", 
-                                "drag_select",   
+        self.sheet.enable_bindings(("single_select",
+                                "drag_select",
                                 "row_select",
                                 "row_height_resize",
                                 "double_click_row_resize",
@@ -121,7 +121,7 @@ class App(tk.Tk):
                                 ("deselect", self.deselect),
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
-        
+
     def __add_table_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
@@ -130,7 +130,7 @@ class App(tk.Tk):
         btn_add.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(btn_add, "add a row")
 
-        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
+        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row,
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
@@ -169,9 +169,9 @@ class App(tk.Tk):
 
     def drag_select_rows(self, event):
         self.__update_remove_row_button(event)
-    
+
     def begin_edit_cell(self, event):
-        self.mediator.begin_edit_cell((event[0], event[1])) 
+        self.mediator.begin_edit_cell((event[0], event[1]))
 
     def end_edit_cell(self, event):
         self.mediator.end_edit_cell((event[0], event[1]))
@@ -185,7 +185,7 @@ class App(tk.Tk):
 
     def deselect(self, event):
         self.__update_remove_row_button(event)
-        
+
     def cell_select(self, event):
         self.__update_remove_row_button(event)
 
@@ -207,7 +207,7 @@ class App(tk.Tk):
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.eval('tk::PlaceWindow . center')
         self.mainloop()
-    
+
     def __open(self, event = None):
         name = filedialog.askopenfilename()
         self.load_image(name)
@@ -218,7 +218,7 @@ class App(tk.Tk):
     def __open_location(self, event = None):
         self.mediator.show_location()
 
-    @classmethod 
+    @classmethod
     def __quit(cls, event = None):
         sys.exit(0)
 
@@ -260,7 +260,7 @@ class Tooltip(tp.Hovertip):
         super().__init__(anchor, text, hover_delay=hover_delay)
 
     def showcontents(self):
-        label = tk.Label(self.tipwindow, text=self.text, 
+        label = tk.Label(self.tipwindow, text=self.text,
                     justify=tk.LEFT, relief=tk.SOLID,
                     foreground="#000000", background="#ffffe0", borderwidth=1)
         label.pack()
