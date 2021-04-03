@@ -51,14 +51,23 @@ class Mediator:
 
     @classmethod
     def read_image(cls, img_path):
+        """
+        Read an image from the gicen path and scale it to fit max width/height.
+        """
         return Reader.read_image(img_path, True)
 
     @classmethod
     def read_icon(cls, icon_name):
+        """
+        Read an icon from the assets.
+        """
         icon_path = os.path.join(os.path.dirname(__file__), "assets/" + icon_name)
         return Reader.read_image(icon_path)
 
     def add_row(self):
+        """
+        This method add a new row to the table.
+        """
         self.sheet.insert_row()
         self.sheet.refresh()
 
@@ -140,7 +149,6 @@ class Mediator:
             row = cell[0]
             #only one unique value is allowed
             if self.__has_duplicate_keys(row):
-                origin = self.origin_cell_value
                 self.__restore_origin_cell_data(row, 0)
 
     def __restore_origin_cell_data(self, row, column):

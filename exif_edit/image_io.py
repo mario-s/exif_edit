@@ -54,7 +54,6 @@ class Reader:
         If the parameter scale is True, then the image will be scaled using max_len.
         """
         img = Image.open(img_path)
-
         if scale:
             img.thumbnail((max_len, max_len))
 
