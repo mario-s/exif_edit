@@ -95,12 +95,12 @@ class Factory:
         Read a string and returns a matching format.
         """
         #DMS
-        match = re.search('(\d+)°(\d+)\'(\d+.?\d*)\"', str(arg))
+        match = re.search(r"(\d+)°(\d+)\'(\d+.?\d*)\"", str(arg))
         if match:
             return DmsFormat((match.group(1), match.group(2), match.group(3)))
 
         #DEC
-        match = re.search('(\d+.?\d*)°?', str(arg))
+        match = re.search(r"(\d+.?\d*)°?", str(arg))
         if match:
             return DecimalFormat(match.group(1))
 

@@ -126,11 +126,11 @@ class App(tk.Tk):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
 
-        btn_add = tk.Button(left_cmd_frame, text="+", command=self.mediator.add_row)
+        btn_add = tk.Button(left_cmd_frame, text="+", command=self.__add_row)
         btn_add.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(btn_add, "add a row")
 
-        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row,
+        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.__remove_row,
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
@@ -192,8 +192,14 @@ class App(tk.Tk):
     def row_select(self, event):
         self.__update_remove_row_button(event)
 
+    def __add_row(self):
+        self.mediator.add_row()
+
+    def __remove_row(self):
+        self.mediator.remove_row()
+        self.__update_location_button()
+
     def __update_remove_row_button(self, event):
-        print(event)
         state = NORMAL if self.mediator.can_remove_row(event) else DISABLED
         self.btn_rm.config(state=state)
 
@@ -204,6 +210,9 @@ class App(tk.Tk):
             self.btn_loc.disable()
 
     def start(self):
+        """
+        This method starts the GUI and places it in the center of the screen.
+        """
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.eval('tk::PlaceWindow . center')
         self.mainloop()
