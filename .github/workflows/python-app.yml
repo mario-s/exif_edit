@@ -33,4 +33,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Unit Tests
       run: |
-        python -m unittest
+        coverage run -m unittest
+        coverage report -m exif_edit/*.py
