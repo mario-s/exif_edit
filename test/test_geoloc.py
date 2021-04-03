@@ -19,15 +19,15 @@ class TestGeoLoc(unittest.TestCase):
 
     def test_dms_to_string(self):
         loc = Factory.create([78.0, 55.0, 44.33324])
-        self.assertEquals("78°55\'44.33324\"", loc.__repr__())
+        self.assertEqual("78°55\'44.33324\"", loc.__repr__())
 
     def test_dec_to_dms(self):
         loc = Factory.create(30.263888889)
-        self.assertEquals((30, 15, 50), loc.dms_degrees())
+        self.assertEqual((30, 15, 50), loc.dms_degrees())
 
     def test_dec_to_string(self):
         loc = Factory.create(30.263888889)
-        self.assertEquals("30.263889°", loc.__repr__())
+        self.assertEqual("30.263889°", loc.__repr__())
 
     def test_parse_to_dms(self):
         loc = Factory.create("78°55\'44.33324\"")
@@ -42,11 +42,11 @@ class TestGeoLoc(unittest.TestCase):
 
     def test_coordinate_to_dec_positive(self):
         coord = Coordinate(30.263888889, 30.263888889)
-        self.assertEquals((30.263889, 30.263889), coord.decimal())
+        self.assertEqual((30.263889, 30.263889), coord.decimal())
 
     def test_coordinate_to_dec_negative(self):
         coord = Coordinate(30.263888889, "30.263888889", lat_ref='S', lon_ref='W')
-        self.assertEquals((-30.263889, -30.263889), coord.decimal())
+        self.assertEqual((-30.263889, -30.263889), coord.decimal())
 
 
 if __name__ == '__main__':
