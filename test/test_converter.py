@@ -2,6 +2,7 @@ import unittest
 from exif import ColorSpace, ResolutionUnit, Orientation
 
 from exif_edit.converter import Converter
+from exif_edit.geoloc import Factory
 
 
 class TestConverter(unittest.TestCase):
@@ -24,7 +25,7 @@ class TestConverter(unittest.TestCase):
 
     def test_convert_resolution_unit_inches(self):
         self.assertEqual(ResolutionUnit.INCHES, Converter.cast("resolution_unit", "1"))
-    
+
     def test_convert_orientations(self):
         self.assertEqual(Orientation.LEFT_BOTTOM, Converter.cast("orientation", "LEFT_BOTTOM"))
 
@@ -46,6 +47,14 @@ class TestConverter(unittest.TestCase):
         d = Converter.rows_to_dict(rows)
         self.assertDictEqual({'model': 'bar'}, d)
 
+    def test_cast_dms(self):
+        loc = Factory.create([78.0, 55.0, 44.33324])
+        r = Converter.cast('', loc)
+        self.assertIsInstance(r, tuple)
+
+    def test_illegal_degree(self):
+        dic = {'gps_latitude': 'a'}
+        self.assertIsNone(Converter.try_read(dic, 'gps_latitude'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,14 +1,17 @@
+"""
+Module for converting between UI and Exif data.
+"""
 from enum import Enum
 import logging
 
 import exif as ex
 
-from exif_edit.geoloc import Factory
+from exif_edit.geoloc import Factory, Format
 
 class Converter:
     """This class acts as a converter between the exif data and the data from the sheet."""
 
-    dictionary = {"color_space": ex.ColorSpace, 
+    dictionary = {"color_space": ex.ColorSpace,
             "exposure_mode": ex.ExposureMode,
             "exposure_program": ex.ExposureProgram,
             "gps_altitude_ref": ex.GpsAltitudeRef,
@@ -41,10 +44,13 @@ class Converter:
 
     @classmethod
     def cast(cls, key, value):
-        """Converts a string value to a proper type."""
+        """Converts the value frpm the sheet to a type."""
         #do we have a matching enum in our dictionary?
         if key in cls.dictionary:
             return cls.__from_enum(key, value)
+        #do we have a custom type?
+        if isinstance(value, Format):
+            return value.dms_degrees()
         try:
             return int(value)
         except:
@@ -53,13 +59,13 @@ class Converter:
     @staticmethod
     def try_read(dic, key):
         """
-        This method tries to get the value from the dictionary, and if it is an enum, 
+        This method tries to get the value from the dictionary, and if it is an enum,
         return the name of it.
         """
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
-            if Converter.__is_geoloc(key):
+            if Converter.is_geoloc(key):
                 return Factory.create(value)
             #human readable value if we have an enum
             if isinstance(value, Enum):
@@ -69,8 +75,11 @@ class Converter:
             logging.warning("Illegal value in exif: %s", exc)
             return None
 
-    @staticmethod 
-    def __is_geoloc(key):
+    @staticmethod
+    def is_geoloc(key) -> bool:
+        """
+        This function returns True if the key is related to a geo location, else False"
+        """
         return key in ("gps_longitude", "gps_latitude")
 
     @staticmethod

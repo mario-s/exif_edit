@@ -7,9 +7,13 @@ import logging
 import tkinter as tk
 import tkinter.filedialog as filedialog
 
+from tkinter import DISABLED, NORMAL
 from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
+
+from PIL import ImageFilter
+from PIL import ImageTk as itk
 
 from exif_edit.mediator import Mediator
 
@@ -40,14 +44,14 @@ class App(tk.Tk):
             empty_horizontal=5, empty_vertical=5,
             height=500, width = 550)
         self.mediator = Mediator(self.sheet)
-        
+
         self.__add_menubar()
         self.__add_toolbar()
         self.__add_sheet()
         self.__add_table_commands()
         self.__add_bindings()
 
-    def __add_menubar(self): 
+    def __add_menubar(self):
         menubar = tk.Menu(self)
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Open", accelerator="Cmd+O", command=self.__open)
@@ -58,28 +62,31 @@ class App(tk.Tk):
         self.config(menu=menubar)
 
     def __add_toolbar(self):
-        self.toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
-        self.toolbar.grid(row = 0, column = 0, sticky = "nswe")
+        toolbar = tk.Frame(self, bd=1, relief=tk.RAISED)
+        toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
-        btn_open = ToolbarButton(self.toolbar, self.__icon("folder.png"), 
-            "open file " + self.__acc("O"), 
+        btn_open = ToolbarButton(toolbar, self.__icon("folder.png"),
+            "open file " + self.__acc("O"),
             self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_save = ToolbarButton(self.toolbar, self.__icon("save-file.png"), 
-            "save file " + self.__acc("S"), 
+
+        btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"),
+            "save file " + self.__acc("S"),
             self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
-        btn_exit = ToolbarButton(self.toolbar, self.__icon("exit.png"), 
-            "exit "+ self.__acc("W"), 
+
+        btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"),
+            "exit "+ self.__acc("W"),
             self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
-        sep = ttk.Separator(self.toolbar, orient=tk.VERTICAL)
+        sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
-        btn_loc = ToolbarButton(self.toolbar, self.__icon("world.png"), 
+
+        self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"),
             "show location " + self.__acc("L"),
             self.__open_location)
-        btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
@@ -90,8 +97,8 @@ class App(tk.Tk):
 
     def __add_sheet(self):
         self.sheet.grid(row = 0, column = 0, padx=5, pady=5, sticky = "nswe")
-        self.sheet.enable_bindings(("single_select", 
-                                "drag_select",   
+        self.sheet.enable_bindings(("single_select",
+                                "drag_select",
                                 "row_select",
                                 "row_height_resize",
                                 "double_click_row_resize",
@@ -114,19 +121,20 @@ class App(tk.Tk):
                                 ("deselect", self.deselect),
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
-        
+
     def __add_table_commands(self):
         left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
         left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
 
-        btn_add = tk.Button(left_cmd_frame, text="+", command=self.mediator.add_row)
+        btn_add = tk.Button(left_cmd_frame, text="+", command=self.__add_row)
         btn_add.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(btn_add, "add a row")
 
-        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.mediator.remove_row, 
+        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.__remove_row,
             state=tk.DISABLED)
         self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
         Tooltip(self.btn_rm, "remove selected rows")
+
     def __add_bindings(self):
         #add key bindings according to accelerators
         self.bind('<Command-o>', self.__open)
@@ -146,10 +154,12 @@ class App(tk.Tk):
         if not self.img_display is None:
             self.img_display.destroy()
 
-        img = self.mediator.read_image(img_path)
+        img = itk.PhotoImage(self.mediator.read_image(img_path))
         self.img_display = tk.Label(self.frame, image=img)
         self.img_display.image = img
         self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
+
+        self.__update_location_button()
 
         #ensure that window has focus again
         self.focus_set()
@@ -158,13 +168,14 @@ class App(tk.Tk):
         print(event)
 
     def drag_select_rows(self, event):
-        self.__change_button_state(event)
-    
+        self.__update_remove_row_button(event)
+
     def begin_edit_cell(self, event):
-        self.mediator.keep_origin((event[0], event[1])) 
+        self.mediator.begin_edit_cell((event[0], event[1]))
 
     def end_edit_cell(self, event):
-        self.mediator.restore_origin((event[0], event[1]))
+        self.mediator.end_edit_cell((event[0], event[1]))
+        self.__update_location_button()
 
     def mouse_motion(self, event):
         region = self.sheet.identify_region(event)
@@ -173,23 +184,39 @@ class App(tk.Tk):
         print (region, row, column)
 
     def deselect(self, event):
-        self.__change_button_state(event)
-        
+        self.__update_remove_row_button(event)
+
     def cell_select(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
 
     def row_select(self, event):
-        self.__change_button_state(event)
+        self.__update_remove_row_button(event)
 
-    def __change_button_state(self, event):
-        print(event)
-        self.btn_rm.config(state=self.mediator.get_remove_button_state(event))
+    def __add_row(self):
+        self.mediator.add_row()
+
+    def __remove_row(self):
+        self.mediator.remove_row()
+        self.__update_location_button()
+
+    def __update_remove_row_button(self, event):
+        state = NORMAL if self.mediator.can_remove_row(event) else DISABLED
+        self.btn_rm.config(state=state)
+
+    def __update_location_button(self):
+        if self.mediator.has_location():
+            self.btn_loc.enable()
+        else:
+            self.btn_loc.disable()
 
     def start(self):
+        """
+        This method starts the GUI and places it in the center of the screen.
+        """
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.eval('tk::PlaceWindow . center')
         self.mainloop()
-    
+
     def __open(self, event = None):
         name = filedialog.askopenfilename()
         self.load_image(name)
@@ -198,20 +225,41 @@ class App(tk.Tk):
         self.mediator.save_exif()
 
     def __open_location(self, event = None):
-        self.mediator.open_location()
+        self.mediator.show_location()
 
-    @classmethod 
+    @classmethod
     def __quit(cls, event = None):
         sys.exit(0)
 
 class ToolbarButton(tk.Button):
     """
-    Button especialy for the toolbar.
+    Button for the toolbar.
     """
     def __init__(self, anchor, icon, tooltip, cmd):
-        super().__init__(anchor, image=icon, relief=tk.FLAT, command=cmd)
-        self.image = icon
+        self.icon = icon.convert("RGBA")
+        self.image = itk.PhotoImage(self.icon)
+        super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
+
+    def disable(self):
+        """
+        Extended method to disable the button, it also changes the icon to be a grey.
+        """
+        self.config(state=DISABLED)
+        icon = self.icon.copy()
+        self.__config_image(itk.PhotoImage(icon.filter(ImageFilter.EMBOSS)))
+
+    def enable(self):
+        """
+        Extended method to enable the button, it restores the original icon.
+        """
+        self.config(state=NORMAL)
+        icon = self.icon.copy()
+        self.__config_image(itk.PhotoImage(icon))
+
+    def __config_image(self, img):
+        self.image = img
+        self.config(image=self.image)
 
 class Tooltip(tp.Hovertip):
     """
@@ -221,7 +269,7 @@ class Tooltip(tp.Hovertip):
         super().__init__(anchor, text, hover_delay=hover_delay)
 
     def showcontents(self):
-        label = tk.Label(self.tipwindow, text=self.text, 
+        label = tk.Label(self.tipwindow, text=self.text,
                     justify=tk.LEFT, relief=tk.SOLID,
                     foreground="#000000", background="#ffffe0", borderwidth=1)
         label.pack()

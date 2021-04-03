@@ -42,6 +42,9 @@ class Reader:
             self.image = Exif(file)
 
     def binary(self):
+        """
+        This method returns the binary object, which is the image itself.
+        """
         return self.image
 
     @classmethod
@@ -51,19 +54,27 @@ class Reader:
         If the parameter scale is True, then the image will be scaled using max_len.
         """
         img = Image.open(img_path)
-
         if scale:
             img.thumbnail((max_len, max_len))
-        
+
         return img
 
     def keys(self) -> list[str]:
+        """
+        This method returns a list of all keys, present in the Exif data.
+        """
         return self.image.list_all()
 
     def value(self, key) -> str:
+        """
+        This method returns the value for a given key.
+        """
         return Converter.try_read(self.image, key)
 
     def dict(self) -> dict:
+        """
+        This method returns a dictionary of all the exif data.
+        """
         lst = []
         for key in self.keys():
             value = self.value(key)
@@ -73,7 +84,9 @@ class Reader:
         return dict(lst)
 
     def grouped_dict(self) -> dict:
-        """Returns a dictionary with groups, were every group is sorted"""
+        """
+        Returns a dictionary with groups, were every group is sorted.
+        """
         dic = self.dict()
         #sort elements seperately, which can only be read
         read_only = SortedDict(self.__filter(dic, ExifFilter.read_only()))
@@ -82,9 +95,11 @@ class Reader:
         #join the dictionaries
         return read_only | edit_only | SortedDict(dic)
 
-    @classmethod 
+    @classmethod
     def __filter(cls, dic, fltr):
-        """Remove elements from dictionary to avoid sorting them in the big one"""
+        """
+        Remove elements from dictionary to avoid sorting them in the big one.
+        """
         return [(k, dic.pop(k)) for k in fltr if k in dic]
 
 
@@ -96,7 +111,9 @@ class Writer:
         self.converter = Converter()
 
     def save(self, rows, img_path):
-        """Saves the the collection of Exif tags to a file given by the path."""
+        """
+        Saves the the collection of Exif tags to a file given by the path.
+        """
         self.__set_values(Converter.rows_to_dict(rows))
         self.__save(img_path)
 
@@ -114,7 +131,7 @@ class Writer:
         for key in self.image.list_all():
             if key not in locked:
                 self.image.delete(key)
-    
+
     def __save(self, img_path):
         with open(img_path, 'wb') as file:
             file.write(self.image.get_file())
