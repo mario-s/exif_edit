@@ -194,16 +194,10 @@ class App(tk.Tk):
         self.__update_location_button()
 
     def __update_remove_row_button(self, event):
-        if self.mediator.can_remove_row(event):
-            self.btn_rm.enable()
-        else:
-            self.btn_rm.disable()
+        self.btn_rm.toggle_state(self.mediator.can_remove_row(event))
 
     def __update_location_button(self):
-        if self.mediator.has_location():
-            self.btn_loc.enable()
-        else:
-            self.btn_loc.disable()
+        self.btn_loc.toggle_state(self.mediator.has_location())
 
     def start(self):
         """
@@ -236,6 +230,12 @@ class ToolbarButton(tk.Button):
         self.image = itk.PhotoImage(self.icon)
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
+
+    def toggle_state(self, enaled=True):
+        if enaled:
+            self.enable()
+        else:
+            self.disable()
 
     def disable(self):
         """
