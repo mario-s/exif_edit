@@ -85,18 +85,24 @@ class Reader:
 
     def grouped_dict(self) -> dict:
         """
-        Returns a dictionary with groups, were every group is sorted.
+        Returns a dictionary with groups, where every group is sorted.
         """
-        dic = self.dict()
+        return Reader.group_dict(self.dict())
+
+    @staticmethod
+    def group_dict(dic) -> dict:
+        """
+        Groups the given dictionary, where every group is sorted.
+        """
         #sort elements seperately, which can only be read
-        read_only = SortedDict(self.__filter(dic, ExifFilter.read_only()))
+        read_only = SortedDict(Reader.__filter(dic, ExifFilter.read_only()))
         #sort elements seperately, which can not be deleted
-        edit_only = SortedDict(self.__filter(dic, ExifFilter.not_deleteable()))
+        edit_only = SortedDict(Reader.__filter(dic, ExifFilter.not_deleteable()))
         #join the dictionaries
         return read_only | edit_only | SortedDict(dic)
 
-    @classmethod
-    def __filter(cls, dic, fltr):
+    @staticmethod
+    def __filter(dic, fltr):
         """
         Remove elements from dictionary to avoid sorting them in the big one.
         """
