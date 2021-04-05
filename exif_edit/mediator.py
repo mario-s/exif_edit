@@ -20,10 +20,12 @@ class Mediator:
         self.sheet = sheet
 
     def append_exif(self, img_path):
-        reader = Reader(img_path)
-        dic = reader.grouped_dict()
-
         self.origin_img_path = img_path
+
+        reader = Reader(img_path)
+        self.__set_sheet_data(reader.grouped_dict())
+
+    def __set_sheet_data(self, dic):
         self.sheet.set_sheet_data(self.__to_list(dic))
         self.__disable_rows(dic)
 
@@ -46,8 +48,11 @@ class Mediator:
             self.sheet.highlight_rows(rows, bg = "light green", fg = "black")
 
     @classmethod
-    def __count_matching_rows(cls, keys, fltr):
-        return [i for i in range(len(keys)) if keys[i] in fltr]
+    def __count_matching_rows(cls, keys, fltr) -> list:
+        lim = len(keys)
+        if lim > 0:
+            return [i for i in range(lim) if keys[i] in fltr]
+        return []
 
     @classmethod
     def read_image(cls, img_path):
