@@ -32,6 +32,7 @@ class TestMediator(unittest.TestCase):
         expected_calls = [self.sheet.get_selected_rows, self.sheet.get_column_data,
             self.sheet.get_cell_data, self.sheet.delete_row, self.sheet.refresh]
         self.sheet.mock_calls = expected_calls
+        self.sheet.delete_row.assert_called_with(0, True)
 
     def test_append_exif(self):
         self.mediator.append_exif(self.__path('lookup.jpg'))

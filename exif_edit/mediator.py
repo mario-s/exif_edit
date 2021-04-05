@@ -84,7 +84,7 @@ class Mediator:
             total_rows = len(col_data)
             row = selected - index
             if row < total_rows and self.__is_deletable(row):
-                self.sheet.delete_row(row)
+                self.sheet.delete_row(row, True)
                 index+=1
 
         self.sheet.refresh()
