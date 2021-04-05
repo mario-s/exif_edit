@@ -4,35 +4,8 @@ IO package to read and write.
 
 from exif import Image as Exif
 from PIL import Image
-from sortedcontainers import SortedDict
 
-from exif_edit.converter import Converter
-
-
-class ExifFilter:
-
-    """Filter for keys which should be handled different."""
-
-    @staticmethod
-    def locked():
-        """This method joins all filter into one."""
-        return ExifFilter.not_deleteable() + ExifFilter.read_only()
-
-    @staticmethod
-    def not_deleteable():
-        """Filter for attributes which are editable bot not deletable."""
-        return ("bits_per_sample", "compression",
-            "image_height", "image_width", "image_unique_id",
-            "jpeg_interchange_format", "jpeg_interchange_format_length",
-            "photometric_interpretation",
-            "resolution_unit",
-            "samples_per_pixel", "x_resolution", "y_resolution")
-
-    @staticmethod
-    def read_only():
-        """Filter for attributes which are read only."""
-        return "_exif_ifd_pointer", "exif_version"
-
+from exif_edit.converter import Converter, ExifFilter
 
 class Reader:
     """This class reads Exif Tags and the image itself."""
@@ -87,26 +60,7 @@ class Reader:
         """
         Returns a dictionary with groups, where every group is sorted.
         """
-        return Reader.group_dict(self.dict())
-
-    @staticmethod
-    def group_dict(dic) -> dict:
-        """
-        Groups the given dictionary, where every group is sorted.
-        """
-        #sort elements seperately, which can only be read
-        read_only = SortedDict(Reader.__filter(dic, ExifFilter.read_only()))
-        #sort elements seperately, which can not be deleted
-        edit_only = SortedDict(Reader.__filter(dic, ExifFilter.not_deleteable()))
-        #join the dictionaries
-        return read_only | edit_only | SortedDict(dic)
-
-    @staticmethod
-    def __filter(dic, fltr):
-        """
-        Remove elements from dictionary to avoid sorting them in the big one.
-        """
-        return [(k, dic.pop(k)) for k in fltr if k in dic]
+        return Converter.group_dict(self.dict())
 
 
 class Writer:

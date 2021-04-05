@@ -47,6 +47,11 @@ class TestConverter(unittest.TestCase):
         d = Converter.rows_to_dict(rows)
         self.assertDictEqual({'model': 'bar'}, d)
 
+    def test_grouped_dict(self):
+        d = {"b": 1, "a": 2, "exif_version": 22}
+        r = Converter.group_dict(d)
+        self.assertEqual({"exif_version": 22, "a": 2, "b": 1}, r)
+
     def test_cast_dms(self):
         loc = Factory.create([78.0, 55.0, 44.33324])
         r = Converter.cast('', loc)
