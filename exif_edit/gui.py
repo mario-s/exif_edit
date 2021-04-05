@@ -83,6 +83,11 @@ class App(tk.Tk):
             "add a row", self.__add_row)
         btn_add.pack(side=tk.LEFT, padx=2, pady=5)
 
+        self.btn_insert = ToolbarButton(toolbar, self.__icon("insert.png"),
+            "insert a row after selected", self.__insert_row)
+        self.btn_insert.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_insert.disable()
+
         self.btn_rm = ToolbarButton(toolbar, self.__icon("delete-row.png"),
             "remove selected row", self.__remove_row)
         self.btn_rm.pack(side=tk.LEFT, padx=2, pady=5)
@@ -162,7 +167,7 @@ class App(tk.Tk):
         print(event)
 
     def drag_select_rows(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def begin_edit_cell(self, event):
         self.mediator.begin_edit_cell((event[0], event[1]))
@@ -178,23 +183,28 @@ class App(tk.Tk):
         print (region, row, column)
 
     def deselect(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def cell_select(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def row_select(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def __add_row(self):
         self.mediator.add_row()
+
+    def __insert_row(self):
+        self.mediator.insert_row()
 
     def __remove_row(self):
         self.mediator.remove_row()
         self.__update_location_button()
 
-    def __update_remove_row_button(self, event):
-        self.btn_rm.toggle_state(self.mediator.can_remove_row(event))
+    def __update_row_buttons(self, event):
+        enabled = self.mediator.can_remove_row(event)
+        self.btn_insert.toggle_state(enabled)
+        self.btn_rm.toggle_state(enabled)
 
     def __update_location_button(self):
         self.btn_loc.toggle_state(self.mediator.has_location())
@@ -231,8 +241,8 @@ class ToolbarButton(tk.Button):
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
 
-    def toggle_state(self, enaled=True):
-        if enaled:
+    def toggle_state(self, enabled=True):
+        if enabled:
             self.enable()
         else:
             self.disable()

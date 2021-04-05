@@ -73,14 +73,18 @@ class Mediator:
         """
         This method adds a new row to the table.
         """
+        self.sheet.insert_row(redraw=True)
+
+    def insert_row(self):
+        """
+        This method will insert a new row, after the last one,
+        which is currently selected.
+        """
         if self.__is_editable_row_selected():
             selected = self.sheet.get_selected_rows()
             #append row after last selected one
             idx = list(selected)[-1]+1
-            self.sheet.insert_row(idx=idx)
-        else:
-            self.sheet.insert_row()
-        self.sheet.refresh()
+            self.sheet.insert_row(idx=idx, redraw=True)
 
     def remove_row(self):
         index = 0
@@ -96,6 +100,10 @@ class Mediator:
         self.sheet.refresh()
 
     def can_remove_row(self, event) -> bool:
+        """
+        This method returns True if the selected row is in an area where the user can
+        add or remove rows.
+        """
         evts = ("select_row", "drag_select_rows")
         name = event[0]
         return name in evts and self.__is_editable_row_selected() is True
