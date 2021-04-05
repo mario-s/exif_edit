@@ -17,11 +17,18 @@ class TestMediator(unittest.TestCase):
         self.sheet = Mock(name='sheet', spec=Sheet)
         self.mediator = Mediator(self.sheet)
 
-    def test_add_row(self):
+    def test_add_row_at_end(self):
+        self.sheet.get_selected_rows.return_value = {}
         self.mediator.add_row()
-
         expected_calls = [self.sheet.insert_row, self.sheet.refresh]
         self.sheet.mock_calls = expected_calls
+
+    def test_add_row_after_selection(self):
+        self.sheet.get_selected_rows.return_value = {0}
+        self.mediator.add_row()
+        expected_calls = [self.sheet.insert_row, self.sheet.refresh]
+        self.sheet.mock_calls = expected_calls
+        self.sheet.insert_row.assert_called_with(idx=1)
 
     def test_remove_row(self):
         self.sheet.get_selected_rows.return_value = [0]

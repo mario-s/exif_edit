@@ -71,9 +71,15 @@ class Mediator:
 
     def add_row(self):
         """
-        This method add a new row to the table.
+        This method adds a new row to the table.
         """
-        self.sheet.insert_row()
+        if self.__is_editable_row_selected():
+            selected = self.sheet.get_selected_rows()
+            #append row after last selected one
+            idx = list(selected)[-1]+1
+            self.sheet.insert_row(idx=idx)
+        else:
+            self.sheet.insert_row()
         self.sheet.refresh()
 
     def remove_row(self):
