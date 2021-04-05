@@ -85,10 +85,9 @@ class Mediator:
         self.sheet.refresh()
 
     def can_remove_row(self, event) -> bool:
+        evts = ("select_row", "drag_select_rows")
         name = event[0]
-        if name in ("select_row", "drag_select_rows"):
-            return True if self.__is_editable_row_selected() else False
-        return False
+        return name in evts and self.__is_editable_row_selected() is True
 
     def __is_editable_row_selected(self):
         selected_rows = self.sheet.get_selected_rows()
