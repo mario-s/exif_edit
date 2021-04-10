@@ -73,18 +73,22 @@ class Mediator:
         """
         This method adds a new row to the table.
         """
+        self.sheet.insert_row(redraw=True)
+
+    def insert_row(self):
+        """
+        This method will insert a new row, after the last one,
+        which is currently selected.
+        """
         if self.__is_editable_row_selected():
-            selected = self.sheet.get_selected_rows()
+            selected = self.__get_selected_rows()
             #append row after last selected one
             idx = list(selected)[-1]+1
-            self.sheet.insert_row(idx=idx)
-        else:
-            self.sheet.insert_row()
-        self.sheet.refresh()
+            self.sheet.insert_row(idx=idx, redraw=True)
 
     def remove_row(self):
         index = 0
-        selected_rows = self.sheet.get_selected_rows()
+        selected_rows = self.__get_selected_rows()
         for selected in selected_rows:
             col_data = self.sheet.get_column_data(0)
             total_rows = len(col_data)
@@ -96,12 +100,23 @@ class Mediator:
         self.sheet.refresh()
 
     def can_remove_row(self, event) -> bool:
-        evts = ("select_row", "drag_select_rows")
+        """
+        This method returns True if the selected row is in an area where the user can
+        add or remove rows.
+        """
+        evts = ("select_row", "drag_select_rows", "select_cell")
         name = event[0]
         return name in evts and self.__is_editable_row_selected() is True
 
-    def __is_editable_row_selected(self):
+    def __get_selected_rows(self):
         selected_rows = self.sheet.get_selected_rows()
+        if len(selected_rows) == 0:
+            selected = self.sheet.get_selected_cells(get_rows=True)
+            selected_rows = {cell[0] for cell in selected}
+        return selected_rows
+
+    def __is_editable_row_selected(self):
+        selected_rows = self.__get_selected_rows()
         return [self.__is_deletable(row) for row in selected_rows].count(True) > 0
 
     def __is_deletable(self, row):

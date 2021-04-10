@@ -17,21 +17,35 @@ class TestMediator(unittest.TestCase):
         self.sheet = Mock(name='sheet', spec=Sheet)
         self.mediator = Mediator(self.sheet)
 
-    def test_add_row_at_end(self):
-        self.sheet.get_selected_rows.return_value = {}
+    def test_add(self):
         self.mediator.add_row()
-        expected_calls = [self.sheet.insert_row, self.sheet.refresh]
-        self.sheet.mock_calls = expected_calls
+        self.sheet.insert_row.assert_called_with(redraw=True)
 
-    def test_add_row_after_selection(self):
+    def test_insert_row(self):
         self.sheet.get_selected_rows.return_value = {0}
-        self.mediator.add_row()
-        expected_calls = [self.sheet.insert_row, self.sheet.refresh]
-        self.sheet.mock_calls = expected_calls
-        self.sheet.insert_row.assert_called_with(idx=1)
+        self.mediator.insert_row()
+        self.sheet.insert_row.assert_called_with(idx=1, redraw=True)
 
-    def test_remove_row(self):
+    def test_insert_row_after_selected_cell(self):
+        self.sheet.get_selected_rows.return_value = {}
+        self.sheet.get_selected_cells.return_value = {(0,1)}
+        self.mediator.insert_row()
+        self.sheet.insert_row.assert_called_with(idx=1, redraw=True)
+
+    def test_remove_row_selected_row(self):
         self.sheet.get_selected_rows.return_value = [0]
+        self.sheet.get_column_data = Mock(return_value=[[0]])
+
+        self.mediator.remove_row()
+
+        expected_calls = [self.sheet.get_selected_rows, self.sheet.get_column_data,
+            self.sheet.get_cell_data, self.sheet.delete_row, self.sheet.refresh]
+        self.sheet.mock_calls = expected_calls
+        self.sheet.delete_row.assert_called_with(0, True)
+
+    def test_remove_row_selected_cell(self):
+        self.sheet.get_selected_rows.return_value = {}
+        self.sheet.get_selected_cells.return_value = {(0,1)}
         self.sheet.get_column_data = Mock(return_value=[[0]])
 
         self.mediator.remove_row()

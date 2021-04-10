@@ -21,4 +21,9 @@ All other required libraries:
 
 ## Credits
 
- Icons made by [bqlqn](https://www.flaticon.com/authors/bqlqn) from [www.flaticon.com](https://www.flaticon.com/)
+ Icons made by
+
+* [bqlqn](https://www.flaticon.com/authors/bqlqn) from [www.flaticon.com](https://www.flaticon.com/)
+* [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
+* [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
+* srip from [www.flaticon.com](https://www.flaticon.com/)

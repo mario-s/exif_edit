@@ -48,7 +48,6 @@ class App(tk.Tk):
         self.__add_menubar()
         self.__add_toolbar()
         self.__add_sheet()
-        self.__add_table_commands()
         self.__add_bindings()
 
     def __add_menubar(self):
@@ -66,26 +65,39 @@ class App(tk.Tk):
         toolbar.grid(row = 0, column = 0, sticky = "nswe")
 
         btn_open = ToolbarButton(toolbar, self.__icon("folder.png"),
-            "open file " + self.__acc("O"),
-            self.__open)
+            "open file " + self.__acc("O"), self.__open)
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
 
         btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"),
-            "save file " + self.__acc("S"),
-            self.__save)
+            "save file " + self.__acc("S"), self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
         btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"),
-            "exit "+ self.__acc("W"),
-            self.__quit)
+            "exit "+ self.__acc("W"), self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
 
+        btn_add = ToolbarButton(toolbar, self.__icon("add-row.png"),
+            "add a row", self.__add_row)
+        btn_add.pack(side=tk.LEFT, padx=2, pady=5)
+
+        self.btn_insert = ToolbarButton(toolbar, self.__icon("insert.png"),
+            "insert a row after selected", self.__insert_row)
+        self.btn_insert.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_insert.disable()
+
+        self.btn_rm = ToolbarButton(toolbar, self.__icon("delete-row.png"),
+            "remove selected row", self.__remove_row)
+        self.btn_rm.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_rm.disable()
+
+        sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
+        sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
+
         self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"),
-            "show location " + self.__acc("L"),
-            self.__open_location)
+            "show location " + self.__acc("L"), self.__open_location)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
 
     def __icon(self, icon_name):
@@ -122,19 +134,6 @@ class App(tk.Tk):
                                 ("drag_select_rows", self.drag_select_rows)
                                 ])
 
-    def __add_table_commands(self):
-        left_cmd_frame = tk.Frame(self.frame, borderwidth=2)
-        left_cmd_frame.grid(row = 1, column = 0, sticky = "nswe")
-
-        btn_add = tk.Button(left_cmd_frame, text="+", command=self.__add_row)
-        btn_add.pack(padx=5, pady=3, side=tk.LEFT)
-        Tooltip(btn_add, "add a row")
-
-        self.btn_rm = tk.Button(left_cmd_frame, text="-", command=self.__remove_row,
-            state=tk.DISABLED)
-        self.btn_rm.pack(padx=5, pady=3, side=tk.LEFT)
-        Tooltip(self.btn_rm, "remove selected rows")
-
     def __add_bindings(self):
         #add key bindings according to accelerators
         self.bind('<Command-o>', self.__open)
@@ -168,7 +167,7 @@ class App(tk.Tk):
         print(event)
 
     def drag_select_rows(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def begin_edit_cell(self, event):
         self.mediator.begin_edit_cell((event[0], event[1]))
@@ -184,30 +183,31 @@ class App(tk.Tk):
         print (region, row, column)
 
     def deselect(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def cell_select(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def row_select(self, event):
-        self.__update_remove_row_button(event)
+        self.__update_row_buttons(event)
 
     def __add_row(self):
         self.mediator.add_row()
+
+    def __insert_row(self):
+        self.mediator.insert_row()
 
     def __remove_row(self):
         self.mediator.remove_row()
         self.__update_location_button()
 
-    def __update_remove_row_button(self, event):
-        state = NORMAL if self.mediator.can_remove_row(event) else DISABLED
-        self.btn_rm.config(state=state)
+    def __update_row_buttons(self, event):
+        enabled = self.mediator.can_remove_row(event)
+        self.btn_insert.toggle_state(enabled)
+        self.btn_rm.toggle_state(enabled)
 
     def __update_location_button(self):
-        if self.mediator.has_location():
-            self.btn_loc.enable()
-        else:
-            self.btn_loc.disable()
+        self.btn_loc.toggle_state(self.mediator.has_location())
 
     def start(self):
         """
@@ -240,6 +240,12 @@ class ToolbarButton(tk.Button):
         self.image = itk.PhotoImage(self.icon)
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
+
+    def toggle_state(self, enabled=True):
+        if enabled:
+            self.enable()
+        else:
+            self.disable()
 
     def disable(self):
         """
