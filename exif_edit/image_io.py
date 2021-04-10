@@ -42,7 +42,7 @@ class Reader:
         """
         This method returns the value for a given key.
         """
-        return Converter.try_read(self.image, key)
+        return Converter.read_from_dict(self.image, key)
 
     def dict(self) -> dict:
         """
@@ -81,7 +81,7 @@ class Writer:
         self.__delete_all()
         for key, value in dic.items():
             if key not in ExifFilter.read_only() and value is not None:
-                val = self.converter.cast(key, value)
+                val = self.converter.to_exif(key, value)
                 self.image.set(key, val)
 
     def __delete_all(self):

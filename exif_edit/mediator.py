@@ -10,7 +10,7 @@ from typing import Optional
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
-from exif_edit.geoloc import Coordinate, Factory
+from exif_edit.types import Coordinate
 
 class Mediator:
 
@@ -146,22 +146,29 @@ class Mediator:
         """
         Listener for end edit of a cell.
         """
-        if self.__is_location_value(cell):
-            self.__parse_location(cell)
+        loc_row = self.__location_row(cell)
+        if not loc_row is None:
+            self.__parse_location(cell, loc_row)
         else:
             self.__restore_origin_key(cell)
 
-    def __is_location_value(self, cell):
-        if not self.__is_in_key_column(cell):
-            key = self.sheet.get_cell_data(cell[0], 0)
-            return Converter.is_geoloc(key)
-        return False
+    def __location_row(self, cell):
+        key = self.__get_key_from_cell(cell)
+        if Converter.is_geoloc(key) or Converter.is_gps_timestamp(key):
+            val = self.sheet.get_cell_data(cell[0], cell[1])
+            return key, val
+        return None
 
-    def __parse_location(self, cell):
-        dat = self.sheet.get_cell_data(cell[0], cell[1])
+    def __get_key_from_cell(self, cell):
+        if not self.__is_in_key_column(cell):
+            return self.sheet.get_cell_data(cell[0], 0)
+        return None
+
+    def __parse_location(self, cell, loc_row):
         try:
-            deg = Factory.create(dat)
-            self.sheet.set_cell_data(cell[0], cell[1], deg, False, True)
+            key, value = loc_row
+            dat = Converter.to_custom(key, value)
+            self.sheet.set_cell_data(cell[0], cell[1], dat, False, True)
         except ValueError as exc:
             logging.warning(exc)
             self.__restore_origin_cell_data(cell[0], cell[1])

@@ -7,7 +7,7 @@ import logging
 from sortedcontainers import SortedDict
 import exif as ex
 
-from exif_edit.geoloc import Factory, Format
+from exif_edit.types import DegreeFormatFactory, Format, TimeStamp
 
 
 class ExifFilter:
@@ -69,21 +69,21 @@ class Converter:
             return list(enm)[0]
 
     @classmethod
-    def cast(cls, key, value):
-        """Converts the value frpm the sheet to a type."""
+    def to_exif(cls, key, value):
+        """Converts the value from the sheet to a exif conform type."""
         #do we have a matching enum in our dictionary?
         if key in cls.dictionary:
             return cls.__from_enum(key, value)
         #do we have a custom type?
         if isinstance(value, Format):
-            return value.dms_degrees()
+            return value.as_tuple()
         try:
             return int(value)
         except:
             return value
 
     @staticmethod
-    def try_read(dic, key):
+    def read_from_dict(dic, key):
         """
         This method tries to get the value from the dictionary, and if it is an enum,
         return the name of it.
@@ -91,15 +91,24 @@ class Converter:
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
-            if Converter.is_geoloc(key):
-                return Factory.create(value)
-            #human readable value if we have an enum
-            if isinstance(value, Enum):
-                return value.name
-            return value
+            return Converter.to_custom(key, value)
         except ValueError as exc:
             logging.warning("Illegal value in exif: %s", exc)
             return None
+
+    @staticmethod
+    def to_custom(key, value):
+        """
+        Converts value to existing custom types.
+        """
+        if Converter.is_gps_timestamp(key):
+                return TimeStamp.parse(value)
+        if Converter.is_geoloc(key):
+            return DegreeFormatFactory.create(value)
+        #human readable value if we have an enum
+        if isinstance(value, Enum):
+            return value.name
+        return value
 
     @staticmethod
     def is_geoloc(key) -> bool:
@@ -107,6 +116,13 @@ class Converter:
         This function returns True if the key is related to a geo location, else False"
         """
         return key in ("gps_longitude", "gps_latitude")
+
+    @staticmethod
+    def is_gps_timestamp(key) -> bool:
+        """
+        This function returns True if the key is related to a gps timestamp, else False"
+        """
+        return key in ("gps_timestamp", )
 
     @staticmethod
     def rows_to_dict(rows) -> dict:

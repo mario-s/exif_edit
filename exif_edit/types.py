@@ -1,5 +1,5 @@
 """
-This module contains classes related to coordinates.
+This module contains classes related to GPS data.
 """
 import re
 from typing import List, Tuple
@@ -8,11 +8,42 @@ class Format:
     """
     Parent class for degree format.
     """
-    def decimal_degrees(self) -> float:
+    def as_float(self) -> float:
+        """
+        This will return the value as a single float number.
+        """
         pass
 
-    def dms_degrees(self) -> tuple:
+    def as_tuple(self) -> tuple:
+        """
+        This will return the format as a tuple in terms of DMS it means °\'\""
+        """
         pass
+
+class TimeStamp(Format):
+    """
+    A time stamp made from a tupel.
+    """
+    def __init__(self, tpl, separator = ':'):
+        if len(tpl) != 3:
+            raise ValueError("expected (hour, minuntes, seconds)")
+        self.val = (int(tpl[0]), int(tpl[1]), int(tpl[2]))
+        self.separ = separator
+
+    def as_tuple(self):
+        return self.val
+
+    def __repr__(self) -> str:
+        return f"{self.val[0]:02d}{self.separ}{self.val[1]:02d}{self.separ}{self.val[2]:02d}"
+
+    @staticmethod
+    def parse(value):
+        if isinstance(value, (List, Tuple)):
+            return TimeStamp(value)
+
+        match = re.search(r"(\d+):(\d+):(\d+)", str(value))
+        if match:
+            return TimeStamp((match.group(1), match.group(2), match.group(3)))
 
 
 class DmsFormat(Format):
@@ -24,7 +55,7 @@ class DmsFormat(Format):
             raise ValueError("expected (degree, minuntes, seconds)")
         self.degrees = (int(degrees[0]), int(degrees[1]), float(degrees[2]))
 
-    def dms_degrees(self) -> tuple:
+    def as_tuple(self) -> tuple:
         return self.degrees
 
     def __dms2dec(self):
@@ -35,7 +66,7 @@ class DmsFormat(Format):
             return deg + mnt + sec
         return deg - mnt - sec
 
-    def decimal_degrees(self) -> float:
+    def as_float(self) -> float:
         """
         Converts degrees, minutes, and seconds to decimal degrees.
         """
@@ -54,7 +85,7 @@ class DecimalFormat(Format):
 
         self.degrees = float(degree)
 
-    def dms_degrees(self) -> tuple:
+    def as_tuple(self) -> tuple:
         """
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
@@ -64,13 +95,13 @@ class DecimalFormat(Format):
 
         return deg, mnt, round(sec, 6)
 
-    def decimal_degrees(self) -> float:
+    def as_float(self) -> float:
         return round(self.degrees, 6)
 
     def __repr__(self) -> str:
-        return f"{self.decimal_degrees()}°"
+        return f"{self.as_float()}°"
 
-class Factory:
+class DegreeFormatFactory:
     """
     Creates a new instance of a format
     """
@@ -85,7 +116,7 @@ class Factory:
         if isinstance(degrees, (float, int)):
             return DecimalFormat(degrees)
         if isinstance(degrees, str):
-            return Factory.parse(degrees)
+            return DegreeFormatFactory.parse(degrees)
 
         raise ValueError("cant not handle given type")
 
@@ -112,18 +143,18 @@ class Coordinate:
     """
     def __init__(self, latitude, longitude, lat_ref = 'N', lon_ref = 'E'):
         if not isinstance(latitude, Format):
-            latitude = Factory.create(latitude)
+            latitude = DegreeFormatFactory.create(latitude)
         self.latitude = latitude
         self.lat_ref = lat_ref
 
         if not isinstance(longitude, Format):
-            longitude = Factory.create(longitude)
+            longitude = DegreeFormatFactory.create(longitude)
         self.longitude = longitude
         self.lon_ref = lon_ref
 
     def decimal(self):
-        lat_dec = abs(self.latitude.decimal_degrees())
-        lon_dec = abs(self.longitude.decimal_degrees())
+        lat_dec = abs(self.latitude.as_float())
+        lon_dec = abs(self.longitude.as_float())
         lat = lat_dec if self.lat_ref == 'N' else -1 * lat_dec
         lon = lon_dec if self.lon_ref == 'E' else -1 * lon_dec
         return lat, lon

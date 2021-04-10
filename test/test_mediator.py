@@ -1,4 +1,4 @@
-from exif_edit.geoloc import Factory
+from exif_edit.types import DegreeFormatFactory
 import unittest
 import os
 import tkinter as tk
@@ -92,7 +92,7 @@ class TestMediator(unittest.TestCase):
 
     def test_parse_location_restore_origin(self):
         cell = (1,1)
-        deg = Factory.create("78.4")
+        deg = DegreeFormatFactory.create("78.4")
         self.sheet.get_cell_data = Mock(side_effect=[deg, "gps_latitude", "a"])
         self.mediator.begin_edit_cell(cell)
         self.mediator.end_edit_cell(cell)
@@ -114,14 +114,14 @@ class TestMediator(unittest.TestCase):
         self.mediator.open_url.assert_not_called()
 
     def test_open_location_coordinates(self):
-        deg = Factory.create((1,1,1))
+        deg = DegreeFormatFactory.create((1,1,1))
         self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
         self.mediator.open_url = MagicMock()
         self.mediator.show_location()
         self.mediator.open_url.assert_called_once()
 
     def test_has_location(self):
-        deg = Factory.create((1,1,1))
+        deg = DegreeFormatFactory.create((1,1,1))
         self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
         self.assertTrue(self.mediator.has_location())
 
