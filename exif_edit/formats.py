@@ -1,5 +1,5 @@
 """
-This module contains classes related to GPS data.
+This module contains custom formats used in the GUI.
 """
 import re
 from typing import List, Tuple
@@ -16,20 +16,6 @@ class Format:
         This will return the underlying source value."
         """
         return self.source
-
-
-class DegreeFormat(Format):
-    """
-    Format for a degree.
-    """
-    def __init__(self, source):
-        super().__init__(source)
-
-    def as_float(self) -> float:
-        """
-        This will return the value as a single float number.
-        """
-        pass
 
 class TimeStamp(Format):
     """
@@ -54,6 +40,25 @@ class TimeStamp(Format):
             return TimeStamp((match.group(1), match.group(2), match.group(3)))
 
 
+class DegreeFormat(Format):
+    """
+    Format for a degree.
+    """
+    def __init__(self, source):
+        super().__init__(source)
+
+    def as_float(self) -> float:
+        """
+        This will return the value as a single float number.
+        """
+        pass
+
+    def as_tupel(self) -> tuple:
+        """
+        Returns the format as a tuple of degree, minute, seconds.
+        """
+        pass
+
 class DmsFormat(DegreeFormat):
     """
     Degree given in DMS format.
@@ -63,6 +68,15 @@ class DmsFormat(DegreeFormat):
             raise ValueError("expected (degree, minuntes, seconds)")
         super().__init__((int(degrees[0]), int(degrees[1]), float(degrees[2])))
 
+    def as_float(self) -> float:
+        """
+        Converts degrees, minutes, and seconds to decimal degrees.
+        """
+        return round(self.__dms2dec(), 6)
+
+    def as_tupel(self) -> tuple:
+        return super().get_source()
+
     def __dms2dec(self):
         deg = self.source[0]
         mnt = self.source[1]/60
@@ -70,12 +84,6 @@ class DmsFormat(DegreeFormat):
         if deg >= 0:
             return deg + mnt + sec
         return deg - mnt - sec
-
-    def as_float(self) -> float:
-        """
-        Converts degrees, minutes, and seconds to decimal degrees.
-        """
-        return round(self.__dms2dec(), 6)
 
     def __repr__(self) -> str:
         return f"{self.source[0]}°{self.source[1]}\'{self.source[2]}\""
@@ -101,7 +109,7 @@ class DecimalFormat(DegreeFormat):
         return deg, mnt, round(sec, 6)
 
     def as_float(self):
-        return round(self.source, 6)
+        return round(super().get_source(), 6)
 
     def __repr__(self) -> str:
         return f"{self.as_float()}°"
