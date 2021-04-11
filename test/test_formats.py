@@ -49,7 +49,7 @@ class TestFormats(unittest.TestCase):
         tpl = (15,0,1)
         tmt = TimeStamp.parse(tpl)
         self.assertEqual("15:00:01", tmt.__repr__())
-        self.assertEqual(tpl, tmt.as_tuple())
+        self.assertEqual(tpl, tmt.get_source())
 
     def test_timestamp_parse_string(self):
         tmt = TimeStamp.parse("15:00:01")

@@ -63,7 +63,7 @@ class TestConverter(unittest.TestCase):
 
     def test_to_custom_gps_timestamp(self):
         r = Converter.to_custom('gps_timestamp', '15:01:01')
-        self.assertIsInstance(r.as_tuple(), tuple)
+        self.assertIsInstance(r.get_source(), tuple)
 
     def test_illegal_degree(self):
         dic = {'gps_latitude': 'a'}

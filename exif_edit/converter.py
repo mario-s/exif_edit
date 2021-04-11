@@ -76,7 +76,7 @@ class Converter:
             return cls.__from_enum(key, value)
         #do we have a custom type?
         if isinstance(value, Format):
-            return value.as_tuple()
+            return value.get_source()
         try:
             return int(value)
         except:

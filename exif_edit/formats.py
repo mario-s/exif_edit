@@ -8,19 +8,26 @@ class Format:
     """
     Parent class for every format.
     """
-
     def __init__(self, source):
         self.source = source
+
+    def get_source(self):
+        """
+        This will return the underlying source value."
+        """
+        return self.source
+
+
+class DegreeFormat(Format):
+    """
+    Format for a degree.
+    """
+    def __init__(self, source):
+        super().__init__(source)
 
     def as_float(self) -> float:
         """
         This will return the value as a single float number.
-        """
-        pass
-
-    def as_tuple(self) -> tuple:
-        """
-        This will return the format as a tuple in terms of DMS it means °\'\""
         """
         pass
 
@@ -33,9 +40,6 @@ class TimeStamp(Format):
             raise ValueError("expected (hour, minuntes, seconds)")
         super().__init__((int(tpl[0]), int(tpl[1]), int(tpl[2])))
         self.separ = separator
-
-    def as_tuple(self):
-        return self.source
 
     def __repr__(self) -> str:
         return f"{self.source[0]:02d}{self.separ}{self.source[1]:02d}{self.separ}{self.source[2]:02d}"
@@ -50,7 +54,7 @@ class TimeStamp(Format):
             return TimeStamp((match.group(1), match.group(2), match.group(3)))
 
 
-class DmsFormat(Format):
+class DmsFormat(DegreeFormat):
     """
     Degree given in DMS format.
     """
@@ -58,9 +62,6 @@ class DmsFormat(Format):
         if len(degrees) != 3:
             raise ValueError("expected (degree, minuntes, seconds)")
         super().__init__((int(degrees[0]), int(degrees[1]), float(degrees[2])))
-
-    def as_tuple(self) -> tuple:
-        return self.source
 
     def __dms2dec(self):
         deg = self.source[0]
@@ -79,7 +80,7 @@ class DmsFormat(Format):
     def __repr__(self) -> str:
         return f"{self.source[0]}°{self.source[1]}\'{self.source[2]}\""
 
-class DecimalFormat(Format):
+class DecimalFormat(DegreeFormat):
     """
     Degree given in Decimal format.
     """
@@ -99,7 +100,7 @@ class DecimalFormat(Format):
 
         return deg, mnt, round(sec, 6)
 
-    def as_float(self) -> float:
+    def as_float(self):
         return round(self.source, 6)
 
     def __repr__(self) -> str:
@@ -112,7 +113,7 @@ class DegreeFormatFactory:
     @staticmethod
     def create(degrees):
         #already in the right format
-        if isinstance(degrees, Format):
+        if isinstance(degrees, DegreeFormat):
             return degrees
 
         if isinstance(degrees, (List, Tuple)):
