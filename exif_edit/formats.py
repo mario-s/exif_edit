@@ -6,8 +6,12 @@ from typing import List, Tuple
 
 class Format:
     """
-    Parent class for degree format.
+    Parent class for every format.
     """
+
+    def __init__(self, source):
+        self.source = source
+
     def as_float(self) -> float:
         """
         This will return the value as a single float number.
@@ -27,14 +31,14 @@ class TimeStamp(Format):
     def __init__(self, tpl, separator = ':'):
         if len(tpl) != 3:
             raise ValueError("expected (hour, minuntes, seconds)")
-        self.val = (int(tpl[0]), int(tpl[1]), int(tpl[2]))
+        super().__init__((int(tpl[0]), int(tpl[1]), int(tpl[2])))
         self.separ = separator
 
     def as_tuple(self):
-        return self.val
+        return self.source
 
     def __repr__(self) -> str:
-        return f"{self.val[0]:02d}{self.separ}{self.val[1]:02d}{self.separ}{self.val[2]:02d}"
+        return f"{self.source[0]:02d}{self.separ}{self.source[1]:02d}{self.separ}{self.source[2]:02d}"
 
     @staticmethod
     def parse(value):
@@ -53,15 +57,15 @@ class DmsFormat(Format):
     def __init__(self, degrees):
         if len(degrees) != 3:
             raise ValueError("expected (degree, minuntes, seconds)")
-        self.degrees = (int(degrees[0]), int(degrees[1]), float(degrees[2]))
+        super().__init__((int(degrees[0]), int(degrees[1]), float(degrees[2])))
 
     def as_tuple(self) -> tuple:
-        return self.degrees
+        return self.source
 
     def __dms2dec(self):
-        deg = self.degrees[0]
-        mnt = self.degrees[1]/60
-        sec = self.degrees[2]/3600
+        deg = self.source[0]
+        mnt = self.source[1]/60
+        sec = self.source[2]/3600
         if deg >= 0:
             return deg + mnt + sec
         return deg - mnt - sec
@@ -73,7 +77,7 @@ class DmsFormat(Format):
         return round(self.__dms2dec(), 6)
 
     def __repr__(self) -> str:
-        return f"{self.degrees[0]}°{self.degrees[1]}\'{self.degrees[2]}\""
+        return f"{self.source[0]}°{self.source[1]}\'{self.source[2]}\""
 
 class DecimalFormat(Format):
     """
@@ -83,20 +87,20 @@ class DecimalFormat(Format):
         if degree is None:
             raise ValueError("expected degree in decimal")
 
-        self.degrees = float(degree)
+        super().__init__(float(degree))
 
     def as_tuple(self) -> tuple:
         """
         Converts decimal degrees to (degrees, minutes, and seconds).
         """
-        deg = int(self.degrees)
-        mnt = int((self.degrees - deg) * 60)
-        sec = (self.degrees - deg - mnt/60) * 3600
+        deg = int(self.source)
+        mnt = int((self.source - deg) * 60)
+        sec = (self.source - deg - mnt/60) * 3600
 
         return deg, mnt, round(sec, 6)
 
     def as_float(self) -> float:
-        return round(self.degrees, 6)
+        return round(self.source, 6)
 
     def __repr__(self) -> str:
         return f"{self.as_float()}°"
