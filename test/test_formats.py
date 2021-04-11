@@ -1,9 +1,8 @@
-from tkinter.constants import NONE
 import unittest
 
-from exif_edit.types import DmsFormat, DecimalFormat, DegreeFormatFactory, Coordinate, TimeStamp
+from exif_edit.formats import DmsFormat, DecimalFormat, DegreeFormatFactory, TimeStamp
 
-class TestTypes(unittest.TestCase):
+class TestFormats(unittest.TestCase):
 
     def test_wrong_args(self):
         self.assertRaises(ValueError, lambda: DmsFormat([1]))
@@ -45,14 +44,6 @@ class TestTypes(unittest.TestCase):
 
     def test_parser_raises_error(self):
         self.assertRaises(ValueError, lambda: DegreeFormatFactory.parse('4711a'))
-
-    def test_coordinate_to_dec_positive(self):
-        coord = Coordinate(30.263888889, 30.263888889)
-        self.assertEqual((30.263889, 30.263889), coord.decimal())
-
-    def test_coordinate_to_dec_negative(self):
-        coord = Coordinate(30.263888889, "30.263888889", lat_ref='S', lon_ref='W')
-        self.assertEqual((-30.263889, -30.263889), coord.decimal())
 
     def test_timestamp_parse_tuple(self):
         tpl = (15,0,1)

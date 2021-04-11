@@ -10,7 +10,7 @@ from typing import Optional
 
 from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
-from exif_edit.types import Coordinate
+from exif_edit.location import Coordinate
 
 class Mediator:
 

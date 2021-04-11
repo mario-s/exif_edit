@@ -7,7 +7,7 @@ import logging
 from sortedcontainers import SortedDict
 import exif as ex
 
-from exif_edit.types import DegreeFormatFactory, Format, TimeStamp
+from exif_edit.formats import DegreeFormatFactory, Format, TimeStamp
 
 
 class ExifFilter:

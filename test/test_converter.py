@@ -2,7 +2,7 @@ import unittest
 from exif import ColorSpace, ResolutionUnit, Orientation
 
 from exif_edit.converter import Converter
-from exif_edit.types import DegreeFormatFactory
+from exif_edit.formats import DegreeFormatFactory
 
 
 class TestConverter(unittest.TestCase):
