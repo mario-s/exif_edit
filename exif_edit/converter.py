@@ -7,7 +7,7 @@ import logging
 from sortedcontainers import SortedDict
 import exif as ex
 
-from exif_edit.types import DegreeFormatFactory, Format, TimeStamp
+from exif_edit.formats import DegreeFormatFactory, Format, TimeStamp
 
 
 class ExifFilter:
@@ -76,7 +76,7 @@ class Converter:
             return cls.__from_enum(key, value)
         #do we have a custom type?
         if isinstance(value, Format):
-            return value.as_tuple()
+            return value.get_source()
         try:
             return int(value)
         except:
@@ -91,18 +91,18 @@ class Converter:
         try:
             #this may fail if there is an illegal value for the key
             value = dic.get(key)
-            return Converter.to_custom(key, value)
+            return Converter.to_format(key, value)
         except ValueError as exc:
             logging.warning("Illegal value in exif: %s", exc)
             return None
 
     @staticmethod
-    def to_custom(key, value):
+    def to_format(key, value):
         """
-        Converts value to existing custom types.
+        Converts value to existing custom formats.
         """
         if Converter.is_gps_timestamp(key):
-                return TimeStamp.parse(value)
+            return TimeStamp.parse(value)
         if Converter.is_geoloc(key):
             return DegreeFormatFactory.create(value)
         #human readable value if we have an enum

@@ -2,7 +2,7 @@ import unittest
 from exif import ColorSpace, ResolutionUnit, Orientation
 
 from exif_edit.converter import Converter
-from exif_edit.types import DegreeFormatFactory
+from exif_edit.formats import DegreeFormatFactory
 
 
 class TestConverter(unittest.TestCase):
@@ -62,8 +62,8 @@ class TestConverter(unittest.TestCase):
         self.assertIsInstance(r, tuple)
 
     def test_to_custom_gps_timestamp(self):
-        r = Converter.to_custom('gps_timestamp', '15:01:01')
-        self.assertIsInstance(r.as_tuple(), tuple)
+        r = Converter.to_format('gps_timestamp', '15:01:01')
+        self.assertIsInstance(r.get_source(), tuple)
 
     def test_illegal_degree(self):
         dic = {'gps_latitude': 'a'}

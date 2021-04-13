@@ -1,4 +1,4 @@
-from exif_edit.types import DegreeFormatFactory
+from exif_edit.formats import DegreeFormatFactory
 import unittest
 import os
 import tkinter as tk
