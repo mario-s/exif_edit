@@ -24,3 +24,7 @@ class Coordinate:
         lat = lat_dec if self.lat_ref == 'N' else -1 * lat_dec
         lon = lon_dec if self.lon_ref == 'E' else -1 * lon_dec
         return lat, lon
+
+    def google_maps_url(self):
+        lat, lon = self.decimal()
+        return f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"

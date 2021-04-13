@@ -146,50 +146,44 @@ class Mediator:
         """
         Listener for end edit of a cell.
         """
-        loc_row = self.__location_row(cell)
-        if not loc_row is None:
-            self.__parse_location(cell, loc_row)
+        if self.__is_in_key_column(cell):
+            self.__restore_key_when_duplicate(cell)
         else:
-            self.__restore_origin_key(cell)
+            self.__parse_value(cell)
 
-    def __location_row(self, cell):
-        key = self.__get_key_from_cell(cell)
-        if Converter.is_geoloc(key) or Converter.is_gps_timestamp(key):
-            val = self.sheet.get_cell_data(cell[0], cell[1])
-            return key, val
-        return None
+    @classmethod
+    def __is_in_key_column(cls, cell):
+        return cell[1] == 0
 
-    def __get_key_from_cell(self, cell):
-        if not self.__is_in_key_column(cell):
-            return self.sheet.get_cell_data(cell[0], 0)
-        return None
+    def __restore_key_when_duplicate(self, cell):
+        """
+        Restores the original cell data in the key column when the
+        new data is a duplicate of an existing one.
+        """
+        row = cell[0]
+        #only one unique value is allowed
+        if self.__has_duplicate_keys(row):
+            self.__restore_origin_cell_data(row, 0)
 
-    def __parse_location(self, cell, loc_row):
+    def __parse_value(self, cell):
         try:
-            key, value = loc_row
+            key = self.__get_key(cell[0])
+            value = self.__get_value(cell[0])
             dat = Converter.to_custom(key, value)
             self.sheet.set_cell_data(cell[0], cell[1], dat, False, True)
         except ValueError as exc:
             logging.warning(exc)
             self.__restore_origin_cell_data(cell[0], cell[1])
 
-    def __restore_origin_key(self, cell):
-        """
-            Restores the original cell data in the key column.
-        """
-        if self.__is_in_key_column(cell):
-            row = cell[0]
-            #only one unique value is allowed
-            if self.__has_duplicate_keys(row):
-                self.__restore_origin_cell_data(row, 0)
+    def __get_key(self, row):
+        return self.sheet.get_cell_data(row, 0)
+
+    def __get_value(self, row):
+        return self.sheet.get_cell_data(row, 1)
 
     def __restore_origin_cell_data(self, row, column):
         origin = self.origin_cell_value
         self.sheet.set_cell_data(row, column, origin)
-
-    @classmethod
-    def __is_in_key_column(cls, cell):
-        return cell[1] == 0
 
     def __has_duplicate_keys(self, row):
         key = self.sheet.get_cell_data(row, 0)
@@ -211,7 +205,7 @@ class Mediator:
         """
         loc = self.find_location()
         if not loc is None:
-            url = self.__maps_url(loc)
+            url = loc.google_maps_url()
             self.open_url(url)
 
     def find_location(self) -> Optional[Coordinate]:
@@ -227,11 +221,6 @@ class Mediator:
             lo_ref = dic.get('gps_longitude_ref')
             return Coordinate(loc[0], loc[1], lat_ref=la_ref, lon_ref=lo_ref)
         return None
-
-    @classmethod
-    def __maps_url(cls, loc):
-        lat, lon = loc.decimal()
-        return f"https://www.google.com/maps/place/{lat}+{lon}/@{lat},{lon},10z"
 
     @classmethod
     def open_url(cls, url):
