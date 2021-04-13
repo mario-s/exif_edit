@@ -169,7 +169,7 @@ class Mediator:
         try:
             key = self.__get_key(cell[0])
             value = self.__get_value(cell[0])
-            dat = Converter.to_custom(key, value)
+            dat = Converter.to_format(key, value)
             self.sheet.set_cell_data(cell[0], cell[1], dat, False, True)
         except ValueError as exc:
             logging.warning(exc)
