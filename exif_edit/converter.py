@@ -102,7 +102,7 @@ class Converter:
         Converts value to existing custom formats.
         """
         if Converter.is_gps_timestamp(key):
-                return TimeStamp.parse(value)
+            return TimeStamp.parse(value)
         if Converter.is_geoloc(key):
             return DegreeFormatFactory.create(value)
         #human readable value if we have an enum

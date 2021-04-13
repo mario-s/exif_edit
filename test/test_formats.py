@@ -9,6 +9,7 @@ class TestFormats(unittest.TestCase):
         self.assertRaises(ValueError, lambda: DecimalFormat(None))
         self.assertRaises(ValueError, lambda: DegreeFormatFactory.create("a"))
         self.assertRaises(ValueError, lambda: TimeStamp.parse([1]))
+        self.assertRaises(ValueError, lambda: TimeStamp.parse(1))
 
     def test_factory_format_arg(self):
         loc = DmsFormat((78, 55, 44.33324))
