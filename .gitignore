@@ -5,3 +5,7 @@ __pycache__
 modified.*
 
 .coverage
+
+*.srctrlbm
+*.srctrldb
+*.srctrlprj
