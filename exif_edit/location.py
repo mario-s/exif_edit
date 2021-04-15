@@ -2,21 +2,22 @@
 This module contains functionality related to geo location.
 """
 from typing import Tuple
-from exif_edit.formats import DegreeFormatFactory, Format
+from exif_edit.formats import DegreeFormatFactory, DegreeFormat
 
 class Coordinate:
     """
     Represent a coordinate on the globe.
     """
     def __init__(self, latitude, longitude, lat_ref = 'N', lon_ref = 'E'):
-        if not isinstance(latitude, Format):
+        #convert to an appropriate format
+        if not isinstance(latitude, DegreeFormat):
             latitude = DegreeFormatFactory.create(latitude)
         self.latitude = latitude
-        self.lat_ref = lat_ref
-
-        if not isinstance(longitude, Format):
+        if not isinstance(longitude, DegreeFormat):
             longitude = DegreeFormatFactory.create(longitude)
         self.longitude = longitude
+
+        self.lat_ref = lat_ref
         self.lon_ref = lon_ref
 
     def decimal(self) -> Tuple:
