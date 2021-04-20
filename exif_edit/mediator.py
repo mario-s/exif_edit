@@ -18,23 +18,35 @@ class Mediator:
 
     def __init__(self, sheet):
         self.sheet = sheet
+        self.origin_cell_value = None
 
     def append_exif(self, img_path):
         self.origin_img_path = img_path
+        self.origin_cell_value = None
 
         reader = Reader(img_path)
         self.__set_sheet_data(reader.grouped_dict())
 
     def __set_sheet_data(self, dic):
-        self.sheet.set_sheet_data(self.__to_list(dic))
-        self.__disable_rows(dic)
+        #delete old rows if there are any
+        self.__delete_all_rows()
+
+        lst = self.__to_list(dic)
+        self.__disable_rows(lst)
+        self.sheet.set_sheet_data(lst, redraw=True)
+
+    def __delete_all_rows(self):
+        rows = self.sheet.total_rows()
+        while rows > 0:
+            self.sheet.delete_row(rows - 1)
+            rows = self.sheet.total_rows()
 
     @classmethod
     def __to_list(cls, dic) -> list[list[str]]:
         return list(map(list, dic.items()))
 
-    def __disable_rows(self, dic):
-        keys = list(dic.keys())
+    def __disable_rows(self, lst):
+        keys = [i[0] for i in lst]
 
         rows = self.__count_matching_rows(keys, ExifFilter.read_only())
         if len(rows) > 0:
