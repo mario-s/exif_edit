@@ -1,3 +1,4 @@
+from exif_edit.converter import Converter
 import unittest
 import os
 
@@ -25,7 +26,7 @@ class TestImageIO(unittest.TestCase):
     def test_dict(self):
         d = self.reader.dict()
         self.assertFalse(len(d) == 0)
-    
+
     def test_grouped_dict(self):
         l = list(self.reader.grouped_dict().keys())
         k = ExifFilter.read_only()[0]
@@ -38,6 +39,15 @@ class TestImageIO(unittest.TestCase):
 
         keys = Reader(p).keys()
         self.assertTrue("model" in keys)
+
+    def test_save_list_deleted_row(self):
+        list = [["model", "bar"], ["software", "python"]]
+        p = self.__path('modified.jpg')
+        writer = Writer(self.reader.binary(), Converter.rows_to_dict(list))
+        writer.save([["model", "bar"]], p)
+
+        keys = Reader(p).keys()
+        self.assertFalse("software" in keys)
 
     def test_read_image(self):
         i = Reader.read_image(self.__path('lookup.jpg'), True)

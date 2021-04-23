@@ -137,8 +137,8 @@ class Mediator:
 
     def save_exif(self, new_img_path="", origin_img_path=""):
         orig_path = self.__path(self.origin_img_path, origin_img_path)
-        img = Reader(orig_path).binary()
-        writer = Writer(img)
+        reader = Reader(orig_path)
+        writer = Writer(reader.binary(), reader.dict())
 
         target_path = self.__path(orig_path, new_img_path)
         logging.info("saving file: %s", target_path)
