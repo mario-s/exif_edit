@@ -77,10 +77,7 @@ class Converter:
         #do we have a custom type?
         if isinstance(value, Format):
             return value.get_source()
-        try:
-            return int(value)
-        except:
-            return value
+        return value
 
     @staticmethod
     def read_from_dict(dic, key):

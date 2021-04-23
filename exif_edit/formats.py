@@ -63,7 +63,7 @@ class DmsFormat(DegreeFormat):
     def __init__(self, degrees):
         if len(degrees) != 3:
             raise ValueError("expected (degree, minuntes, seconds)")
-        super().__init__((int(degrees[0]), int(degrees[1]), float(degrees[2])))
+        super().__init__(tuple(degrees))
 
     def as_float(self) -> float:
         """
@@ -75,15 +75,15 @@ class DmsFormat(DegreeFormat):
         return super().get_source()
 
     def __dms2dec(self):
-        deg = self.source[0]
-        mnt = self.source[1]/60
-        sec = self.source[2]/3600
+        deg = int(self.source[0])
+        mnt = int(self.source[1])/60
+        sec = float(self.source[2])/3600
         if deg >= 0:
             return deg + mnt + sec
         return deg - mnt - sec
 
     def __repr__(self) -> str:
-        return f"{self.source[0]}°{self.source[1]}\'{self.source[2]}\""
+        return f"{int(self.source[0])}°{int(self.source[1])}\'{float(self.source[2])}\""
 
 class DecimalFormat(DegreeFormat):
     """

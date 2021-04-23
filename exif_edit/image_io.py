@@ -81,8 +81,13 @@ class Writer:
         self.__delete_all()
         for key, value in dic.items():
             if key not in ExifFilter.read_only() and value is not None:
-                val = self.converter.to_exif(key, value)
-                self.image.set(key, val)
+                try:
+                    val = self.converter.to_exif(key, value)
+                    #print(f"{key}, {val}")
+                    self.image[key] = val
+                except Exception as e:
+                    print(e)
+
 
     def __delete_all(self):
         #we need to iterate through each and check if we allowed to delete it,
