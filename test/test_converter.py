@@ -61,6 +61,14 @@ class TestConverter(unittest.TestCase):
         r = Converter.to_exif('', loc)
         self.assertIsInstance(r, tuple)
 
+    def test_to_exif_int(self):
+        r = Converter.to_exif('', 12)
+        self.assertIsInstance(r, int)
+
+    def test_to_exif_fallback(self):
+        r = Converter.to_exif('', 'a')
+        self.assertEqual(r, 'a')
+
     def test_to_custom_gps_timestamp(self):
         r = Converter.to_format('gps_timestamp', '15:01:01')
         self.assertIsInstance(r.get_source(), tuple)

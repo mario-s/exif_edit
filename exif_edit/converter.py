@@ -31,7 +31,7 @@ class ExifFilter:
     @staticmethod
     def read_only():
         """Filter for attributes which are read only."""
-        return "_exif_ifd_pointer", "exif_version"
+        return "_exif_ifd_pointer", "_gps_ifd_pointer", "exif_version"
 
 
 class Converter:

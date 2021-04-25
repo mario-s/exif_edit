@@ -1,6 +1,7 @@
 """
 IO package to read and write.
 """
+import logging
 
 from exif import Image as Exif
 from PIL import Image
@@ -66,8 +67,9 @@ class Reader:
 class Writer:
     """This class writes the edited Exif Tags back to the image."""
 
-    def __init__(self, image):
+    def __init__(self, image, origin_dict = None):
         self.image = image
+        self.origin_dict = {} if origin_dict is None else origin_dict
         self.converter = Converter()
 
     def save(self, rows, img_path):
@@ -78,22 +80,31 @@ class Writer:
         self.__save(img_path)
 
     def __set_values(self, dic):
-        self.__delete_all()
         for key, value in dic.items():
-            if key not in ExifFilter.read_only() and value is not None:
-                try:
-                    val = self.converter.to_exif(key, value)
-                    #print(f"{key}, {val}")
-                    self.image[key] = val
-                except Exception as e:
-                    print(e)
+            if Writer.__is_valid(key, value):
+                self.__set_value(key, value)
+                # updated an existing element, so remove from source
+                if key in self.origin_dict:
+                    self.origin_dict.pop(key)
 
+        #the elements which survived above loop, are those which were deleted
+        self.__delete_tags()
 
-    def __delete_all(self):
-        #we need to iterate through each and check if we allowed to delete it,
-        #if not we will have problems while saving the new tags
+    def __set_value(self, key, value):
+        try:
+            val = self.converter.to_exif(key, value)
+            self.image[key] = val
+        except Exception as exc:
+            logging.warning("exception while setting new value: %s", exc)
+
+    @staticmethod
+    def __is_valid(key, value):
+        return key not in ExifFilter.read_only() and value is not None
+
+    def __delete_tags(self):
+        #we need to iterate through each and check if we allowed to delete it
         locked = ExifFilter.locked()
-        for key in self.image.list_all():
+        for key, _ in self.origin_dict.items():
             if key not in locked:
                 self.image.delete(key)
 
