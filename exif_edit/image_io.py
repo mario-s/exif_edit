@@ -67,9 +67,9 @@ class Reader:
 class Writer:
     """This class writes the edited Exif Tags back to the image."""
 
-    def __init__(self, image, origin_dict = {}):
+    def __init__(self, image, origin_dict = None):
         self.image = image
-        self.origin_dict = origin_dict
+        self.origin_dict = {} if origin_dict is None else origin_dict
         self.converter = Converter()
 
     def save(self, rows, img_path):
@@ -94,12 +94,12 @@ class Writer:
         try:
             val = self.converter.to_exif(key, value)
             self.image[key] = val
-        except Exception as e:
-            logging.warn("exception while setting new value: %s", e)
+        except Exception as exc:
+            logging.warning("exception while setting new value: %s", exc)
 
     @staticmethod
     def __is_valid(key, value):
-        return key not in ExifFilter.read_only() and value is not None;
+        return key not in ExifFilter.read_only() and value is not None
 
     def __delete_tags(self):
         #we need to iterate through each and check if we allowed to delete it
