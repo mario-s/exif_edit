@@ -12,8 +12,8 @@ from tkinter import ttk
 from idlelib import tooltip as tp
 from tksheet import Sheet
 
-from PIL import ImageFilter
 from PIL import ImageTk as itk
+from PIL import Image
 
 from exif_edit.mediator import Mediator
 
@@ -237,6 +237,7 @@ class ToolbarButton(tk.Button):
     def __init__(self, anchor, icon, tooltip, cmd):
         self.icon = icon.convert("RGBA")
         self.image = itk.PhotoImage(self.icon)
+        self.overlay = Image.new('RGBA', icon.size, (255, 255, 255, 0))
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
 
@@ -252,19 +253,18 @@ class ToolbarButton(tk.Button):
 
     def disable(self):
         """
-        Extended method to disable the button, it also changes the icon to be a grey.
+        Extended method to disable the button, it also changes the icon.
         """
         self.config(state=DISABLED)
-        icon = self.icon.copy()
-        self.__config_image(itk.PhotoImage(icon.filter(ImageFilter.EMBOSS)))
+        img = Image.blend(self.icon, self.overlay, 0.3)
+        self.__config_image(itk.PhotoImage(img))
 
     def enable(self):
         """
         Extended method to enable the button, it restores the original icon.
         """
         self.config(state=NORMAL)
-        icon = self.icon.copy()
-        self.__config_image(itk.PhotoImage(icon))
+        self.__config_image(itk.PhotoImage(self.icon))
 
     def __config_image(self, img):
         self.image = img
