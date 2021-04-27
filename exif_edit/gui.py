@@ -99,6 +99,7 @@ class App(tk.Tk):
         self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"),
             "show location " + self.__acc("L"), self.__open_location)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
+        self.btn_loc.disable()
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
@@ -176,12 +177,6 @@ class App(tk.Tk):
     def end_edit_cell(self, event):
         self.mediator.end_edit_cell((event[0], event[1]))
         self.__update_location_button()
-
-    def mouse_motion(self, event):
-        region = self.sheet.identify_region(event)
-        row = self.sheet.identify_row(event, allow_end = False)
-        column = self.sheet.identify_column(event, allow_end = False)
-        print (region, row, column)
 
     def deselect(self, event):
         self.__update_row_buttons(event)
