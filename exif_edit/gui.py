@@ -160,6 +160,7 @@ class App(tk.Tk):
 
         self.__update_location_button()
 
+        self.__center()
         #ensure that window has focus again
         self.focus_set()
 
@@ -213,9 +214,12 @@ class App(tk.Tk):
         """
         This method starts the GUI and places it in the center of the screen.
         """
+        self.__center()
+        self.mainloop()
+
+    def __center(self):
         #https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
         self.eval('tk::PlaceWindow . center')
-        self.mainloop()
 
     def __open(self, event = None):
         name = filedialog.askopenfilename()

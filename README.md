@@ -17,7 +17,11 @@ All other required libraries:
 `python3 -m unittest`
 
 ## Running
+Without loading any image on startup.<br/>
 `python3 exif_edit`
+
+With loading an image during startup.<br/>
+`python3 exif_edit --img ~/Pictures/img.jpg`
 
 ## Credits
 

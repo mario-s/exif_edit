@@ -1,16 +1,15 @@
-import os
-import sys
+import click
 
 from exif_edit.gui import App
 
-if __name__ == "__main__":
-    def img_path():
-        img_path = os.path.realpath('./test/resources/lookup.jpg')
-        args_len = len(sys.argv) - 1
-        if args_len > 0:
-            img_path = os.path.realpath(sys.argv[1])
-        return img_path
-
+@click.command()
+@click.option("--img",
+    help="The path to the image which should be loaded on start.")
+def start(img):
     app = App()
-    app.load_image(img_path())
+    if not img is None:
+        app.load_image(img)
     app.start()
+
+if __name__ == "__main__":
+   start()
