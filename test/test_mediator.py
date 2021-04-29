@@ -117,10 +117,12 @@ class TestMediator(unittest.TestCase):
         self.assertFalse(self.mediator.can_remove_row(event))
 
     def test_sort(self):
-        data = [["model", "bar"], ["foo", "baz"]]
+        data = [["model", "baz"], ["foo", "bar"], ["exif_version", "220"]]
         self.sheet.get_total_rows = Mock(side_effect=[len(data), len(data), 0])
         self.sheet.get_sheet_data.return_value = data
         self.mediator.sort()
+        self.sheet.set_sheet_data.assert_called_with(
+            [['exif_version', '220'], ['foo', 'bar'], ['model', 'baz']], redraw=True)
 
     def test_open_location_no_coordinates(self):
         data = [["model", "bar"]]
