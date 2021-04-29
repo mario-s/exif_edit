@@ -250,7 +250,7 @@ class ToolbarButton(tk.Button):
     def toggle_state(self, enabled=True):
         """
         This method changes the state of the button:
-        If enable=True the button will be enaled, else disabled.
+        If enable=True the button will be enabled, else disabled.
         """
         if enabled:
             self.enable()
