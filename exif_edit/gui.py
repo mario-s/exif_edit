@@ -128,12 +128,12 @@ class App(tk.Tk):
                                 "undo",
                                 "edit_cell"))
 
-        self.sheet.extra_bindings([("cell_select", self.cell_select),
+        self.sheet.extra_bindings([("cell_select", self.__cell_select),
                                 ("begin_edit_cell", self.__start_edit_cell),
                                 ("end_edit_cell", self.__end_edit_cell),
-                                ("row_select", self.row_select),
-                                ("deselect", self.deselect),
-                                ("drag_select_rows", self.drag_select_rows)
+                                ("row_select", self.__row_select),
+                                ("deselect", self.__deselect),
+                                ("drag_select_rows", self.__drag_select_rows)
                                 ])
 
     def __add_bindings(self):
@@ -168,7 +168,7 @@ class App(tk.Tk):
     def single_select(self, event):
         print(event)
 
-    def drag_select_rows(self, event):
+    def __drag_select_rows(self, event):
         self.__update_row_buttons(event)
 
     def __start_edit_cell(self, event):
@@ -178,13 +178,13 @@ class App(tk.Tk):
         self.mediator.end_edit_cell((event[0], event[1]))
         self.__update_buttons()
 
-    def deselect(self, event):
+    def __deselect(self, event):
         self.__update_row_buttons(event)
 
-    def cell_select(self, event):
+    def __cell_select(self, event):
         self.__update_row_buttons(event)
 
-    def row_select(self, event):
+    def __row_select(self, event):
         self.__update_row_buttons(event)
 
     def __add_row(self):
