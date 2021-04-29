@@ -4,6 +4,7 @@ This module contains custom formats used in the GUI.
 import re
 from typing import List, Tuple
 
+
 class Format:
     """
     Parent class for every format.

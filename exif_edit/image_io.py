@@ -8,6 +8,7 @@ from PIL import Image
 
 from exif_edit.converter import Converter, ExifFilter
 
+
 class Reader:
     """This class reads Exif Tags and the image itself."""
 

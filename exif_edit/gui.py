@@ -73,7 +73,7 @@ class App(tk.Tk):
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
         btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"),
-            "exit "+ self.__acc("W"), self.__quit)
+            "exit " + self.__acc("W"), self.__quit)
         btn_exit.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(toolbar, orient=tk.VERTICAL)

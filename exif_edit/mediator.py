@@ -12,6 +12,7 @@ from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
 from exif_edit.location import Coordinate
 
+
 class Mediator:
 
     """This mediator coordinates between the GUI and the reading/ writing of the image."""
