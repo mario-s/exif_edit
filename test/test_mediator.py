@@ -13,6 +13,10 @@ class TestMediator(unittest.TestCase):
         img = 'test/resources/' + name
         return os.path.realpath(img)
 
+    def __train_sheet_for_data(self, data):
+        self.sheet.get_total_rows.return_value = len(data)
+        self.sheet.get_sheet_data.return_value = data
+
     def setUp(self):
         self.sheet = Mock(name='sheet', spec=Sheet)
         self.mediator = Mediator(self.sheet)
@@ -58,7 +62,7 @@ class TestMediator(unittest.TestCase):
         self.sheet.delete_row.assert_called_with(0, True)
 
     def test_append_exif(self):
-        self.sheet.total_rows =  Mock(side_effect=[1, 0])
+        self.sheet.get_total_rows =  Mock(side_effect=[1, 0])
 
         self.mediator.append_exif(self.__path('lookup.jpg'))
         expected_calls = [self.sheet.set_sheet_data(), self.sheet.set_all_column_widths,
@@ -66,7 +70,7 @@ class TestMediator(unittest.TestCase):
         self.sheet.mock_calls = expected_calls
 
     def test_save_exif(self):
-        self.sheet.total_rows.return_value = 0
+        self.sheet.get_total_rows.return_value = 0
         self.mediator.append_exif(self.__path('lookup.jpg'))
         self.sheet.get_sheet_data.return_value = [["model", "bar"]]
 
@@ -112,22 +116,31 @@ class TestMediator(unittest.TestCase):
         event = ('foo', (0,))
         self.assertFalse(self.mediator.can_remove_row(event))
 
+    def test_sort(self):
+        data = [["model", "bar"], ["foo", "baz"]]
+        self.sheet.get_total_rows = Mock(side_effect=[len(data), len(data), 0])
+        self.sheet.get_sheet_data.return_value = data
+        self.mediator.sort()
+
     def test_open_location_no_coordinates(self):
-        self.sheet.get_sheet_data.return_value = [["model", "bar"]]
+        data = [["model", "bar"]]
+        self.__train_sheet_for_data(data)
         self.mediator.open_url = MagicMock()
         self.mediator.show_location()
         self.mediator.open_url.assert_not_called()
 
     def test_open_location_coordinates(self):
         deg = DegreeFormatFactory.create((1,1,1))
-        self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
+        data = [["gps_latitude", deg], ["gps_longitude", deg]]
+        self.__train_sheet_for_data(data)
         self.mediator.open_url = MagicMock()
         self.mediator.show_location()
         self.mediator.open_url.assert_called_once()
 
     def test_has_location(self):
         deg = DegreeFormatFactory.create((1,1,1))
-        self.sheet.get_sheet_data.return_value = [["gps_latitude", deg], ["gps_longitude", deg]]
+        data = [["gps_latitude", deg], ["gps_longitude", deg]]
+        self.__train_sheet_for_data(data)
         self.assertTrue(self.mediator.has_location())
 
     def test_read_image(self):

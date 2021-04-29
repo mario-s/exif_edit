@@ -36,10 +36,10 @@ class Mediator:
         self.sheet.set_sheet_data(lst, redraw=True)
 
     def __delete_all_rows(self):
-        rows = self.sheet.total_rows()
+        rows = self.sheet.get_total_rows()
         while rows > 0:
             self.sheet.delete_row(rows - 1)
-            rows = self.sheet.total_rows()
+            rows = self.sheet.get_total_rows()
 
     @classmethod
     def __to_list(cls, dic) -> list[list[str]]:
@@ -204,15 +204,26 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
+    def sort(self):
+        """
+        This method sorts the table by the first column.
+        """
+        dic = self.__data_as_dict()
+        dic = Converter.group_dict(dic)
+        self.__set_sheet_data(dic)
+
+    def __data_as_dict(self):
+        if self.has_rows():
+            data = self.sheet.get_sheet_data()
+            return Converter.rows_to_dict(data)
+        return {}
+
     def has_location(self) -> bool:
         """
         This method returns True is there is a location info in the data,
         else False.
         """
         return not self.find_location() is None
-
-    def has_rows(self) -> bool:
-        return self.sheet.get_total_rows() > 0
 
     def show_location(self):
         """
@@ -228,14 +239,19 @@ class Mediator:
         This method looks for a possible coordinate in the Exif data.
         If there is one it will return it, if there is none it will return None.
         """
-        data = self.sheet.get_sheet_data()
-        dic = Converter.rows_to_dict(data)
+        dic = self.__data_as_dict()
         loc = (dic.get('gps_latitude'), dic.get('gps_longitude'))
         if all(loc):
             la_ref = dic.get('gps_latitude_ref')
             lo_ref = dic.get('gps_longitude_ref')
             return Coordinate(loc[0], loc[1], lat_ref=la_ref, lon_ref=lo_ref)
         return None
+
+    def has_rows(self) -> bool:
+        """
+        This method will return True if the spreadshet has at least one row.
+        """
+        return self.sheet.get_total_rows() > 0
 
     @classmethod
     def open_url(cls, url):

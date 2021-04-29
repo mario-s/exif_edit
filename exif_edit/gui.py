@@ -176,7 +176,7 @@ class App(tk.Tk):
 
     def end_edit_cell(self, event):
         self.mediator.end_edit_cell((event[0], event[1]))
-        self.__update_location_button()
+        self.__update_buttons()
 
     def deselect(self, event):
         self.__update_row_buttons(event)
@@ -195,7 +195,7 @@ class App(tk.Tk):
 
     def __remove_row(self):
         self.mediator.remove_row()
-        self.__update_location_button()
+        self.__update_buttons()
 
     def __update_row_buttons(self, event):
         enabled = self.mediator.can_remove_row(event)
@@ -203,7 +203,7 @@ class App(tk.Tk):
         self.btn_rm.toggle_state(enabled)
 
     def __sort_table(self):
-        pass
+        self.mediator.sort()
 
     def __update_buttons(self):
         self.btn_sort.toggle_state(self.mediator.has_rows())
