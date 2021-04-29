@@ -22,8 +22,10 @@ class TestMediator(unittest.TestCase):
         self.sheet.insert_row.assert_called_with(redraw=True)
 
     def test_insert_row(self):
+        self.sheet.get_total_rows.return_value = 1
         self.sheet.get_selected_rows.return_value = {0}
         self.mediator.insert_row()
+        self.assertTrue(self.mediator.has_rows())
         self.sheet.insert_row.assert_called_with(idx=1, redraw=True)
 
     def test_insert_row_after_selected_cell(self):

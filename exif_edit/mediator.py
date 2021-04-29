@@ -211,6 +211,9 @@ class Mediator:
         """
         return not self.find_location() is None
 
+    def has_rows(self) -> bool:
+        return self.sheet.get_total_rows() > 0
+
     def show_location(self):
         """
         This method shows a location, if it is present, in the default browser.

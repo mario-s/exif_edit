@@ -84,22 +84,23 @@ class App(tk.Tk):
         btn_add.pack(side=tk.LEFT, padx=2, pady=5)
 
         self.btn_insert = ToolbarButton(toolbar, self.__icon("insert.png"),
-            "insert a row after selected", self.__insert_row)
+            "insert a row after selected", self.__insert_row, True)
         self.btn_insert.pack(side=tk.LEFT, padx=2, pady=5)
-        self.btn_insert.disable()
 
         self.btn_rm = ToolbarButton(toolbar, self.__icon("delete-row.png"),
-            "remove selected row", self.__remove_row)
+            "remove selected row", self.__remove_row, True)
         self.btn_rm.pack(side=tk.LEFT, padx=2, pady=5)
-        self.btn_rm.disable()
+
+        self.btn_sort = ToolbarButton(toolbar, self.__icon("sort.png"),
+            "sort table", self.__sort_table, True)
+        self.btn_sort.pack(side=tk.LEFT, padx=2, pady=5)
 
         sep = ttk.Separator(toolbar, orient=tk.VERTICAL)
         sep.pack(side=tk.LEFT, padx=2, pady=5, fill='y')
 
         self.btn_loc = ToolbarButton(toolbar, self.__icon("world.png"),
-            "show location " + self.__acc("L"), self.__open_location)
+            "show location " + self.__acc("L"), self.__open_location, True)
         self.btn_loc.pack(side=tk.LEFT, padx=2, pady=5)
-        self.btn_loc.disable()
 
     def __icon(self, icon_name):
         return self.mediator.read_icon(icon_name)
@@ -159,11 +160,10 @@ class App(tk.Tk):
         self.img_display.image = img
         self.img_display.grid(row = 0, column = 1, padx=5, pady=5, sticky = "w")
 
-        self.__update_location_button()
-
-        self.__center()
+        self.__update_buttons()
         #ensure that window has focus again
         self.focus_set()
+        self.__center()
 
     def single_select(self, event):
         print(event)
@@ -202,7 +202,11 @@ class App(tk.Tk):
         self.btn_insert.toggle_state(enabled)
         self.btn_rm.toggle_state(enabled)
 
-    def __update_location_button(self):
+    def __sort_table(self):
+        pass
+
+    def __update_buttons(self):
+        self.btn_sort.toggle_state(self.mediator.has_rows())
         self.btn_loc.toggle_state(self.mediator.has_location())
 
     def start(self):
@@ -234,12 +238,14 @@ class ToolbarButton(tk.Button):
     """
     Button for the toolbar.
     """
-    def __init__(self, anchor, icon, tooltip, cmd):
+    def __init__(self, anchor, icon, tooltip, cmd, disabled=False):
         self.icon = icon.convert("RGBA")
         self.image = itk.PhotoImage(self.icon)
         self.overlay = Image.new('RGBA', icon.size, (255, 255, 255, 0))
         super().__init__(anchor, image=self.image, relief=tk.FLAT, command=cmd)
         Tooltip(self, text=tooltip)
+        if disabled:
+            self.disable()
 
     def toggle_state(self, enabled=True):
         """
