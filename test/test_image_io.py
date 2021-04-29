@@ -19,18 +19,18 @@ class TestImageIO(unittest.TestCase):
         self.assertFalse(len(self.reader.keys()) == 0)
 
     def test_value(self):
-        k = self.reader.keys()
-        v = self.reader.value(k[0])
-        self.assertIsNotNone(v)
+        keys = self.reader.keys()
+        val = self.reader.value(keys[0])
+        self.assertIsNotNone(val)
 
     def test_dict(self):
-        d = self.reader.dict()
-        self.assertFalse(len(d) == 0)
+        res = self.reader.dict()
+        self.assertFalse(len(res) == 0)
 
     def test_grouped_dict(self):
-        l = list(self.reader.grouped_dict().keys())
+        lst = list(self.reader.grouped_dict().keys())
         k = ExifFilter.read_only()[0]
-        self.assertEqual(0, l.index(k))
+        self.assertEqual(0, lst.index(k))
 
     def test_save_list(self):
         list = [["model", "bar"]]
@@ -41,17 +41,17 @@ class TestImageIO(unittest.TestCase):
         self.assertTrue("model" in keys)
 
     def test_save_list_deleted_row(self):
-        list = [["model", "bar"], ["software", "python"]]
+        lst = [["model", "bar"], ["software", "python"]]
         p = self.__path('modified.jpg')
-        writer = Writer(self.reader.binary(), Converter.to_dict(list))
+        writer = Writer(self.reader.binary(), Converter.to_dict(lst))
         writer.save([["model", "bar"]], p)
 
         keys = Reader(p).keys()
         self.assertFalse("software" in keys)
 
     def test_read_image(self):
-        i = Reader.read_image(self.__path('lookup.jpg'), True)
-        w, _ = i.size
+        img = Reader.read_image(self.__path('lookup.jpg'), True)
+        w, _ = img.size
         self.assertEqual(400, w)
 
 if __name__ == '__main__':

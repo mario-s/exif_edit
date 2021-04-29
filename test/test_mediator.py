@@ -1,7 +1,7 @@
 from exif_edit.formats import DegreeFormatFactory
 import unittest
 import os
-import tkinter as tk
+
 from unittest.mock import MagicMock, Mock
 from tksheet import Sheet
 
