@@ -42,36 +42,38 @@ class TestConverter(unittest.TestCase):
         m = {'foo': 'bar'}
         self.assertIsNone(Converter.read_from_dict(m, 'baz'))
 
-    def test_rows_to_dict(self):
-        rows = [["model", "bar"]]
-        d = Converter.rows_to_dict(rows)
+    def test_to_dict(self):
+        d = Converter.to_dict([["model", "bar"]])
         self.assertDictEqual({'model': 'bar'}, d)
 
-    def test_rows_to_dict_raise_error(self):
+    def test_to_dict_raise_error(self):
         rows = [["model"]]
-        self.assertRaises(ValueError, lambda: Converter.rows_to_dict(rows))
+        self.assertRaises(ValueError, lambda: Converter.to_dict(rows))
+
+    def test_to_list(self):
+        res = Converter.to_list({'model': 'bar'})
+        self.assertListEqual([["model", "bar"]], res)
 
     def test_grouped_dict(self):
-        d = {"b": 1, "a": 2, "exif_version": 22}
-        r = Converter.group_dict(d)
-        self.assertEqual({"exif_version": 22, "a": 2, "b": 1}, r)
+        res = Converter.group_dict({"b": 1, "a": 2, "exif_version": 22})
+        self.assertEqual({"exif_version": 22, "a": 2, "b": 1}, res)
 
     def test_to_exif_dms(self):
         loc = DegreeFormatFactory.create([78.0, 55.0, 44.33324])
-        r = Converter.to_exif('', loc)
-        self.assertIsInstance(r, tuple)
+        res = Converter.to_exif('', loc)
+        self.assertIsInstance(res, tuple)
 
     def test_to_exif_int(self):
-        r = Converter.to_exif('', 12)
-        self.assertIsInstance(r, int)
+        res = Converter.to_exif('', 12)
+        self.assertIsInstance(res, int)
 
     def test_to_exif_fallback(self):
-        r = Converter.to_exif('', 'a')
-        self.assertEqual(r, 'a')
+        res = Converter.to_exif('', 'a')
+        self.assertEqual(res, 'a')
 
     def test_to_custom_gps_timestamp(self):
-        r = Converter.to_format('gps_timestamp', '15:01:01')
-        self.assertIsInstance(r.get_source(), tuple)
+        res = Converter.to_format('gps_timestamp', '15:01:01')
+        self.assertIsInstance(res.get_source(), tuple)
 
     def test_illegal_degree(self):
         dic = {'gps_latitude': 'a'}

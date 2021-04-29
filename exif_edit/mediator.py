@@ -12,6 +12,7 @@ from exif_edit.image_io import ExifFilter, Reader, Writer
 from exif_edit.converter import Converter
 from exif_edit.location import Coordinate
 
+
 class Mediator:
 
     """This mediator coordinates between the GUI and the reading/ writing of the image."""
@@ -21,6 +22,9 @@ class Mediator:
         self.origin_cell_value = None
 
     def append_exif(self, img_path):
+        """
+        This method will read the Exif tags from the image and add them to the table.
+        """
         self.origin_img_path = img_path
         self.origin_cell_value = None
 
@@ -31,19 +35,15 @@ class Mediator:
         #delete old rows if there are any
         self.__delete_all_rows()
 
-        lst = self.__to_list(dic)
+        lst = Converter.to_list(dic)
         self.__disable_rows(lst)
         self.sheet.set_sheet_data(lst, redraw=True)
 
     def __delete_all_rows(self):
-        rows = self.sheet.total_rows()
+        rows = self.sheet.get_total_rows()
         while rows > 0:
             self.sheet.delete_row(rows - 1)
-            rows = self.sheet.total_rows()
-
-    @classmethod
-    def __to_list(cls, dic) -> list[list[str]]:
-        return list(map(list, dic.items()))
+            rows = self.sheet.get_total_rows()
 
     def __disable_rows(self, lst):
         keys = [i[0] for i in lst]
@@ -69,7 +69,7 @@ class Mediator:
     @classmethod
     def read_image(cls, img_path):
         """
-        Read an image from the gicen path and scale it to fit max width/height.
+        Read an image from the given path and scale it to fit max width/height.
         """
         return Reader.read_image(img_path, True)
 
@@ -99,6 +99,9 @@ class Mediator:
             self.sheet.insert_row(idx=idx, redraw=True)
 
     def remove_row(self):
+        """
+        This method removes selected row(s) from the table.
+        """
         index = 0
         selected_rows = self.__get_selected_rows()
         for selected in selected_rows:
@@ -136,6 +139,9 @@ class Mediator:
         return not key in ExifFilter.locked()
 
     def save_exif(self, new_img_path="", origin_img_path=""):
+        """
+        This method saves the Exif Tags back to the image.
+        """
         orig_path = self.__path(self.origin_img_path, origin_img_path)
         reader = Reader(orig_path)
         writer = Writer(reader.binary(), reader.dict())
@@ -150,7 +156,9 @@ class Mediator:
         return source if (path is None or path == "") else path
 
     def begin_edit_cell(self, cell):
-        """Listener for begin of cell edit."""
+        """
+        Listener for begin of cell edit.
+        """
         orig = self.sheet.get_cell_data(cell[0], cell[1])
         self.origin_cell_value = orig
 
@@ -204,6 +212,20 @@ class Mediator:
         keys = self.sheet.get_column_data(0)
         return keys.count(key) > 1
 
+    def sort(self):
+        """
+        This method sorts the table by the first column.
+        """
+        dic = self.__data_as_dict()
+        dic = Converter.group_dict(dic)
+        self.__set_sheet_data(dic)
+
+    def __data_as_dict(self):
+        if self.has_rows():
+            data = self.sheet.get_sheet_data()
+            return Converter.to_dict(data)
+        return {}
+
     def has_location(self) -> bool:
         """
         This method returns True is there is a location info in the data,
@@ -216,7 +238,7 @@ class Mediator:
         This method shows a location, if it is present, in the default browser.
         """
         loc = self.find_location()
-        if not loc is None:
+        if loc is not None:
             url = loc.google_maps_url()
             self.open_url(url)
 
@@ -225,14 +247,19 @@ class Mediator:
         This method looks for a possible coordinate in the Exif data.
         If there is one it will return it, if there is none it will return None.
         """
-        data = self.sheet.get_sheet_data()
-        dic = Converter.rows_to_dict(data)
+        dic = self.__data_as_dict()
         loc = (dic.get('gps_latitude'), dic.get('gps_longitude'))
         if all(loc):
             la_ref = dic.get('gps_latitude_ref')
             lo_ref = dic.get('gps_longitude_ref')
             return Coordinate(loc[0], loc[1], lat_ref=la_ref, lon_ref=lo_ref)
         return None
+
+    def has_rows(self) -> bool:
+        """
+        This method will return True if the spreadshet has at least one row.
+        """
+        return self.sheet.get_total_rows() > 0
 
     @classmethod
     def open_url(cls, url):

@@ -8,6 +8,7 @@ from PIL import Image
 
 from exif_edit.converter import Converter, ExifFilter
 
+
 class Reader:
     """This class reads Exif Tags and the image itself."""
 
@@ -52,7 +53,7 @@ class Reader:
         lst = []
         for key in self.keys():
             value = self.value(key)
-            if not value is None:
+            if value is not None:
                 lst.append((key, value))
 
         return dict(lst)
@@ -76,7 +77,7 @@ class Writer:
         """
         Saves the the collection of Exif tags to a file given by the path.
         """
-        self.__set_values(Converter.rows_to_dict(rows))
+        self.__set_values(Converter.to_dict(rows))
         self.__save(img_path)
 
     def __set_values(self, dic):

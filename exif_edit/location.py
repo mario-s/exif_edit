@@ -4,6 +4,7 @@ This module contains functionality related to geo location.
 from typing import Tuple
 from exif_edit.formats import DegreeFormatFactory, DegreeFormat
 
+
 class Coordinate:
     """
     Represent a coordinate on the globe.

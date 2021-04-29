@@ -4,6 +4,7 @@ This module contains custom formats used in the GUI.
 import re
 from typing import List, Tuple
 
+
 class Format:
     """
     Parent class for every format.
@@ -32,6 +33,9 @@ class TimeStamp(Format):
 
     @staticmethod
     def parse(value):
+        """
+        This function tries to create a new instance of a TimeStamp based on the given value.
+        """
         if isinstance(value, (List, Tuple)):
             return TimeStamp(value)
 
