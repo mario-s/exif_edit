@@ -129,8 +129,8 @@ class App(tk.Tk):
                                 "edit_cell"))
 
         self.sheet.extra_bindings([("cell_select", self.cell_select),
-                                ("begin_edit_cell", self.begin_edit_cell),
-                                ("end_edit_cell", self.end_edit_cell),
+                                ("begin_edit_cell", self.__start_edit_cell),
+                                ("end_edit_cell", self.__end_edit_cell),
                                 ("row_select", self.row_select),
                                 ("deselect", self.deselect),
                                 ("drag_select_rows", self.drag_select_rows)
@@ -171,10 +171,10 @@ class App(tk.Tk):
     def drag_select_rows(self, event):
         self.__update_row_buttons(event)
 
-    def begin_edit_cell(self, event):
+    def __start_edit_cell(self, event):
         self.mediator.begin_edit_cell((event[0], event[1]))
 
-    def end_edit_cell(self, event):
+    def __end_edit_cell(self, event):
         self.mediator.end_edit_cell((event[0], event[1]))
         self.__update_buttons()
 
