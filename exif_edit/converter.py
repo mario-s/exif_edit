@@ -122,7 +122,7 @@ class Converter:
         return key in ("gps_timestamp", )
 
     @staticmethod
-    def rows_to_dict(rows) -> dict:
+    def to_dict(rows) -> dict:
         """
         This method converts a collection of rows into a dictionary.
         """
@@ -132,6 +132,13 @@ class Converter:
                 raise ValueError("Expect at least two cells in the row")
             dic[col[0]] = col[1]
         return dic
+
+    @staticmethod
+    def to_list(dic) -> list[list[str]]:
+        """
+        This function converts a dictionary to a list of lists.
+        """
+        return list(map(list, dic.items()))
 
     @staticmethod
     def group_dict(dic) -> dict:

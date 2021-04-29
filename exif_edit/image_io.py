@@ -76,7 +76,7 @@ class Writer:
         """
         Saves the the collection of Exif tags to a file given by the path.
         """
-        self.__set_values(Converter.rows_to_dict(rows))
+        self.__set_values(Converter.to_dict(rows))
         self.__save(img_path)
 
     def __set_values(self, dic):

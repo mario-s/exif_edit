@@ -43,7 +43,7 @@ class TestImageIO(unittest.TestCase):
     def test_save_list_deleted_row(self):
         list = [["model", "bar"], ["software", "python"]]
         p = self.__path('modified.jpg')
-        writer = Writer(self.reader.binary(), Converter.rows_to_dict(list))
+        writer = Writer(self.reader.binary(), Converter.to_dict(list))
         writer.save([["model", "bar"]], p)
 
         keys = Reader(p).keys()

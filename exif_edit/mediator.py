@@ -21,6 +21,9 @@ class Mediator:
         self.origin_cell_value = None
 
     def append_exif(self, img_path):
+        """
+        This method will read the Exif tags from the image and add them to the table.
+        """
         self.origin_img_path = img_path
         self.origin_cell_value = None
 
@@ -31,7 +34,7 @@ class Mediator:
         #delete old rows if there are any
         self.__delete_all_rows()
 
-        lst = self.__to_list(dic)
+        lst = Converter.to_list(dic)
         self.__disable_rows(lst)
         self.sheet.set_sheet_data(lst, redraw=True)
 
@@ -40,10 +43,6 @@ class Mediator:
         while rows > 0:
             self.sheet.delete_row(rows - 1)
             rows = self.sheet.get_total_rows()
-
-    @classmethod
-    def __to_list(cls, dic) -> list[list[str]]:
-        return list(map(list, dic.items()))
 
     def __disable_rows(self, lst):
         keys = [i[0] for i in lst]
@@ -69,7 +68,7 @@ class Mediator:
     @classmethod
     def read_image(cls, img_path):
         """
-        Read an image from the gicen path and scale it to fit max width/height.
+        Read an image from the given path and scale it to fit max width/height.
         """
         return Reader.read_image(img_path, True)
 
@@ -99,6 +98,9 @@ class Mediator:
             self.sheet.insert_row(idx=idx, redraw=True)
 
     def remove_row(self):
+        """
+        This method removes selected row(s) from the table.
+        """
         index = 0
         selected_rows = self.__get_selected_rows()
         for selected in selected_rows:
@@ -136,6 +138,9 @@ class Mediator:
         return not key in ExifFilter.locked()
 
     def save_exif(self, new_img_path="", origin_img_path=""):
+        """
+        This method saves the Exif Tags back to the image.
+        """
         orig_path = self.__path(self.origin_img_path, origin_img_path)
         reader = Reader(orig_path)
         writer = Writer(reader.binary(), reader.dict())
@@ -150,7 +155,9 @@ class Mediator:
         return source if (path is None or path == "") else path
 
     def begin_edit_cell(self, cell):
-        """Listener for begin of cell edit."""
+        """
+        Listener for begin of cell edit.
+        """
         orig = self.sheet.get_cell_data(cell[0], cell[1])
         self.origin_cell_value = orig
 
@@ -215,7 +222,7 @@ class Mediator:
     def __data_as_dict(self):
         if self.has_rows():
             data = self.sheet.get_sheet_data()
-            return Converter.rows_to_dict(data)
+            return Converter.to_dict(data)
         return {}
 
     def has_location(self) -> bool:
