@@ -152,7 +152,7 @@ class App(tk.Tk):
         self.mediator.append_exif(img_path)
 
         #destroy a possible previous instance to avoid a stack of images
-        if not self.img_display is None:
+        if self.img_display is not None:
             self.img_display.destroy()
 
         img = itk.PhotoImage(self.mediator.read_image(img_path))

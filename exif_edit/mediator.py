@@ -238,7 +238,7 @@ class Mediator:
         This method shows a location, if it is present, in the default browser.
         """
         loc = self.find_location()
-        if not loc is None:
+        if loc is not None:
             url = loc.google_maps_url()
             self.open_url(url)
 

@@ -53,7 +53,7 @@ class Reader:
         lst = []
         for key in self.keys():
             value = self.value(key)
-            if not value is None:
+            if value is not None:
                 lst.append((key, value))
 
         return dict(lst)
