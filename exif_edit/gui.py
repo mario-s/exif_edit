@@ -69,7 +69,7 @@ class App(tk.Tk):
         btn_open.pack(side=tk.LEFT, padx=2, pady=5)
 
         btn_save = ToolbarButton(toolbar, self.__icon("save-file.png"),
-            "save file " + self.__acc("S"), self.__save)
+            "save exif data " + self.__acc("S"), self.__save)
         btn_save.pack(side=tk.LEFT, padx=2, pady=5)
 
         btn_exit = ToolbarButton(toolbar, self.__icon("exit.png"),
